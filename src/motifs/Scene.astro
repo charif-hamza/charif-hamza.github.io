@@ -1,0 +1,168 @@
+---
+/**
+ * Scene — the one place a motif becomes SVG.
+ *
+ * A motif file is now nothing but a list of boxes on the unit grid plus the
+ * position of its ground shadow; this component turns that list into markup.
+ * Keeping the emission in one place is what makes the four motifs read as one
+ * drawing system rather than four drawings: identical stroke, identical
+ * shading, identical shadow, identical padding.
+ *
+ * Ids are per-instance. The same motif appears on a card, in a project header
+ * and in an OG image on the same build, and two <linearGradient id="accent">
+ * in one document is a silent, undebuggable wrong-colour bug.
+ */
+import { shadowPlate, groundAt } from './iso.js';
+import { nextUid } from './uid.ts';
+
+interface Box {
+	top: string;
+	left: string;
+	right: string;
+	/** Material: light | accent | accent-soft | dark. */
+	m: string;
+}
+
+interface Props {
+	/** Painter-ordered, back to front. */
+	boxes: Box[];
+	/** Ground shadow: the point on the ground plane it is centred on, in unit
+	 *  space, and how wide the plate is in unit cells. */
+	shadow?: { x: number; y: number; z?: number; footprint?: number };
+	/** Which card fill this motif sits on — selects the ground shadow colour. */
+	surface?: 'green' | 'white';
+	/** Extra padding around the composition, in SVG user units. */
+	pad?: number;
+	class?: string;
+}
+
+const { boxes, shadow, surface = 'white', pad = 3, class: className = '' } = Astro.props;
+
+const uid = nextUid();
+
+/* --- Bounds ---------------------------------------------------------------
+   Derived from the geometry rather than hand-written per motif, so a box can
+   be moved without silently cropping the composition. */
+const coords: number[][] = [];
+for (const b of boxes) {
+	for (const face of [b.top, b.left, b.right]) {
+		for (const p of face.split(' ')) coords.push(p.split(',').map(Number));
+	}
+}
+const xs = coords.map((c) => c[0]);
+const ys = coords.map((c) => c[1]);
+const shadowAt = shadow ? groundAt(shadow.x, shadow.y, shadow.z ?? 0) : null;
+const shadowPath = shadowAt ? shadowPlate(shadowAt.cx, shadowAt.cy, shadow!.footprint ?? 2) : null;
+if (shadowPath) {
+	/* The plate sticks out below and to the right of the boxes standing on it. */
+	for (const m of shadowPath.matchAll(/(-?[\d.]+),(-?[\d.]+)/g)) {
+		xs.push(Number(m[1]));
+		ys.push(Number(m[2]));
+	}
+}
+const minX = Math.min(...xs) - pad;
+const minY = Math.min(...ys) - pad;
+const width = Math.max(...xs) - Math.min(...xs) + 2 * pad;
+const height = Math.max(...ys) - Math.min(...ys) + 2 * pad;
+
+/* A square viewBox keeps the reserved box square (§12.1, CLS) whatever the
+   composition's aspect ratio. A tall composition therefore has slack to spare
+   horizontally, and all of it goes on the LEFT: the drawing sits flush against
+   the right edge of its box, which is the edge the card is meant to cut it on
+   (Appendix C). Vertically it stays centred, because nothing crops it there.
+
+   preserveAspectRatio cannot do this — the viewBox and the viewport are both
+   square, so there is no slack between them for it to distribute. The slack is
+   inside the viewBox, which means it has to be spent here. */
+const side = Math.max(width, height);
+const viewBox = `${minX - (side - width)} ${minY - (side - height) / 2} ${side} ${side}`;
+
+/* Grain sits on the lit faces of the plain boxes only — the accent object's
+   gradient is what carries it, and grain on top of that reads as dirt. */
+const grainFaces = boxes.filter((b) => b.m === 'light').map((b) => b.left);
+---
+
+<svg
+	class:list={['motif', className]}
+	viewBox={viewBox}
+	data-surface={surface}
+	style={`--iso-accent-left:url(#${uid}-accent);--iso-accent-soft:url(#${uid}-soft)`}
+	role="presentation"
+	aria-hidden="true"
+	focusable="false"
+	preserveAspectRatio="xMidYMid meet"
+>
+	<defs>
+		{/* Lit from the upper left, so the gradient runs light -> saturated down
+		    the face. Objects, not the card, carry it (Appendix C).
+		    The range has to clear the card's own gradient, or the accent object
+		    on a green card is green on green and stops being an accent. */}
+		<linearGradient id={`${uid}-accent`} x1="0" y1="0" x2="0.55" y2="1">
+			<stop offset="0%" stop-color="var(--green-200)"></stop>
+			<stop offset="100%" stop-color="var(--green-500)"></stop>
+		</linearGradient>
+		<linearGradient id={`${uid}-soft`} x1="0" y1="0" x2="0.55" y2="1">
+			<stop offset="0%" stop-color="var(--green-100)"></stop>
+			<stop offset="100%" stop-color="var(--green-400)"></stop>
+		</linearGradient>
+
+		<filter id={`${uid}-cast`} x="-30%" y="-30%" width="160%" height="160%">
+			<feGaussianBlur stdDeviation="2.6"></feGaussianBlur>
+		</filter>
+
+		{
+			grainFaces.length > 0 && (
+				<>
+					<filter id={`${uid}-grain`} x="0" y="0" width="100%" height="100%">
+						<feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="3" seed="4" />
+						<feColorMatrix type="saturate" values="0" />
+						<feComponentTransfer>
+							<feFuncA type="linear" slope="0.85" intercept="0" />
+						</feComponentTransfer>
+					</filter>
+					{/* The grain gathers toward the foot of the composition and is
+					    absent at the top, which is what stops it reading as a flat
+					    dirty overlay and starts it reading as a material catching
+					    the light where the light is weakest. */}
+					<linearGradient id={`${uid}-grainfade`} x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0%" stop-color="#fff" stop-opacity="0" />
+						<stop offset="40%" stop-color="#fff" stop-opacity="0" />
+						<stop offset="100%" stop-color="#fff" stop-opacity="1" />
+					</linearGradient>
+					<mask id={`${uid}-grainmask`}>
+						<rect x={minX} y={minY} width={side} height={side} fill={`url(#${uid}-grainfade)`} />
+					</mask>
+					<clipPath id={`${uid}-lit`}>
+						{grainFaces.map((points) => (
+							<polygon points={points} />
+						))}
+					</clipPath>
+				</>
+			)
+		}
+	</defs>
+
+	{shadowPath && <path class="iso-ground" d={shadowPath} filter={`url(#${uid}-cast)`} />}
+
+	{
+		boxes.map((b) => (
+			<g class:list={['iso', `iso--${b.m}`]}>
+				<polygon class="iso-face--right" points={b.right} />
+				<polygon class="iso-face--left" points={b.left} />
+				<polygon class="iso-face--top" points={b.top} />
+			</g>
+		))
+	}
+
+	{
+		grainFaces.length > 0 && (
+			<g clip-path={`url(#${uid}-lit)`} class="iso-grain">
+				<g mask={`url(#${uid}-grainmask)`}>
+					<rect x={minX - side} y={minY - side} width={side * 3} height={side * 3} filter={`url(#${uid}-grain)`} />
+				</g>
+			</g>
+		)
+	}
+
+	<slot />
+</svg>

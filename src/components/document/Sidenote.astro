@@ -1,0 +1,34 @@
+---
+/**
+ * Sidenote — SPEC §8.2.7.
+ *
+ * At xl these sit in the left 180px margin, aligned to their reference point.
+ * Below xl they are an inline <details>. A very Quarto/Tufte move that reads
+ * as scholarly without costing legibility — and, because the collapsed form is
+ * a real <details>, it works with JavaScript off and prints correctly.
+ *
+ * Use them for asides that would break the argument's flow. If the sentence
+ * belongs in the argument, it belongs in the column.
+ */
+interface Props {
+	/** Short label shown when the note is collapsed on narrow screens. */
+	summary?: string;
+	class?: string;
+}
+
+const { summary = 'Note', class: className = '' } = Astro.props;
+---
+
+<details class:list={['sidenote', className]}>
+	<summary>{summary}</summary>
+	<div class="sidenote__body"><slot /></div>
+</details>
+
+<style>
+	/* Open by default in the margin: at xl there is nothing to collapse. */
+	@media (min-width: 1440px) {
+		details.sidenote {
+			display: block;
+		}
+	}
+</style>

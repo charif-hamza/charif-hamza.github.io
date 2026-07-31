@@ -1,0 +1,47 @@
+---
+/**
+ * Wordmark — SPEC §8.1.1 and D2 (§17).
+ *
+ * "Your name in --font-sans 600, --t-body, tracking -0.01em. Not a logo. Not
+ * an icon." D2 resolves to text at v1; a three-cube mark can come later and
+ * must be built from the same primitives as the motifs.
+ */
+import { site } from '~/lib/site.ts';
+
+interface Props {
+	href?: string;
+	class?: string;
+}
+
+const { href = '/', class: className = '' } = Astro.props;
+const isCurrent = Astro.url.pathname === href;
+---
+
+{
+	isCurrent ? (
+		<span class:list={['wordmark', className]}>{site.name}</span>
+	) : (
+		<a class:list={['wordmark', className]} href={href}>
+			{site.name}
+		</a>
+	)
+}
+
+<style>
+	.wordmark {
+		display: inline-block;
+		font-size: var(--t-body);
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		color: var(--ink-900);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	a.wordmark {
+		transition: opacity var(--dur-fast) var(--ease-standard);
+	}
+	a.wordmark:hover {
+		opacity: 0.65;
+	}
+</style>

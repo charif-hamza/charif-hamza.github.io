@@ -1,0 +1,52 @@
+---
+/**
+ * MotifFrame — the single place a motif is instantiated.
+ *
+ * One motif, five uses, always the same geometry (§6.4). This component is
+ * what makes that promise structural rather than a convention: the card, the
+ * project header, the /projects grid and the OG endpoint all come through
+ * here, so a motif cannot be subtly different in one of them.
+ *
+ * It also owns the shared-element name for the page transition (§4.4 step 3):
+ * the motif on the clicked card and the frozen poster frame in the project
+ * header carry the same `view-transition-name`, so the browser morphs one into
+ * the other and the click reads as descending into the card rather than
+ * navigating away. Cards that were not clicked have no counterpart on the
+ * destination page and simply exit.
+ */
+import { motifs, type MotifId } from '~/motifs/index.ts';
+
+interface Props {
+	id: MotifId;
+	surface?: 'green' | 'white';
+	/** Shared-element key, e.g. the project slug. */
+	transitionKey?: string;
+	size?: string;
+	class?: string;
+}
+
+const { id, surface = 'white', transitionKey, size, class: className = '' } = Astro.props;
+
+const Motif = motifs[id];
+const style = [
+	transitionKey ? `view-transition-name:motif-${transitionKey}` : '',
+	size ? `width:${size}` : '',
+]
+	.filter(Boolean)
+	.join(';');
+---
+
+<div class:list={['motif-frame', className]} style={style || undefined}>
+	<Motif surface={surface} />
+</div>
+
+<style>
+	/* A reserved square box: the motif never causes layout shift, which is how
+	   the 0.02 CLS budget of §12.1 is met without measuring anything. */
+	.motif-frame {
+		position: relative;
+		width: 100%;
+		aspect-ratio: 1;
+		contain: layout paint;
+	}
+</style>

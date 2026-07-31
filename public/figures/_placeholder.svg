@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Placeholder — figure not yet produced">
+  <!--
+    Placeholder figure. SPEC §8.2.4 item 6 requires at least one figure per
+    project, and §8.2.6 makes unlabelled axes a hard rejection criterion.
+    Neither can be satisfied without the underlying run data, so this stands in
+    the layout — correctly sized, so nothing shifts — until the real figure
+    exists. See docs/TODO.md.
+  -->
+  <rect width="960" height="540" fill="#FFFFFF"/>
+  <rect x="0.5" y="0.5" width="959" height="539" fill="none" stroke="#E3E5E8"/>
+  <g stroke="#E3E5E8" stroke-width="1" stroke-dasharray="6 6">
+    <line x1="120" y1="60" x2="120" y2="440"/>
+    <line x1="120" y1="440" x2="880" y2="440"/>
+  </g>
+  <g font-family="Switzer, 'Helvetica Neue', Arial, sans-serif" fill="#5E636A">
+    <text x="120" y="272" font-size="26" font-weight="600" fill="#101113">TODO — figure</text>
+    <text x="120" y="308" font-size="18">Produce from the run data, then replace this file.</text>
+    <text x="120" y="336" font-size="18">Axes must carry labels and units (SPEC §8.2.6).</text>
+    <text x="120" y="470" font-size="15">x axis — label (unit)</text>
+    <text x="52" y="250" font-size="15" transform="rotate(-90 52 250)">y axis — label (unit)</text>
+  </g>
+  <circle cx="880" cy="60" r="6" fill="#A3EFAE" stroke="#101113" stroke-width="1.5"/>
+</svg>

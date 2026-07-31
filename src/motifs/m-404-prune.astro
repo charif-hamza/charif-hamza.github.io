@@ -1,0 +1,35 @@
+---
+/**
+ * M-404 · "prune"  (SPEC §8.5)
+ *
+ * The prune operation as a still: a stack with the cell you asked for taken
+ * out of it, and a Frame closed around the absence. Ten minutes of work,
+ * disproportionate charm, and it costs the 404 page nothing because it reuses
+ * the same primitives as every other motif.
+ */
+import Scene from './Scene.astro';
+import { box, painterSort, framePath } from './iso.js';
+
+interface Props {
+	surface?: 'green' | 'white';
+	class?: string;
+}
+
+const { surface = 'white', class: className = '' } = Astro.props;
+
+const boxes = painterSort([
+	box(0, 0, 0, 1, 1, 1, 'light'),
+	box(1, 0, 0, 1, 1, 1, 'light'),
+	box(0, 1, 0, 1, 1, 1, 'light'),
+	box(1, 1, 0, 1, 1, 1, 'accent'),
+	box(0, 0, 1, 1, 1, 1, 'light'),
+	/* (1,0,1) is the page you asked for. */
+]);
+
+/* The Frame closes on the empty cell — the certificate that nothing is there. */
+const cage = framePath(0.98, -0.02, 0.98, 1.04, 1.04, 1.04);
+---
+
+<Scene boxes={boxes} shadow={{ x: 1, y: 1, footprint: 2 }} surface={surface} class={className}>
+	<path class="iso iso--frame" d={cage}></path>
+</Scene>

@@ -1,0 +1,229 @@
+---
+slug: wfi-feasibility
+title: WFI route comparison
+subtitle: Structuring the choice between a distillation train and a membrane route for water for injection
+tag: Étude technico-économique
+order: 2
+featured: true
+motif: m-02-two-paths
+motifColor: white
+card:
+  description: >
+    Two compliant ways to make water for injection. A comparison framework that
+    survives the fact that most of its inputs are uncertain.
+facts:
+  context: Internship — TODO(organisation type)
+  period: TODO — months and year
+  role: 'Sole author: framing, cost model, sensitivity analysis'
+  domain: Pharmaceutical utilities — water for injection
+  methods:
+    - Techno-economic comparison
+    - Life-cycle cost
+    - Monte Carlo sensitivity
+  stack:
+    - Python
+    - NumPy
+    - Matplotlib
+    - Linux
+  status: Method published; industrial data withheld
+artifacts:
+  - label: Method note (PDF)
+    url: 'https://example.com/TODO'
+    type: pdf
+seo:
+  description: How to structure the comparison between multiple-effect distillation and a membrane route for WFI, when most inputs are uncertain.
+dates:
+  published: 2026-07-20
+  updated: 2026-07-31
+draft: false
+---
+
+<Callout variant="note" label="In short">
+- Since the pharmacopoeia allows non-distillation routes, a site building WFI capacity has two compliant options rather than one.
+- The two routes are usually compared on the wrong axis — capital cost — because it is the number that is easiest to obtain.
+- I built a comparison whose output is a decision boundary in the uncertain parameters, not a single winner.
+- The framework is publishable; the client's numbers are not, and this page contains none of them.
+</Callout>
+
+<Callout variant="limitation" label="Confidentiality">
+This project was carried out during an internship. What follows is method
+only: no client figures, no site data, no vendor quotations. Where a number
+would normally appear, the structure of the number is described instead.
+</Callout>
+
+## The problem, in industrial terms
+
+Water for injection is the highest-grade water a pharmaceutical site produces
+and one of its larger continuous energy consumers. For decades there was
+effectively one compliant way to make it: distillation, usually a
+multiple-effect still. The European Pharmacopoeia's admission of
+non-distillation methods opened a second route — a membrane train, typically
+reverse osmosis followed by electrodeionisation and ultrafiltration, with a
+sanitisation regime that carries the microbiological burden distillation
+carries thermally.
+
+So a site adding WFI capacity now has a genuine choice, and the choice is
+consequential: the two routes have different capital costs, very different
+energy signatures, different failure modes and different qualification effort.
+In practice the decision is often made by precedent — the site already runs
+stills, so it buys another still. That is not obviously wrong. It is just
+undefended.
+
+## Why it is hard
+
+**The two routes do not fail in the same way.** A still is a thermal barrier:
+it is sanitised by the fact that it boils. A membrane train is a physical
+barrier maintained by a control regime, and its risk is biofilm on the
+downstream side. These are not comparable on a single risk axis, and any
+comparison that reduces them to one is hiding the decision rather than making
+it.
+
+**The economics depend on things the study cannot fix.** The energy comparison
+turns on the price of steam relative to electricity, on the number of effects
+in the still, on the plant's utilisation profile, and on whether waste heat has
+somewhere to go. Every one of these is site-specific and several are volatile.
+A single-point comparison is a comparison of two guesses.
+
+**The obvious metric is the least informative one.** Capital cost is the number
+that arrives first and the one everybody asks for, and over a twenty-year asset
+life it is frequently not the one that decides. But life-cycle cost requires
+assumptions, and assumptions get argued with, whereas a capex figure gets
+believed.
+
+<Sidenote summary="Why a boundary, not a winner">
+A study that outputs "route A wins" is fragile: it is falsified by one input
+moving. A study that outputs "route A wins whenever the steam-to-electricity
+price ratio exceeds X, at utilisation above Y" survives the input moving, and
+it tells the reader something they can check against their own site.
+</Sidenote>
+
+## What I actually did
+
+I built a comparison framework and applied it. The framework is the deliverable
+here; the application is the client's.
+
+- **In scope.** A common functional unit and a shared system boundary; a
+  life-cycle cost model with explicit annuitisation; an energy model for each
+  route; a Monte Carlo sensitivity over the inputs that are genuinely
+  uncertain; and a presentation of the result as a decision boundary.
+- **Out of scope.** Qualification cost beyond an order-of-magnitude allowance.
+  Site integration — piping runs, plant-room space, existing steam headroom.
+  Monetised microbiological risk, which I judged not defensible.
+
+The boundary definition did more work than anything else in the study. Both
+routes need pretreatment, and how much of it you attribute to the WFI step
+changes the answer. Fixing that boundary first, in writing, before any number
+was collected, is the step I would insist on again.
+
+## The formulation
+
+Life-cycle cost per cubic metre of WFI, over an asset life $N$ at discount rate
+$r$:
+
+$$
+C = \frac{\text{CAPEX} \cdot a(r, N) + C_{\text{energy}} + C_{\text{cons}} + C_{\text{labour}}}{V_{\text{annual}}},
+\qquad a(r,N) = \frac{r(1+r)^N}{(1+r)^N - 1}
+$$
+
+The two routes differ almost entirely inside $C_{\text{energy}}$.
+
+For a multiple-effect still with $n$ effects, the specific steam demand falls
+roughly with $1/n$, so the energy term is a steam cost multiplied by a
+distillate-to-steam ratio that the number of effects fixes. The still also
+consumes cooling water, which is not free and is regularly left out.
+
+For the membrane route the energy is electrical — high-pressure pumping across
+the RO stages, plus the EDI current — with an added thermal term for periodic
+hot-water sanitisation. That last term is small per cycle and matters because
+of how often it is done, which is a control-regime decision rather than an
+equipment property.
+
+<Callout variant="assumption">
+Constant demand profile; a single tariff for each energy carrier; membrane and
+still both operated at design point; replacement of membranes on a fixed
+schedule rather than on performance. The first and last of these are the ones
+most likely to be wrong on a real site.
+</Callout>
+
+## Implementation
+
+A parameterised model in Python, roughly 800 lines, deliberately kept small
+enough that every equation in it can be traced to a line in the method note.
+
+Two implementation choices did most of the work:
+
+1. **Every input is a distribution, not a number.** Costs, tariffs, utilisation
+   and lifetimes enter as ranges with a stated shape. A point estimate is
+   available but it is a derived view, not the primary object. This makes it
+   impossible to report a single number without also reporting its spread.
+2. **The output is a map.** The model sweeps the two inputs the site actually
+   controls or knows — the steam-to-electricity price ratio and the annual
+   utilisation — and reports which route is cheaper at each point, with the
+   region where the difference is smaller than the model's own uncertainty
+   marked as undecided. That region is the honest part of the answer.
+
+## Results
+
+<Callout variant="limitation" label="Status of the numbers">
+TODO — no results are published here. The decision map, the cost breakdown and
+the sensitivity ranking are derived from client data and require explicit
+permission before any version of them appears (§8.3 of the site specification,
+and the standing rule for internship work).
+</Callout>
+
+What can be said about the shape of the answer without disclosing it: the
+comparison is decided by the energy term and the utilisation, the capital
+difference is recovered or not recovered within a small number of years, and
+there is a genuine region of the parameter space in which the two routes are
+indistinguishable within the model's uncertainty. A study that had produced a
+confident winner everywhere would have been a study with too few uncertain
+inputs.
+
+<Figure
+  src="/figures/_placeholder.svg"
+  alt="Placeholder for the decision map: which route is cheaper as a function of the steam-to-electricity price ratio and annual utilisation, with an undecided band between them."
+  width={960}
+  height={540}
+>
+  TODO — decision map with the undecided band shown explicitly. Both axes carry
+  units; the band is drawn from the Monte Carlo spread, not chosen by eye.
+</Figure>
+
+## Validation
+
+**Energy figures** were checked against published specific-consumption ranges
+for both technologies. Anything falling outside the literature range was
+treated as an input error until proven otherwise, which caught two of them.
+
+**The cost model** was checked by reconstruction: an independently built
+spreadsheet reproducing the same case within a stated tolerance. Agreement
+between two implementations of the same assumptions is weak validation, but it
+does catch arithmetic, and arithmetic is what usually goes wrong.
+
+**The conclusion has not been validated against an operating installation.**
+TODO — that would require post-commissioning consumption data from both route
+types on comparable duties, which was not available.
+
+## Limitations and next steps
+
+- **Risk is not in the objective.** The microbiological risk profile differs
+  between the routes and is the reason a conservative site chooses
+  distillation regardless of cost. Leaving it out is defensible only because
+  it is stated; monetising it would not have been.
+- **Site integration is excluded** and can be decisive — available steam
+  headroom in particular can make the still nearly free or nearly impossible.
+- **A constant demand profile** flatters the still, which does not like being
+  cycled.
+- **Vendor data is vendor data.** Specific consumptions came from suppliers
+  with an interest in the answer.
+
+Next: a variable-demand version, because the utilisation profile is where the
+two routes diverge most and it is the input a site actually knows.
+
+## What I would do differently
+
+I collected numbers before fixing the boundary, and paid for it by having to
+re-collect a third of them. The order should have been: functional unit,
+boundary, uncertainty structure, then data — and only then a conversation with
+a vendor. The framework in this project is essentially that order, written down
+after learning it the expensive way.

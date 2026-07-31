@@ -1,0 +1,121 @@
+---
+/**
+ * BaseLayout — the shell both layers share.
+ *
+ * Everything that is common to Layer 1 and Layer 2 lives here and nowhere
+ * else: the document head, the token stylesheets, the motion policy and the
+ * skip link. The layers themselves diverge in SurfaceLayout and
+ * DocumentLayout; the four brand invariants of §4.3 survive the divergence
+ * because they are defined in tokens.css, above both.
+ */
+import { site, abs } from '~/lib/site.ts';
+import '~/styles/tokens.css';
+import '~/styles/fonts.css';
+import '~/styles/base.css';
+import '~/styles/motif.css';
+import '~/styles/print.css';
+
+interface Props {
+	title: string;
+	description: string;
+	/** Which layer this page belongs to — selects the semantic token set. */
+	layer?: 'surface' | 'depth';
+	lang?: string;
+	/** Poster-frame OG card (§6.7). Falls back to the site card. */
+	ogImage?: string;
+	ogType?: 'website' | 'article';
+	canonical?: string;
+	noIndex?: boolean;
+	/** JSON-LD, serialised into the head (§12.3). */
+	jsonLd?: Record<string, unknown>;
+	class?: string;
+}
+
+const {
+	title,
+	description,
+	layer = 'surface',
+	lang = site.lang,
+	ogImage = `/og/home.${site.og.format}`,
+	ogType = 'website',
+	canonical = Astro.url.pathname,
+	noIndex = false,
+	jsonLd,
+	class: className = '',
+} = Astro.props;
+
+const canonicalUrl = abs(canonical);
+const ogUrl = abs(ogImage);
+
+/* Runs before first paint so neither the motion preference nor the entrance
+   gate can flash. Kept deliberately tiny — it is the only blocking script on
+   the site, and with JavaScript off neither attribute is set, which leaves
+   every animation off and every element visible (§12.2). */
+const boot = `(function(){var d=document.documentElement;try{var m=localStorage.getItem('motion');
+if(m==='reduced'){d.dataset.motion='reduced'}else if(m!=='full'&&${site.features.reduceMotionByDefault}){d.dataset.motion='reduced'}}catch(e){}
+try{if(sessionStorage.getItem('entered')){d.dataset.entrance='done'}else{d.dataset.entrance='play';sessionStorage.setItem('entered','1')}}catch(e){}})();`;
+---
+
+<!doctype html>
+<html lang={lang} data-layer={layer}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
+		{noIndex && <meta name="robots" content="noindex" />}
+
+		<meta property="og:type" content={ogType} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={ogUrl} />
+		<meta property="og:image:width" content={String(site.og.width)} />
+		<meta property="og:image:height" content={String(site.og.height)} />
+		<meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_GB'} />
+		<meta property="og:site_name" content={site.name} />
+		<meta name="twitter:card" content="summary_large_image" />
+
+		{/* Self-hosted, no CDN (§5.2.2). Preloaded only once the files exist. */}
+		{
+			site.fonts.installed && (
+				<>
+					<link
+						rel="preload"
+						href="/fonts/switzer-400.woff2"
+						as="font"
+						type="font/woff2"
+						crossorigin
+					/>
+					<link
+						rel="preload"
+						href="/fonts/switzer-700.woff2"
+						as="font"
+						type="font/woff2"
+						crossorigin
+					/>
+				</>
+			)
+		}
+
+		<link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
+
+		{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+		<script is:inline set:html={boot} />
+
+		{
+			/* Cookieless analytics only. Google Analytics is not approved — it
+			   would require a consent banner in France and the absence of that
+			   banner is itself a design decision (§11.1). */
+			site.analytics.provider && site.analytics.src && (
+				<script is:inline defer src={site.analytics.src} data-domain={site.analytics.domain} />
+			)
+		}
+	</head>
+	<body class={className}>
+		<a class="skip-link" href="#content">{site.strings.fr.skipToContent}</a>
+		<slot />
+	</body>
+</html>

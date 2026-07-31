@@ -1,0 +1,18 @@
+---
+/**
+ * Pill tag — SPEC §5.5.1.
+ * Sentence case, transparent fill, crisp dark hairline. On white cards the
+ * border steps back to 85% alpha so it does not out-weigh the card's own
+ * shadow.
+ */
+interface Props {
+	surface?: 'green' | 'white';
+	class?: string;
+}
+
+const { surface = 'green', class: className = '' } = Astro.props;
+---
+
+<span class:list={['pill', surface === 'white' && 'pill--on-paper', className]}>
+	<slot />
+</span>

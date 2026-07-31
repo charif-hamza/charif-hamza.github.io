@@ -1,0 +1,69 @@
+---
+/**
+ * 404 — SPEC §8.5.
+ *
+ * "The prune operation from the motif system, looping: a cube dissolves, the
+ * frame closes on nothing." Ten minutes of work, disproportionate charm — and
+ * it costs nothing extra because it reuses the primitives every other motif is
+ * built from.
+ */
+import SurfaceLayout from '~/layouts/SurfaceLayout.astro';
+import MotifFrame from '~/components/common/MotifFrame.astro';
+import Button from '~/components/common/Button.astro';
+import { site, t } from '~/lib/site.ts';
+---
+
+<SurfaceLayout title={`${t.notFound.title} — ${site.name}`} description={t.notFound.body} noIndex>
+	<section class="notfound">
+		<div class="u-container notfound__inner">
+			<div class="notfound__motif">
+				<MotifFrame id="m-404-prune" surface="white" />
+			</div>
+
+			<div class="notfound__text">
+				<h1 class="t-h1">{t.notFound.title}</h1>
+				<p class="t-lead">{t.notFound.body}</p>
+				<div class="notfound__actions">
+					<Button href="/" variant="primary" icon="arrow-left">{t.notFound.home}</Button>
+				</div>
+			</div>
+		</div>
+	</section>
+</SurfaceLayout>
+
+<style>
+	.notfound {
+		padding-block: var(--space-16) var(--space-24);
+	}
+
+	.notfound__inner {
+		display: grid;
+		gap: var(--space-10);
+		align-items: center;
+		justify-items: start;
+	}
+
+	.notfound__motif {
+		width: 180px;
+	}
+
+	.notfound__text p {
+		margin-top: var(--space-4);
+		color: var(--ink-700);
+		max-width: 34em;
+	}
+
+	.notfound__actions {
+		margin-top: var(--space-8);
+	}
+
+	@media (min-width: 768px) {
+		.notfound__inner {
+			grid-template-columns: 220px 1fr;
+			gap: var(--space-16);
+		}
+		.notfound__motif {
+			width: 220px;
+		}
+	}
+</style>

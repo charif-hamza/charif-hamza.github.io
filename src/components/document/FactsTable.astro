@@ -1,0 +1,74 @@
+---
+/**
+ * FactsTable — SPEC §8.2.2.
+ *
+ * "This block MUST be scannable in 15 seconds. It is the single most-read
+ * element for Persona B." Which means: fixed row order, no prose, mono for
+ * anything numeric, and artifacts as the last row so the reader who has
+ * decided to look at the code can leave immediately.
+ */
+import { en } from '~/lib/site.ts';
+import type { Project } from '~/lib/collections.ts';
+
+interface Props {
+	facts: Project['data']['facts'];
+	artifacts?: Project['data']['artifacts'];
+}
+
+const { facts, artifacts = [] } = Astro.props;
+
+/* Order is part of the contract — do not sort, do not reorder per project. */
+const rows: Array<{ label: string; value: string; mono?: boolean }> = [
+	{ label: 'Context', value: facts.context },
+	{ label: 'Period', value: facts.period, mono: true },
+	{ label: 'Role', value: facts.role },
+	{ label: 'Domain', value: facts.domain },
+	{ label: 'Methods', value: facts.methods.join(' · ') },
+	{ label: 'Stack', value: facts.stack.join(' · '), mono: true },
+	{ label: 'Status', value: facts.status },
+];
+---
+
+<table class="facts">
+	<caption class="u-visually-hidden">{en.facts}</caption>
+	<tbody>
+		{
+			rows.map((row) => (
+				<tr>
+					<th scope="row">{row.label}</th>
+					<td class={row.mono ? 'is-mono' : undefined}>{row.value}</td>
+				</tr>
+			))
+		}
+		{
+			artifacts.length > 0 && (
+				<tr>
+					<th scope="row">{en.artifacts}</th>
+					<td>
+						{artifacts.map((artifact, i) => (
+							<>
+								{i > 0 && <span aria-hidden="true"> · </span>}
+								<a href={artifact.url} rel="noopener" target="_blank">
+									{artifact.label}
+								</a>
+							</>
+						))}
+					</td>
+				</tr>
+			)
+		}
+	</tbody>
+</table>
+
+<style>
+	.facts td a {
+		color: var(--ink-900);
+		text-decoration: underline;
+		text-decoration-color: var(--green-500);
+		text-decoration-thickness: 2px;
+		text-underline-offset: 3px;
+	}
+	.facts td a:hover {
+		color: var(--green-700);
+	}
+</style>

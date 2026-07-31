@@ -1,0 +1,105 @@
+---
+slug: structuring-a-route-comparison
+title: Comparing two routes without pretending to know
+description: >
+  A structure for technology comparisons whose inputs are uncertain, and why the
+  output should be a boundary rather than a winner.
+date: 2026-08-26
+tags:
+  - Étude technico-économique
+  - Méthode
+draft: false
+related:
+  - wfi-feasibility
+---
+
+Most technology comparisons produce a winner. Almost none of them should.
+
+A comparison between two process routes rests on inputs — energy prices,
+utilisation, lifetimes, vendor performance claims — that are uncertain by
+factors that are large relative to the difference being measured. Collapsing
+that into "route A is better" throws away the only information the study
+actually generated: *under which conditions* it is better, and how far those
+conditions are from where the site sits today.
+
+## Fix the boundary before you collect anything
+
+The single most expensive mistake available in this kind of study is collecting
+numbers before deciding what they are numbers of.
+
+Two routes almost never have the same natural system boundary. One needs
+pretreatment the other partly provides; one produces a waste stream the other
+does not; one has a utility demand that the site may already be able to absorb.
+Where you draw the line changes the answer, and if the line moves after data
+collection has started, everything collected before the move has to be
+revisited.
+
+<Callout variant="note">
+Write the functional unit and the boundary down, in a sentence each, and get
+them agreed before the first email to a vendor. It feels like bureaucracy. It
+is the cheapest hour in the study.
+</Callout>
+
+The functional unit needs the same treatment: not "a cubic metre" but a cubic
+metre at a stated quality, delivered at a stated point, with a stated
+availability. Two routes that produce the same nominal output at different
+availabilities are not producing the same thing.
+
+## Make every input a distribution
+
+If an input is uncertain, it should enter the model as a range with a stated
+shape, not as a number with a caveat in the text. Caveats do not propagate;
+distributions do.
+
+This has a useful disciplining effect. It becomes impossible to report a single
+figure without also reporting its spread, and impossible to hide a wide input
+behind a narrow-looking output. It also forces an explicit statement about
+correlation — energy prices are not independent of each other, and pretending
+they are will understate the spread in a way that is difficult to spot after
+the fact.
+
+The practical form is a Monte Carlo over the input set. The machinery is
+trivial; the work is in choosing the ranges honestly and being able to say
+where each one came from.
+
+<Sidenote summary="On vendor data">
+Supplier performance figures are inputs with an interest in the outcome. They
+belong in the study, and they belong with a wider range than the supplier
+quoted.
+</Sidenote>
+
+## Report a boundary, and an undecided region
+
+The output that survives contact with reality is a map: over the one or two
+inputs the site actually knows or controls, which route is cheaper — and, drawn
+explicitly, the region where the difference is smaller than the model's own
+uncertainty.
+
+That undecided region is the most valuable part of the deliverable and the part
+most likely to be edited out. It says: here, this study cannot tell you, and
+the decision must be made on grounds it did not measure — risk appetite,
+existing competence, what the maintenance team already knows how to fix. A
+study that names the limit of its own authority is more useful than one that
+does not, and it is much harder to misuse.
+
+## Keep what you deliberately did not monetise
+
+Every comparison of this kind leaves something out because monetising it would
+be indefensible: microbiological risk, regulatory exposure, the operational
+cost of a technology nobody on site has run before.
+
+Leaving these out is legitimate. Leaving them out silently is not. They belong
+in a short, explicit list at the front of the result, stated as what they are —
+factors excluded from the objective that may reasonably dominate the decision.
+A reader who chooses the more expensive route because of one of them has used
+the study correctly, and will only be able to do so if they were told.
+
+## The shape of the thing
+
+Functional unit. Boundary. Uncertainty structure. Then data — and only then a
+conversation with a vendor. Then a map with an undecided band on it, and a list
+of what was deliberately not priced.
+
+It is not a sophisticated structure. Its value is that it is decided in advance
+and written down, so that when the numbers arrive and one of them is
+inconvenient, the framework does not quietly bend around it.

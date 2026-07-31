@@ -1,0 +1,53 @@
+---
+/**
+ * Header strip — SPEC §3.2, §8.1.1.
+ *
+ * "Home MUST NOT have a top navigation bar." Adding one re-introduces the
+ * "which tab do I click" cost that the two-layer design exists to remove. What
+ * is left is a wordmark and the CV button, and the strip scrolls away rather
+ * than sticking — on home the CV button is above the fold anyway (S1), so
+ * pinning it would only steal vertical space on a phone.
+ */
+import Wordmark from '~/components/common/Wordmark.astro';
+import Button from '~/components/common/Button.astro';
+import { site, t } from '~/lib/site.ts';
+---
+
+<header class="surface-header">
+	<div class="u-container surface-header__inner">
+		<span class="enter enter--fade" style="--enter-at:0ms"><Wordmark /></span>
+
+		<span class="enter enter--fade" style="--enter-at:0ms">
+			<Button href={site.cv.fr.href} variant="primary" icon="download" small download>
+				<span class="surface-header__label-full">{t.cta.primary}</span>
+				<span class="surface-header__label-short">{t.cta.primaryMobile}</span>
+			</Button>
+		</span>
+	</div>
+</header>
+
+<style>
+	.surface-header {
+		padding-block: var(--space-6);
+	}
+
+	.surface-header__inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-4);
+	}
+
+	/* On mobile the button collapses to a pill with the icon and "CV" (§8.1.1). */
+	.surface-header__label-full {
+		display: none;
+	}
+	@media (min-width: 768px) {
+		.surface-header__label-full {
+			display: inline;
+		}
+		.surface-header__label-short {
+			display: none;
+		}
+	}
+</style>

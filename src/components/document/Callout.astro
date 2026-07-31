@@ -1,0 +1,31 @@
+---
+/**
+ * Callout — SPEC §5.5.5.
+ *
+ * No box fill: a 3px left rule, a label, and the text. Layer 2 gets its
+ * structure from rules and margins, never from boxes and shadows (§4.2).
+ *
+ * Variants differ by label only, with one exception: Limitation uses the grey
+ * rule rather than the green one, because honesty is not an accent colour.
+ */
+interface Props {
+	variant?: 'note' | 'result' | 'assumption' | 'limitation' | 'aside';
+	label?: string;
+	class?: string;
+}
+
+const { variant = 'note', label, class: className = '' } = Astro.props;
+
+const LABELS: Record<NonNullable<Props['variant']>, string> = {
+	note: 'Note',
+	result: 'Result',
+	assumption: 'Assumption',
+	limitation: 'Limitation',
+	aside: 'Aside',
+};
+---
+
+<aside class:list={['callout', className]} data-variant={variant}>
+	<strong class="callout__label">{label ?? LABELS[variant]}</strong>
+	<slot />
+</aside>

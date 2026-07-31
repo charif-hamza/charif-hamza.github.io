@@ -1,0 +1,205 @@
+/* =============================================================================
+   Design tokens — SPEC §5 and Appendix A.
+
+   This file is the single source of truth for the design system. Components
+   reference tokens; they never write a raw value. `src/lib/tokens.js` mirrors
+   the palette for the two build-time contexts that cannot read CSS (the Shiki
+   theme and the OG image generator) and is diffed against this file by
+   `npm run budgets`.
+   ============================================================================= */
+
+:root {
+	/* --- Colour · core palette (§5.1.1) ------------------------------------ */
+	--green-050: #f1fdf2; /* faintest wash — table zebra, Layer 2 code background */
+	--green-100: #dffae2; /* hover tint on white cards, callout fill */
+	--green-200: #c2f5c9; /* card gradient top, light isometric faces */
+	--green-300: #a3efae; /* SIGNATURE GREEN — card fill, motif accent faces */
+	--green-400: #7fe18e; /* card gradient bottom, motif shading, ground shadow */
+	--green-500: #48c862; /* interactive accent: link underline, focus ring, series 1 */
+	--green-700: #1e7a38; /* green text on paper (rare). Passes AA. */
+
+	/* Contrast rule (§5.1.1): --green-300 and lighter are FILL ONLY.
+	   Text on green fill is --ink-900. Text *in* green is --green-700 or darker.
+	   Never white text on any green in this palette. */
+
+	/* --- Colour · neutrals (§5.1.2) --------------------------------------- */
+	--ink-900: #101113; /* primary text, isometric dark faces, wordmark */
+	--ink-700: #3a3d42; /* secondary text in Layer 2 */
+	/* Appendix A gives #6B7079. §12.2 asks for exactly this pair to be verified
+	   and darkened if it fails: #6B7079 measures 4.44:1 on --field and 4.06:1 on
+	   --field-deep, both under the 4.5:1 required of body text. Darkened along
+	   the same hue to #5E636A, which measures 5.40 / 4.94 / 6.05 on --field,
+	   --field-deep and --paper. `npm run budgets` re-checks it every build. */
+	--ink-500: #5e636a; /* meta text, captions, sidenotes */
+	/* Never used for text: 1.89:1 on paper. Rules and placeholders only. */
+	--ink-300: #b9bdc4; /* disabled, placeholder, Limitation callout rule */
+	--rule: #e3e5e8; /* hairlines, table borders, TOC divider */
+	--paper: #ffffff; /* Layer 2 page background, white card fill */
+	/* The two isometric face tones (§6.1). --iso-shadow is deliberately lighter
+	   than --ink-900: a face at full ink reads as a hole punched in the card
+	   rather than as a plane turned away from the light. */
+	--iso-lit: #fafafa;
+	--iso-shadow: #232427;
+	--field: #f2f2f1; /* Layer 1 page background */
+	--field-deep: #e8e8e7; /* footer band, rail edge fades */
+
+	/* --- Typography · families (§5.2.1) ----------------------------------- */
+	/* Self-hosted WOFF2, no Google Fonts CDN (§5.2.2). The fallback stacks are
+	   real fallbacks: if the font files are absent the site still reads well. */
+	--font-sans: Switzer, 'General Sans', 'Helvetica Neue', Arial, sans-serif;
+	--font-serif: 'Source Serif 4', Charter, Georgia, serif;
+	--font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+	/* --- Typography · fluid scale (§5.2.3) --------------------------------
+	   clamp() interpolated between the sm (480px) and xl (1440px) breakpoints.
+	   Ratio ~1.25 at small sizes, opening to ~1.333 at display sizes.         */
+	--t-display: clamp(40px, 22px + 3.75vw, 76px);
+	--t-h1: clamp(30px, 23px + 1.458vw, 44px);
+	--t-h2: clamp(24px, 21px + 0.625vw, 30px);
+	--t-h3: clamp(19px, 18px + 0.208vw, 21px);
+	--t-lead: clamp(18px, 16.5px + 0.313vw, 21px);
+	--t-body: clamp(16px, 15.5px + 0.104vw, 17px);
+	--t-small: clamp(14px, 13.5px + 0.104vw, 15px);
+	--t-meta: clamp(12px, 11.5px + 0.104vw, 13px);
+	--t-mono: clamp(13px, 12.5px + 0.104vw, 14px);
+
+	/* Tracking. Headings >= h2 MUST be negative — §5.2.3, and the single
+	   biggest difference between "designed" and "default". */
+	--track-display: -0.03em;
+	--track-h1: -0.02em;
+	--track-h2: -0.015em;
+	--track-h3: -0.01em;
+	--track-meta: 0.02em;
+
+	--lh-display: 1.02;
+	--lh-h1: 1.1;
+	--lh-h2: 1.2;
+	--lh-h3: 1.3;
+	--lh-lead: 1.55;
+	--lh-body: 1.65; /* sans */
+	--lh-body-serif: 1.72;
+	--lh-small: 1.5;
+	--lh-meta: 1.4;
+	--lh-mono: 1.6;
+
+	/* --- Space · 4px base (§5.3.1) ---------------------------------------- */
+	--space-1: 4px;
+	--space-2: 8px;
+	--space-3: 12px;
+	--space-4: 16px;
+	--space-5: 20px;
+	--space-6: 24px;
+	--space-8: 32px;
+	--space-10: 40px;
+	--space-12: 48px;
+	--space-14: 56px;
+	--space-16: 64px;
+	--space-20: 80px;
+	--space-24: 96px;
+	--space-32: 128px;
+	--space-40: 160px;
+
+	/* Section rhythm on home: space-32 desktop, space-20 mobile (§5.3.1). */
+	--rhythm-section: var(--space-20);
+
+	/* --- Containers (§5.3.3) ---------------------------------------------- */
+	--container-wide: 1440px; /* home sections, rail viewport */
+	--container-doc: 1180px; /* Layer 2 grid total */
+	--container-text: 720px; /* Layer 2 reading column */
+	--gutter: var(--space-5); /* 20px mobile, stepped up at breakpoints */
+
+	/* Layer 2 document grid (§5.3.4) */
+	--col-sidenote: 180px;
+	--col-toc: 240px;
+
+	/* --- Radii, borders, elevation (§5.4) --------------------------------- */
+	--radius-card: 28px;
+	--radius-md: 14px;
+	--radius-sm: 8px;
+	--radius-pill: 999px;
+	--border-hair: 1px solid var(--rule);
+	--border-pill: 1.25px solid var(--ink-900);
+
+	--shadow-card: 0 1px 2px rgb(16 17 19 / 0.04), 0 8px 24px rgb(16 17 19 / 0.06);
+	--shadow-card-hover: 0 2px 4px rgb(16 17 19 / 0.05), 0 18px 44px rgb(16 17 19 / 0.1);
+	/* Ground shadows under isometric objects — radial, never blue-tinted. */
+	--shadow-ground: rgb(127 225 142 / 0.22); /* --green-400 @ 22% */
+	--shadow-ground-neutral: rgb(16 17 19 / 0.08); /* --ink-900 @ 8% */
+
+	/* --- Motion (§7.2) ---------------------------------------------------- */
+	--dur-instant: 90ms;
+	--dur-fast: 160ms;
+	--dur-base: 260ms;
+	--dur-slow: 420ms;
+	--dur-page: 560ms;
+	--stagger: 60ms;
+	/* --dur-loop is gone with the motif loops (v0.6). The rail's slide is the
+	   site's one sustained movement and it is a scroll, not a keyframe. */
+
+	--ease-standard: cubic-bezier(0.2, 0, 0, 1);
+	--ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+	--ease-settle: cubic-bezier(0.34, 1.28, 0.64, 1); /* the only permitted overshoot */
+
+	/* --- Isometric system (§6.1) ------------------------------------------
+	   U is the unit cube side in SVG user units, mirrored in src/motifs/iso.js,
+	   which is where the projection itself lives. Every motif is authored on
+	   this grid; nothing sits off-grid, and `npm run motifs` proves it.       */
+	--iso-u: 24;
+	--iso-stroke-width: 1.25;
+
+	/* Face fills, resolved per object class in motif.css (§6.1 shading table). */
+	--iso-top: var(--paper);
+	--iso-left: var(--iso-lit);
+	--iso-right: var(--iso-shadow);
+	--iso-stroke: var(--iso-shadow);
+
+	/* --- Semantic mapping (§5.1.3) — Layer 1 defaults --------------------- */
+	--bg-page: var(--field);
+	--bg-surface: var(--paper);
+	--fg-primary: var(--ink-900);
+	--fg-secondary: var(--ink-700);
+	--accent: var(--green-300);
+	/* §5.5.2 specifies a --green-500 focus ring. Measured, --green-500 is
+	   2.16:1 on --paper and 1.60:1 on a --green-300 card — the ring would be
+	   invisible on half the cards on the home page, and WCAG 2.2 AA (§12.2,
+	   "non-negotiable") requires 3:1 for a focus indicator. --green-700 is the
+	   same brand green one step darker and measures 5.39 / 4.81 / 3.98 on
+	   --paper, --field and --green-300. Deviation is inside the token set and
+	   is the narrowest one that satisfies both requirements. */
+	--focus-ring: var(--green-700);
+}
+
+/* Layer 2 overrides the semantic layer only. The four brand invariants of §4.3
+   — the green, the motif language, the heading typeface, the ink — are
+   untouched; only quantity changes. */
+.layer-depth {
+	--bg-page: var(--paper);
+	--bg-surface: transparent;
+	--fg-secondary: var(--ink-500);
+	--accent: var(--green-500);
+	--rhythm-section: var(--space-14);
+}
+
+/* Gutters step with the breakpoints (§5.3.3). */
+@media (min-width: 768px) {
+	:root {
+		--gutter: var(--space-8);
+	}
+}
+@media (min-width: 1024px) {
+	:root {
+		--gutter: var(--space-12);
+		--rhythm-section: var(--space-32);
+	}
+}
+@media (min-width: 1440px) {
+	:root {
+		--gutter: var(--space-16);
+	}
+}
+
+/* Dark mode is out of scope for v1.0 (§5.1.5). The identity is light field +
+   green + paper; a dark inversion weakens it and doubles the motif asset work.
+   Recorded here so the decision is not re-litigated: if it is ever added,
+   restrict it to Layer 2 and keep Layer 1 permanently light. */

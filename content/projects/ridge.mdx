@@ -1,0 +1,269 @@
+---
+slug: ridge
+title: RIDGE
+subtitle: Gap-certified enumeration for primary drying recipe design
+tag: Optimisation
+order: 1
+featured: true
+motif: m-01-certified-gap
+motifColor: green
+card:
+  description: >
+    An open-source solver that returns a primary-drying recipe together with a
+    proof that nothing better exists in the search space.
+facts:
+  context: Independent project
+  period: Nov 2025 – Jul 2026
+  role: 'Sole author: formulation, implementation, validation'
+  domain: Freeze-drying — primary drying
+  methods:
+    - MILP
+    - Exhaustive enumeration with optimality certificate
+  stack:
+    - Python
+    - NumPy
+    - pytest
+    - Linux
+  status: Released, open source
+artifacts:
+  - label: Repository
+    url: 'https://github.com/TODO/ridge'
+    type: repo
+  - label: Documentation
+    url: 'https://github.com/TODO/ridge#readme'
+    type: docs
+seo:
+  description: A solver that returns a freeze-drying primary-drying recipe with a certificate that no better one exists.
+dates:
+  published: 2026-07-15
+  updated: 2026-07-31
+draft: false
+---
+
+<Callout variant="note" label="In short">
+- Primary drying is the long, expensive phase of a lyophilisation cycle, and its recipe is usually inherited rather than designed.
+- I formulated recipe design as a discrete search over piecewise-constant shelf temperature and chamber pressure schedules.
+- The solver returns a schedule **and** a certificate: no schedule on the grid is faster, and the gap to the continuous optimum is bounded.
+- The certificate is only as good as the steady-state model behind it. On a real product, that model is the weak link, not the search.
+</Callout>
+
+## The problem, in industrial terms
+
+A lyophilisation cycle has three phases, and primary drying is where the time
+goes. It is the phase in which ice is removed by sublimation, and on a typical
+parenteral product it accounts for the majority of the cycle. A freeze-dryer is
+a capital-intensive machine that is either running a batch or not earning, so
+hours removed from primary drying convert directly into throughput on equipment
+that has already been bought.
+
+The lever is the recipe: a schedule of shelf temperature and chamber pressure
+over the phase. In practice that schedule is very often inherited — from a
+development batch, from a similar product, from a supplier's starting point —
+and then frozen by validation. Nobody can say whether it is the best one,
+because nobody has searched. The question I wanted to answer is narrow and
+answerable: **for a given product, container and dryer, what is the fastest
+admissible primary drying schedule, and how do you know?**
+
+## Why it is hard
+
+The obvious approach — nudge the shelf temperature up until something goes
+wrong — fails for three reasons that compound.
+
+**The feasible region is a region, not a limit.** Two constraints bound the
+process from opposite directions. The product temperature at the sublimation
+front must stay below the collapse temperature of the formulation, which caps
+how much heat you may supply. The sublimation flux must stay below what the
+dryer can remove without choked flow in the duct or overloading the condenser,
+which caps how fast you may go. Raising the shelf temperature helps against one
+and hurts against the other. The admissible set is the intersection, and it
+moves as the cake dries.
+
+**The system is non-stationary.** As the sublimation front recedes, the dried
+layer thickens and its mass-transfer resistance grows. A setpoint pair that is
+comfortably inside the design space at the start of the phase can be outside it
+near the end, and the reverse is also true — which is exactly why a schedule
+beats a constant.
+
+<Sidenote summary="On the design-space framing">
+The design-space construction used here — iso-lines of product temperature and
+of sublimation flux plotted over shelf temperature and chamber pressure — is
+standard in the freeze-drying literature. The contribution is not the map; it
+is searching it exhaustively and being able to say what the search proves.
+</Sidenote>
+
+**The decisions are genuinely discrete.** A dryer does not accept a continuous
+control law. It accepts a small number of segments, each with a setpoint pair
+held for a duration, and its pressure control has a practical resolution. Once
+the schedule is a sequence of segments drawn from a grid of admissible
+setpoints, the design problem is combinatorial, and a gradient tells you
+nothing about whether a better sequence exists two segments away.
+
+## What I actually did
+
+I built a solver that takes a product-and-equipment description and returns the
+fastest admissible piecewise-constant schedule on a user-defined grid, together
+with a certificate of what has been proved.
+
+Scope, stated plainly:
+
+- **In scope.** Primary drying only. Steady-state heat and mass balance at the
+  sublimation front. Piecewise-constant schedules with a bounded number of
+  segments. A single representative vial, plus a worst-case vial for the
+  constraint check.
+- **Out of scope.** Freezing and secondary drying. Transient thermal dynamics
+  within a segment. Full batch heterogeneity beyond the two-vial treatment.
+  Any claim about a specific commercial formulation.
+
+I did not build a digital twin, and the distinction matters: this is a search
+over a model that is deliberately simple enough to be exhaustively searchable.
+
+## The formulation
+
+For a segment held at shelf temperature $T_s$ and chamber pressure $P_c$, the
+steady-state balance equates the heat reaching the sublimation front with the
+enthalpy of sublimation carried away by the vapour flux:
+
+$$
+K_v A_v (T_s - T_b) = \Delta H_s \cdot \dot{m}, \qquad
+\dot{m} = \frac{A_p (P_i(T_i) - P_c)}{R_p(L)}
+$$
+
+where $K_v$ is the vial heat-transfer coefficient, $T_b$ the vial bottom
+temperature, $P_i$ the ice vapour pressure at the front temperature $T_i$,
+$R_p(L)$ the dried-layer resistance at front position $L$, and $A_v$, $A_p$ the
+heat and product areas. Solving the pair for $T_i$ and $\dot m$ at each grid
+point gives the two quantities the constraints act on.
+
+The decision variables are the segment setpoints and their switch positions,
+expressed in terms of the fraction of ice removed rather than in time — which
+makes the constraint checks position-based and removes the need to integrate to
+find out whether a schedule is admissible.
+
+The objective is total primary drying time, obtained by integrating the
+reciprocal of the drying rate over the front position. The constraints are, at
+every position within every segment:
+
+$$
+T_i(L) \le T_{\text{collapse}} - \delta, \qquad \dot m(L) \le \dot m_{\max}
+$$
+
+with $\delta$ an explicit safety margin rather than an implicit one.
+
+<Callout variant="assumption">
+Steady state within a segment; a single lumped $K_v$ per pressure; $R_p$ a
+function of dried-layer thickness only; the collapse temperature known and
+constant. Each of these is defensible for design-space work and each is a place
+where a real product can disagree with the model.
+</Callout>
+
+## Implementation
+
+The solver is about 2 000 lines of Python with NumPy and no solver dependency
+in the default path.
+
+The core is an exhaustive enumeration over the segment grid with two things
+that make it tractable:
+
+1. **Precomputation.** The steady-state solve is the expensive inner
+   operation, and it depends only on the grid point and the front position —
+   not on the schedule. So the whole $(T_s, P_c, L)$ lattice is solved once, up
+   front, and stored. Enumeration afterwards is table lookup and prefix sums.
+2. **Dominance pruning.** A partial schedule that reaches the same front
+   position later than another, having consumed no less of every constraint
+   margin, can never win. Discarding it is exact — this is what makes the
+   result a certificate rather than a heuristic.
+
+A MILP formulation of the same problem is included as a cross-check path. It is
+not the default: on the grid sizes that matter, enumeration with the two
+optimisations above is both faster and easier to trust, and it produces the
+certificate as a by-product rather than as a claim from a black box.
+
+<Sidenote summary="What I would rewrite">
+The precomputation table is dense. It is the reason the grid resolution is
+capped, and a sparse or lazily-evaluated store would lift that cap without
+changing anything about the search.
+</Sidenote>
+
+## Results
+
+<Callout variant="limitation" label="Status of the numbers">
+TODO — the result table, the reference case description and the figure below
+must be regenerated from the released run data before publication. Everything
+in this section is structure awaiting numbers; nothing here should be quoted.
+</Callout>
+
+The intended reporting, which the acceptance criteria of this site require
+(§8.2.6: no unlabelled axes, units on everything, uncertainty stated):
+
+- Primary drying time for the optimised schedule against the constant-setpoint
+  baseline, in hours, with the grid resolution stated.
+- The certified gap: the guaranteed distance between the returned schedule and
+  the true optimum of the continuous problem, in hours and as a percentage.
+- Solver wall-clock time and the number of schedules enumerated after pruning.
+- Sensitivity of the answer to $K_v$ and $R_p$, which are the two most
+  uncertain inputs.
+
+<Figure
+  src="/figures/_placeholder.svg"
+  alt="Placeholder for the design-space chart: admissible region in shelf temperature and chamber pressure, with the optimised schedule drawn as a path across it."
+  width={960}
+  height={540}
+>
+  TODO — the design space at three front positions, with the optimised schedule
+  drawn as a path across it. Series follow the site palette; both axes carry
+  units.
+</Figure>
+
+## Validation
+
+Validation happens at three levels, and it is worth being precise about which
+of them has been done.
+
+**The steady-state solve** is checked against published design-space
+constructions for reference formulations: given the same inputs, the model
+should reproduce the same iso-lines. This is a unit-level check and it passes
+in the test suite.
+
+**The search** is checked by brute force. On grids small enough to enumerate
+without any pruning at all, the pruned search must return an identical optimum.
+Any divergence is a bug in a dominance rule, and this test is the reason to
+trust the certificate.
+
+**The physical result** has not been validated against a real dryer. TODO —
+this requires product temperature and Pirani/capacitance pressure data from a
+run, which I do not have. Until that exists, the honest claim is that the
+solver finds the optimum *of the model*, and nothing stronger.
+
+<Callout variant="result">
+The certificate is a statement about the search, not about the world. It says:
+on this grid, under this model, no admissible schedule is faster, and the
+distance to the continuous optimum is at most the stated bound.
+</Callout>
+
+## Limitations and next steps
+
+- **Model risk dominates.** $R_p$ and $K_v$ carry more uncertainty than the
+  optimisation removes. A schedule that is optimal under a 20 % error in $R_p$
+  is not obviously better than a good schedule that is robust to it.
+- **Steady state within a segment** is an approximation that degrades as
+  segments get short. The solver does not currently forbid segments short
+  enough for that to matter; it should.
+- **A single representative vial** plus a worst case is a coarse treatment of
+  batch heterogeneity. Edge vials see radiation the model handles crudely.
+- **The certificate is grid-relative.** The bound on the gap to the continuous
+  problem rests on a Lipschitz-type argument whose constant is estimated
+  numerically. TODO — this argument needs to be written up properly; it is
+  currently the least rigorous part of an otherwise rigorous claim.
+
+Next: robust optimisation over an uncertainty set on $R_p$, so the answer is a
+schedule that is good across the plausible range rather than optimal at a point
+estimate. That changes the objective, not the machinery.
+
+## What I would do differently
+
+I built the MILP path first, because that is what one is taught to reach for,
+and it was the wrong instinct. The problem is small, its structure is
+dominance-friendly, and a solver would have buried the one property that makes
+this project worth reading about — that the answer arrives with a proof
+attached. I would start from the enumeration and add the MILP only as a
+cross-check, which is the order the code is in now, arrived at backwards.

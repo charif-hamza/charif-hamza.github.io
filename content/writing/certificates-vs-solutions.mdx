@@ -1,0 +1,111 @@
+---
+slug: certificates-vs-solutions
+title: A solution is not an answer
+description: >
+  Why optimality certificates change what you can promise an industrial client.
+date: 2026-08-12
+tags:
+  - Optimisation
+  - Méthode
+draft: false
+related:
+  - ridge
+---
+
+A heuristic hands you a schedule. An exact method hands you a schedule and a
+sentence: *nothing better exists in this space.* The schedules may be
+identical. The sentences are not, and in an industrial setting the difference
+between them is most of the value.
+
+## What the client is actually buying
+
+When a plant asks whether its recipe can be improved, it is not asking for a
+recipe. It is asking whether to stop asking. Those are different questions and
+only one of them has an end.
+
+Give a client a better schedule and you have given them an improvement of
+unknown size against an unknown ceiling. The rational response is to keep
+looking — to run another study next year, to entertain the next vendor with a
+better story. Give them a certified schedule and you have given them a reason
+to close the file. The saving is not the eight hours you removed from the
+cycle; it is the eight hours plus the studies nobody now has to commission.
+
+<Callout variant="note">
+This is why "we improved it by 12%" and "we proved 12% is the maximum" have
+different values even when they describe the same schedule. The first is a
+result. The second is a decision.
+</Callout>
+
+## The certificate is smaller than it sounds
+
+It is worth being precise about what an exact method proves, because the claim
+is narrower than the word "optimal" suggests and overclaiming here destroys the
+trust the certificate was supposed to buy.
+
+An exhaustive search over a discretised space proves a statement of the form:
+
+> Under model $M$, over search space $S$, no element of $S$ has an objective
+> value better than $z^\star$.
+
+Three qualifications are load-bearing.
+
+**Under model $M$.** If the model's transfer coefficient is 20% wrong, the
+certificate is a rigorous statement about a fiction. This is the qualification
+that matters most in process engineering, where the constitutive parameters are
+usually the least certain thing in the room.
+
+**Over search space $S$.** A grid is not the continuum. Proving that no grid
+point is better says nothing about the points between them unless you add an
+argument — a Lipschitz bound, a convexity result, a monotonicity property —
+that connects them. That argument is a separate piece of work and it is
+routinely skipped.
+
+**Better than $z^\star$.** Only on the objective you wrote down. A schedule that
+is time-optimal and operationally intolerable is still time-optimal.
+
+So the honest form of the claim is not "this is the best recipe". It is "this
+is the best recipe on this grid under these assumptions, and here is how far
+the continuous optimum could be". That is less impressive and considerably more
+useful, because it is checkable.
+
+## Why this is more available than people assume
+
+The reflex when a problem looks combinatorial is to reach for a metaheuristic,
+and it is often the wrong reflex at the scale process design actually operates
+at.
+
+Many design problems have small decision spaces. A handful of segments, a
+handful of setpoints per segment, a resolution set by what the equipment can
+physically hold. That is thousands or millions of candidates, not $10^{30}$.
+With a dominance rule — a partial solution that is behind on the objective and
+no better on every constraint margin can be discarded exactly — enumeration
+finishes in the time it takes to make coffee, and it finishes with a proof.
+
+<Sidenote summary="Where this stops working">
+Scheduling problems with many resources and long horizons blow past this
+quickly, and there the metaheuristic is the right tool. The point is not that
+exact methods always win; it is that the question "is this small enough to
+enumerate?" is worth asking before assuming it is not.
+</Sidenote>
+
+The cost of the exact route is usually not compute. It is the discipline of
+writing the model down completely enough to enumerate it — every constraint
+explicit, every assumption named, no tuning parameters smuggled in as
+"engineering judgement". That discipline is the actual deliverable, and a
+heuristic lets you avoid it.
+
+## What it changes about how you write
+
+If you are going to hand over a certificate, the model has to be legible. Not
+merely correct — legible, so that the person deciding whether to trust it can
+find the assumption they doubt and check it.
+
+In practice that means the assumption list is part of the result rather than an
+appendix, the safety margins are explicit numbers rather than conservative
+choices buried in a coefficient, and the failure of the certificate — the case
+where the model is wrong — is described before anyone asks.
+
+None of this is specific to optimisation. It is what makes a piece of
+engineering reviewable rather than merely deliverable. Optimality certificates
+just make it unavoidable, because a proof about an illegible model is worth
+nothing and everyone can see that.

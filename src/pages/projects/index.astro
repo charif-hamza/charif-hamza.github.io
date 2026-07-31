@@ -1,0 +1,64 @@
+---
+/**
+ * Projects index (/projects) — SPEC §3.1, §8.1.5.
+ *
+ * The overflow surface for the rail. It appears in the picture once there are
+ * more than six projects, and it is where the breadcrumb on every project page
+ * points. Same cards, same motifs, no new visual language (§6.4 use 4).
+ */
+import SurfaceLayout from '~/layouts/SurfaceLayout.astro';
+import ProjectCard from '~/components/surface/ProjectCard.astro';
+import { allProjects } from '~/lib/collections.ts';
+import { site, t, en } from '~/lib/site.ts';
+
+const projects = await allProjects();
+---
+
+<SurfaceLayout
+	title={`${t.sections.projects} — ${site.name}`}
+	description={en.projectsIndexLead}
+	ogImage={`/og/home.${site.og.format}`}
+>
+	<section class="projects">
+		<div class="u-container">
+			<h1 class="t-h1">{t.sections.projects}</h1>
+			<p class="projects__lead t-lead u-measure">{en.projectsIndexLead}</p>
+
+			<div class="projects__grid">
+				{
+					projects.map((project, i) => (
+						<ProjectCard project={project} index={i} grid headingLevel={2} />
+					))
+				}
+			</div>
+		</div>
+	</section>
+</SurfaceLayout>
+
+<style>
+	.projects {
+		padding-block: var(--space-12) var(--space-16);
+	}
+
+	.projects__lead {
+		margin-top: var(--space-5);
+		color: var(--ink-700);
+	}
+
+	.projects__grid {
+		display: grid;
+		gap: var(--space-6);
+		margin-top: var(--space-16);
+		grid-template-columns: 1fr;
+	}
+	@media (min-width: 768px) {
+		.projects__grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	@media (min-width: 1440px) {
+		.projects__grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+</style>

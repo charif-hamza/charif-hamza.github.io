@@ -1,0 +1,37 @@
+---
+/**
+ * M-01 · RIDGE — "the certified gap"  (SPEC §6.5)
+ *
+ * Concept: an enumeration ranked and stopped. Four columns on a 2x2 footprint,
+ * four, three, two and one unit tall — a bar chart that happens to be a solid.
+ * The accent is on the second column, not the tallest: the certificate is not
+ * about finding the biggest number, it is about knowing where the one you
+ * chose sits relative to everything you ruled out.
+ *
+ * Drawn as a still (see iso.js). This is the strongest single image on the
+ * site and it is also the OG card, so it is composed first and everything
+ * else is fitted to it.
+ */
+import Scene from './Scene.astro';
+import { box, painterSort } from './iso.js';
+
+interface Props {
+	surface?: 'green' | 'white';
+	class?: string;
+}
+
+const { surface = 'white', class: className = '' } = Astro.props;
+
+/* Boxes on the unit grid: (x, y, z, dx, dy, dz, material).
+   x runs down-right, y down-left, z up. Every column shares one base plane and
+   one unit footprint; only the height changes, which is the whole point — the
+   composition is a measurement, not a decoration. */
+const boxes = painterSort([
+	box(0, 0, 0, 1, 1, 4, 'light'), // the tallest, furthest back
+	box(1, 0, 0, 1, 1, 3, 'accent'), // the certified one
+	box(0, 1, 0, 1, 1, 2, 'light'),
+	box(1, 1, 0, 1, 1, 1, 'light'), // the shortest, nearest the reader
+]);
+---
+
+<Scene boxes={boxes} shadow={{ x: 2, y: 2, footprint: 2.4 }} surface={surface} class={className} />

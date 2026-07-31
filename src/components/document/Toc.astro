@@ -1,0 +1,127 @@
+---
+/**
+ * Table of contents — SPEC §5.3.4, §7.1.
+ *
+ * Sticky in the right 240px column at lg and up; a <details> block under the
+ * title below that. Both are rendered, and CSS decides which is visible, so
+ * the page works identically with JavaScript disabled — the highlight is the
+ * only thing the script adds.
+ *
+ * Section numbering matches the CSS counters in the prose (§8.2.5): the TOC
+ * says "3. Results" because the heading says "3. Results".
+ */
+import { en } from '~/lib/site.ts';
+
+export interface Heading {
+	depth: number;
+	slug: string;
+	text: string;
+}
+
+interface Props {
+	headings: Heading[];
+	/** "inline" renders the collapsed variant used below lg. */
+	variant?: 'sticky' | 'inline';
+}
+
+const { headings, variant = 'sticky' } = Astro.props;
+
+/* Only h2 and h3 — deeper levels are structure for the author, not navigation
+   for the reader. */
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+
+let section = 0;
+let subsection = 0;
+const numbered = items.map((item) => {
+	if (item.depth === 2) {
+		section += 1;
+		subsection = 0;
+		return { ...item, number: `${section}.` };
+	}
+	subsection += 1;
+	return { ...item, number: `${section}.${subsection}` };
+});
+---
+
+{
+	numbered.length > 0 &&
+		(variant === 'sticky' ? (
+			<nav class="toc" aria-labelledby="toc-title">
+				<p class="toc__title" id="toc-title">
+					{en.toc}
+				</p>
+				<ol>
+					{numbered.map((item) => (
+						<li data-depth={item.depth}>
+							<a href={`#${item.slug}`} data-toc-link>
+								<span class="toc__number">{item.number}</span> {item.text}
+							</a>
+						</li>
+					))}
+				</ol>
+			</nav>
+		) : (
+			<details class="toc-inline">
+				<summary>{en.tocShort}</summary>
+				<ol>
+					{numbered.map((item) => (
+						<li data-depth={item.depth}>
+							<a href={`#${item.slug}`}>
+								<span class="toc__number">{item.number}</span> {item.text}
+							</a>
+						</li>
+					))}
+				</ol>
+			</details>
+		))
+}
+
+<style>
+	.toc__number {
+		font-variant-numeric: tabular-nums;
+		color: var(--ink-500);
+		margin-right: 0.2em;
+	}
+	.toc a[aria-current='true'] .toc__number {
+		color: var(--green-700);
+	}
+</style>
+
+<script>
+	/* The one permitted piece of motion in Layer 2 besides hover feedback: the
+	   TOC follows the reader (§7.1). Nothing scrolls, nothing scrubs — a class
+	   moves. */
+	const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'));
+
+	if (links.length && 'IntersectionObserver' in window) {
+		const targets = links
+			.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
+			.filter((el): el is HTMLElement => Boolean(el));
+
+		const visible = new Set<string>();
+
+		const highlight = () => {
+			/* The topmost visible heading wins, so the TOC never flickers
+			   between two sections that are both on screen. */
+			const current = targets.find((target) => visible.has(target.id))?.id;
+			for (const link of links) {
+				const isCurrent = decodeURIComponent(link.hash.slice(1)) === current;
+				if (isCurrent) link.setAttribute('aria-current', 'true');
+				else link.removeAttribute('aria-current');
+			}
+		};
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) visible.add(entry.target.id);
+					else visible.delete(entry.target.id);
+				}
+				highlight();
+			},
+			{ rootMargin: '-10% 0px -70% 0px', threshold: 0 },
+		);
+
+		for (const target of targets) observer.observe(target);
+	}
+</script>

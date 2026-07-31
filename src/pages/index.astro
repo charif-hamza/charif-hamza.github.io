@@ -1,0 +1,47 @@
+---
+/**
+ * Home (/) — Layer 1.  SPEC §8.1.
+ *
+ * Vertical order, top to bottom. Nothing else is permitted on this page — no
+ * education section, no skills bars, no timeline (§3.3). The target journey is
+ * 60 seconds ending in a CV download, with the project rail as the only
+ * invitation to go deeper.
+ */
+import SurfaceLayout from '~/layouts/SurfaceLayout.astro';
+import Hero from '~/components/surface/Hero.astro';
+import ProjectRail from '~/components/surface/ProjectRail.astro';
+import WritingTeaser from '~/components/surface/WritingTeaser.astro';
+import { railProjects, railOverflows, allWriting } from '~/lib/collections.ts';
+import { site, t, abs } from '~/lib/site.ts';
+
+const projects = await railProjects();
+const overflow = await railOverflows();
+const writing = site.features.showWriting ? await allWriting() : [];
+
+/* §12.3 — this is what makes you findable as a researcher later. */
+const jsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	name: site.name,
+	givenName: site.givenName,
+	familyName: site.surname,
+	jobTitle: site.person.jobTitle,
+	description: site.tagline.en,
+	url: abs('/'),
+	email: `mailto:${site.email}`,
+	alumniOf: site.person.alumniOf.map((name) => ({ '@type': 'CollegeOrUniversity', name })),
+	knowsAbout: site.person.knowsAbout,
+	sameAs: [site.social.github, site.social.linkedin, site.social.orcid].filter(Boolean),
+};
+---
+
+<SurfaceLayout
+	title={t.meta.homeTitle}
+	description={t.meta.homeDescription}
+	ogImage={`/og/home.${site.og.format}`}
+	jsonLd={jsonLd}
+>
+	<Hero />
+	<ProjectRail projects={projects} overflow={overflow} />
+	<WritingTeaser entries={writing} />
+</SurfaceLayout>

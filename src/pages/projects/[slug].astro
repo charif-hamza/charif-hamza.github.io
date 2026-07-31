@@ -1,0 +1,90 @@
+---
+/**
+ * Project deep-dive (/projects/[slug]) — Layer 2.  SPEC §8.2.
+ *
+ * This is where Persona B decides whether the work is real. The template
+ * supplies the frame — breadcrumb, facts table, TL;DR, numbered sections, TOC,
+ * artifacts, next affordance — and the Markdown supplies the eight mandatory
+ * answers of §8.2.4.
+ *
+ * Deep-linkable by section, readable without JavaScript, printable (§2.2).
+ */
+import { render } from 'astro:content';
+import DocumentLayout from '~/layouts/DocumentLayout.astro';
+import FactsTable from '~/components/document/FactsTable.astro';
+import ArtifactList from '~/components/document/ArtifactList.astro';
+import NextPrev from '~/components/document/NextPrev.astro';
+import Callout from '~/components/document/Callout.astro';
+import Figure from '~/components/document/Figure.astro';
+import Sidenote from '~/components/document/Sidenote.astro';
+import { allProjects, projectNeighbours } from '~/lib/collections.ts';
+import { site, en, t, abs } from '~/lib/site.ts';
+import { dateEn, monthYearEn, iso } from '~/lib/typo.ts';
+import type { MotifId } from '~/motifs/index.ts';
+
+export async function getStaticPaths() {
+	const projects = await allProjects();
+	return projects.map((project) => ({
+		params: { slug: project.data.slug },
+		props: { project },
+	}));
+}
+
+const { project } = Astro.props;
+const data = project.data;
+const { Content, headings } = await render(project);
+const { previous, next } = await projectNeighbours(data.slug);
+
+const ogImage = data.og.image ?? `/og/${data.slug}.${site.og.format}`;
+
+/* §12.3 — TechArticle rather than BlogPosting: this is documentation of work,
+   and the distinction matters to the audience that indexes it. */
+const jsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'TechArticle',
+	headline: data.title,
+	description: data.seo.description,
+	abstract: data.subtitle,
+	inLanguage: data.language,
+	datePublished: iso(data.dates.published),
+	dateModified: iso(data.dates.updated),
+	author: { '@type': 'Person', name: site.name, url: abs('/') },
+	url: abs(`/projects/${data.slug}`),
+	image: abs(ogImage),
+	keywords: [data.tag, ...data.facts.methods].join(', '),
+};
+
+const meta = `${en.written} ${monthYearEn(data.dates.published)} · ${en.updated} ${dateEn(data.dates.updated)}`;
+
+/* Components available to MDX without an import in every content file — this
+   is what keeps "adding a project" to one Markdown file (§13). */
+const components = { Callout, Figure, Sidenote };
+---
+
+<DocumentLayout
+	title={data.title}
+	subtitle={data.subtitle}
+	description={data.seo.description}
+	headings={headings}
+	breadcrumb={{ label: t.sections.projects, href: '/projects' }}
+	motif={data.motif as MotifId}
+	motifSurface={data.motifColor}
+	transitionKey={data.slug}
+	ogImage={ogImage}
+	jsonLd={jsonLd}
+	meta={meta}
+>
+	<Fragment slot="facts">
+		<FactsTable facts={data.facts} artifacts={data.artifacts} />
+	</Fragment>
+
+	<Content components={components} />
+
+	<Fragment slot="after">
+		<ArtifactList artifacts={data.artifacts} />
+	</Fragment>
+
+	<Fragment slot="next">
+		<NextPrev previous={previous} next={next} />
+	</Fragment>
+</DocumentLayout>

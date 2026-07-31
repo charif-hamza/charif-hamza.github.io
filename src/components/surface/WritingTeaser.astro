@@ -1,0 +1,121 @@
+---
+/**
+ * WritingTeaser — SPEC §8.1.6.
+ *
+ * Deliberately undesigned. The visual drop between the rail and this list is
+ * the first hint of Layer 2 — it prepares the mood switch before the reader
+ * has clicked anything. Adding cards or images here would remove the only
+ * cheap piece of foreshadowing the home page has.
+ *
+ * Hidden entirely when there is nothing to show: an empty section is worse
+ * than no section (§16).
+ */
+import Icon from '~/components/common/Icon.astro';
+import { t } from '~/lib/site.ts';
+import { dateFr } from '~/lib/typo.ts';
+import type { Writing } from '~/lib/collections.ts';
+
+interface Props {
+	entries: Writing[];
+}
+
+const { entries } = Astro.props;
+const shown = entries.slice(0, 3);
+---
+
+{
+	shown.length > 0 && (
+		<section class="teaser reveal" aria-labelledby="writing-label" data-revealable>
+			<div class="u-container">
+				<h2 class="section-label t-meta" id="writing-label">
+					{t.sections.writing}
+				</h2>
+
+				<ul class="teaser__list" role="list">
+					{shown.map((entry) => (
+						<li class="teaser__row">
+							<a class="teaser__link" href={`/writing/${entry.data.slug}`}>
+								<h3 class="teaser__title t-h3">{entry.data.title}</h3>
+								<span class="teaser__desc t-small">{entry.data.description}</span>
+								<time class="teaser__date t-meta t-tabular" datetime={entry.data.date.toISOString()}>
+									{dateFr(entry.data.date)}
+								</time>
+							</a>
+						</li>
+					))}
+				</ul>
+
+				<a class="teaser__all t-meta" href="/writing">
+					{t.sections.allWriting}
+					<Icon name="arrow-right" size={14} />
+				</a>
+			</div>
+		</section>
+	)
+}
+
+<style>
+	.teaser {
+		margin-block: var(--rhythm-section);
+	}
+
+	.teaser__list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: var(--border-hair);
+	}
+
+	.teaser__row {
+		border-bottom: var(--border-hair);
+	}
+
+	.teaser__link {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-1);
+		padding-block: var(--space-5);
+		color: var(--ink-900);
+		text-decoration: none;
+		transition: opacity var(--dur-fast) var(--ease-standard);
+	}
+
+	.teaser__title {
+		margin: 0;
+	}
+	.teaser__link:hover {
+		opacity: 0.6;
+	}
+
+	.teaser__desc {
+		color: var(--ink-500);
+	}
+
+	.teaser__date {
+		color: var(--ink-500);
+	}
+
+	@media (min-width: 768px) {
+		.teaser__link {
+			grid-template-columns: minmax(12rem, 1fr) 2fr auto;
+			align-items: baseline;
+			gap: var(--space-6);
+		}
+		.teaser__date {
+			text-align: right;
+		}
+	}
+
+	.teaser__all {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		margin-top: var(--space-6);
+		font-weight: 600;
+		color: var(--ink-900);
+		text-decoration: none;
+	}
+	.teaser__all:hover {
+		color: var(--green-700);
+	}
+</style>

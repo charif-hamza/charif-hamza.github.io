@@ -1,0 +1,33 @@
+---
+/**
+ * Figure — SPEC §8.2.6.
+ *
+ * Two rules here are hard rejection criteria, not preferences:
+ *   - every chart MUST have axis labels with units
+ *   - every image MUST have explicit dimensions and a meaningful alt
+ *
+ * The first cannot be enforced by a component, so it is stated in the caption
+ * contract and checked at review. The second is enforced: `width` and `height`
+ * are required props, which is also how the 0.02 CLS budget survives contact
+ * with a slow connection (§12.1).
+ */
+import { en } from '~/lib/site.ts';
+
+interface Props {
+	src: string;
+	alt: string;
+	width: number;
+	height: number;
+	/** At xl a figure MAY bleed 180px into the left sidenote margin. */
+	bleed?: 'left';
+	id?: string;
+	class?: string;
+}
+
+const { src, alt, width, height, bleed, id, class: className = '' } = Astro.props;
+---
+
+<figure class:list={['figure', className]} data-bleed={bleed} id={id}>
+	<img src={src} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+	<figcaption data-label={en.figure}><slot /></figcaption>
+</figure>

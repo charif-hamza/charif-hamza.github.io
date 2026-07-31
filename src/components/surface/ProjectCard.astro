@@ -1,0 +1,274 @@
+---
+/**
+ * ProjectCard — SPEC §8.1.5.
+ *
+ * The card is the audience filter. Clicking it is what separates the reader
+ * who wants the CV from the reader who wants the method (§1.2), so the whole
+ * card is one link and there is nothing else inside it to click.
+ *
+ * Anatomy is fixed, in this order: pill tag, motif, title, description, CTA —
+ * matching the reference image, with the content bottom-aligned and the motif
+ * optically centred in the space above it and bleeding off the card's right
+ * edge (Appendix C). The bleed is why the card clips: the illustration is
+ * meant to look larger than the frame that holds it.
+ *
+ * Fill (revision v0.6): green marks the card in focus, not a fixed alternation
+ * down the rail. With one card at a time in the reader's attention (§7.4) the
+ * fill has a better job to do than alternating, and the reference image shows
+ * exactly this — one green card between two paper ones.
+ */
+import MotifFrame from '~/components/common/MotifFrame.astro';
+import PillTag from '~/components/common/PillTag.astro';
+import Icon from '~/components/common/Icon.astro';
+import { t, site } from '~/lib/site.ts';
+import type { Project } from '~/lib/collections.ts';
+import type { MotifId } from '~/motifs/index.ts';
+
+interface Props {
+	project: Project;
+	/** Index in the rail — drives the entrance stagger and the initial focus. */
+	index?: number;
+	/** In the /projects grid the card fills its column instead of a fixed width. */
+	grid?: boolean;
+	/**
+	 * Heading level of the card title. On home the cards sit under the "Projets"
+	 * section heading, so they are h3; on /projects they sit directly under the
+	 * page h1, so they are h2. Getting this wrong skips a level, which is a
+	 * §12.2 failure and a genuinely confusing screen-reader outline.
+	 */
+	headingLevel?: 2 | 3;
+}
+
+const { project, index = 0, grid = false, headingLevel = 3 } = Astro.props;
+const Title = `h${headingLevel}` as 'h2' | 'h3';
+const { slug, title, tag, motif, motifColor, card, language } = project.data;
+
+/* §7.5 — cards enter at 420 ms, then one --stagger apart. */
+const enterAt = 420 + index * 60;
+
+/* The first card is focused in the markup, so the no-JS rail still arrives
+   with one card in focus rather than three cards in limbo.
+
+   The grid is a different problem: nothing there is "in focus", every card is
+   its own subject, so it keeps the fill alternation of §5.1.4 and none of the
+   rail's focus behaviour. */
+---
+
+<a
+	class="card"
+	href={`/projects/${slug}`}
+	data-card={slug}
+	data-index={index}
+	data-active={!grid && index === 0 ? '' : undefined}
+	data-rail-item={grid ? undefined : ''}
+	data-grid={grid ? '' : undefined}
+	data-fill={grid ? motifColor : undefined}
+	style={`--enter-at:${enterAt}ms`}
+>
+	<div class="card__top">
+		<PillTag surface="green">{tag}</PillTag>
+		{
+			language !== site.lang && (
+				<span class="card__lang t-meta" title={t.card.langMarkerTitle}>
+					{t.card.langMarker}
+				</span>
+			)
+		}
+	</div>
+
+	<div class="card__motif">
+		<MotifFrame id={motif as MotifId} surface="green" transitionKey={slug} />
+	</div>
+
+	<div class="card__body">
+		<Title class="card__title t-h2">{title}</Title>
+		<p class="card__desc t-small">{card.description}</p>
+		<span class="card__cta t-meta">
+			{t.card.cta}
+			<Icon name="arrow-right" size={14} />
+		</span>
+	</div>
+</a>
+
+<style>
+	.card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		flex: none;
+		width: var(--card-w);
+		height: var(--card-h);
+		padding: var(--space-6);
+		border-radius: var(--radius-card);
+		box-shadow: var(--shadow-card);
+		background: var(--paper);
+		color: var(--ink-900);
+		text-decoration: none;
+		/* The illustration is drawn larger than the card and cut by it. */
+		overflow: hidden;
+		scroll-snap-align: center;
+		transition:
+			transform var(--dur-page) var(--ease-entrance),
+			opacity var(--dur-page) var(--ease-entrance),
+			box-shadow var(--dur-page) var(--ease-entrance);
+	}
+
+	@media (min-width: 768px) {
+		.card {
+			padding: var(--space-8);
+		}
+	}
+
+	/* In the rail, fill follows focus; in the grid it follows the project's own
+	   alternation. The gradient lives in the card, never in the illustration
+	   (Appendix C), and it is pale where the illustration sits and saturated
+	   under the text — the illustration is green too, and a card that is
+	   already --green-300 behind it leaves the accent nowhere to be an accent.
+
+	   The fill is a layer that fades rather than a background that swaps: a
+	   gradient cannot be transitioned, so switching `background` would snap the
+	   colour on while the scale is still easing, which reads as a flash. */
+	.card::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		border-radius: inherit;
+		background: linear-gradient(160deg, var(--green-100) 0%, var(--green-200) 46%, var(--green-400) 100%);
+		opacity: 0;
+		transition: opacity var(--dur-page) var(--ease-entrance);
+		pointer-events: none;
+	}
+	.card[data-active]::before,
+	.card[data-fill='green']::before {
+		opacity: 1;
+	}
+	/* The ground shadow under the motif follows the card it lands on (§5.4). */
+	.card[data-active] .card__motif :global(.motif),
+	.card[data-fill='green'] .card__motif :global(.motif) {
+		--ground: var(--shadow-ground);
+	}
+
+	/* Out of focus: set back, not hidden. Still legible, still clickable, but
+	   plainly not the thing being read. */
+	.card[data-rail-item]:not([data-active]) {
+		transform: scale(0.94);
+		opacity: 0.72;
+	}
+
+	/* In the grid the card is a grid item, not a rail item. */
+	.card[data-grid] {
+		width: auto;
+		height: auto;
+		min-height: 540px;
+		scroll-snap-align: none;
+	}
+
+	.card__top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-3);
+		position: relative;
+		z-index: 1;
+	}
+
+	.card__lang {
+		color: var(--ink-900);
+		opacity: 0.55;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+	}
+
+	/* The motif takes the slack: content sits at the bottom whatever the card
+	   height, the illustration is optically centred in what is left, and it
+	   runs past the right padding so the card cuts it. */
+	.card__motif {
+		flex: 1;
+		position: relative;
+		z-index: 1;
+		min-height: 0;
+		margin-block: var(--space-4);
+	}
+	/* Sized off the height it has been given rather than off the card's width:
+	   the frame is square, and letting the width drive it is what makes the
+	   illustration collide with the title on a short card. */
+	.card__motif > :global(*) {
+		position: absolute;
+		inset-block: 0;
+		right: calc(-1 * var(--space-6));
+		left: auto;
+		width: auto;
+		height: 100%;
+		max-width: 118%;
+	}
+	@media (min-width: 768px) {
+		.card__motif > :global(*) {
+			right: calc(-1 * var(--space-10));
+		}
+	}
+
+	.card__body {
+		display: grid;
+		gap: var(--space-2);
+		position: relative;
+		z-index: 1;
+	}
+
+	.card__title {
+		margin: 0;
+	}
+
+	.card__desc {
+		margin: 0;
+		max-width: 32ch;
+		color: var(--ink-900);
+		opacity: 0.78;
+	}
+
+	.card__cta {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		margin-top: var(--space-3);
+		font-weight: 600;
+	}
+
+	/* Hover is pointer-only: shadow and the CTA. Nothing else moves — no tilt,
+	   no glare, no 3D transform (§8.1.5). On touch the CTA is always visible.
+
+	   The card in focus always shows its CTA, hover or not: it is the only card
+	   a click opens — a click on any other one brings that one to the centre
+	   instead — so the CTA is what marks the difference. */
+	@media (hover: hover) and (pointer: fine) {
+		.card__cta {
+			opacity: 0;
+			transform: translateX(-6px);
+			transition:
+				opacity var(--dur-base) var(--ease-standard),
+				transform var(--dur-base) var(--ease-standard);
+		}
+		.card[data-active] .card__cta {
+			opacity: 1;
+			transform: translateX(0);
+		}
+		/* No lift on hover: `transform` belongs to the focus animation here, and
+		   two things easing the same property at two speeds reads as a stutter.
+		   The shadow and the CTA carry the affordance instead. */
+		.card[data-active]:hover,
+		.card[data-grid]:hover {
+			box-shadow: var(--shadow-card-hover);
+		}
+		.card[data-active]:hover .card__cta,
+		.card[data-grid]:hover .card__cta,
+		.card:focus-visible .card__cta {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	.card:focus-visible {
+		outline: 2px solid var(--focus-ring);
+		outline-offset: 3px;
+	}
+</style>

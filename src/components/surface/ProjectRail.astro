@@ -1,0 +1,423 @@
+---
+/**
+ * ProjectRail — SPEC §7.4, §8.1.5.
+ *
+ * One project at a time. The focused card sits in the middle of the viewport
+ * with its neighbours cut by the page edges, which is the whole point: the
+ * rail asks the reader to look at one thing, and the cards on either side are
+ * there to say that there is more, not to compete.
+ *
+ * Revision (v0.6): this is where the site's motion budget went after the motif
+ * loops were cut. The slide is a native smooth scroll over mandatory snap
+ * points, so with JavaScript off you still get a scrollable, snapping,
+ * keyboard-reachable rail — the §12.2 requirement — and with JavaScript on the
+ * script adds exactly three things:
+ *
+ *   - focus tracking: the card nearest the centre gets [data-active], which is
+ *     what drives the green fill, the scale and the shadow
+ *   - previous/next controls and the progress thumb, sized to the ratio (§7.4)
+ *   - a click on an off-centre card brings it to the centre instead of
+ *     navigating, because that is what the reader meant
+ *
+ * It deliberately does NOT hijack the vertical wheel into horizontal scroll:
+ * that breaks the page for anyone trying to leave, and leaving is a legitimate
+ * outcome for Persona A once she has the CV.
+ */
+import ProjectCard from './ProjectCard.astro';
+import Icon from '~/components/common/Icon.astro';
+import { t } from '~/lib/site.ts';
+import type { Project } from '~/lib/collections.ts';
+
+interface Props {
+	projects: Project[];
+	/** True once there are more projects than the rail may show (§8.1.5). */
+	overflow?: boolean;
+}
+
+const { projects, overflow = false } = Astro.props;
+---
+
+<section class="rail-section" aria-labelledby="rail-label">
+	<div class="u-container rail-head">
+		{/* A real heading, not a styled paragraph: it is what the cards below
+		    hang from, and without it the outline jumps h1 -> h3 (§12.2). */}
+		<h2 class="section-label t-meta" id="rail-label">{t.sections.projects}</h2>
+
+		<div class="rail-nav">
+			<button class="rail-btn" type="button" data-rail-prev aria-label={t.rail.previous}>
+				<Icon name="arrow-right" size={16} />
+			</button>
+			<button class="rail-btn" type="button" data-rail-next aria-label={t.rail.next}>
+				<Icon name="arrow-right" size={16} />
+			</button>
+		</div>
+	</div>
+
+	<div class="rail-wrap">
+		<div
+			class="rail"
+			data-rail
+			role="region"
+			aria-label={t.rail.label}
+			tabindex="0"
+			style="view-transition-name: rail"
+		>
+			<div class="rail__spacer" aria-hidden="true"></div>
+			{projects.map((project, i) => <ProjectCard project={project} index={i} />)}
+			{
+				overflow && (
+					<a class="card card--more" href="/projects">
+						<span class="t-h2">{t.sections.allProjects}</span>
+						<Icon name="arrow-right" size={20} />
+					</a>
+				)
+			}
+			<div class="rail__spacer" aria-hidden="true"></div>
+		</div>
+
+		{/* A thumb, not dots: dots do not scale past six items (§7.4). */}
+		<div class="rail__progress" aria-hidden="true">
+			<div class="rail__track"><div class="rail__thumb" data-rail-thumb></div></div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.rail-section {
+		/* Card geometry is declared once, here, because the spacers, the step
+		   and the gap are all derived from it. */
+		--card-w: min(84vw, 460px);
+		--card-h: 600px;
+		--rail-gap: var(--space-6);
+		margin-block: var(--rhythm-section);
+	}
+	@media (min-width: 768px) {
+		.rail-section {
+			--card-w: 440px;
+			--card-h: 620px;
+			/* Push the neighbours out toward the page edges so only one card is
+			   ever fully in view. */
+			--rail-gap: max(var(--space-8), calc((100vw - var(--card-w)) * 0.2));
+		}
+	}
+	@media (min-width: 1280px) {
+		.rail-section {
+			--card-w: 500px;
+			--card-h: 660px;
+		}
+	}
+
+	.rail-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-6);
+	}
+	.rail-head .section-label {
+		flex: 1;
+	}
+
+	/* On a phone the swipe is the control and the arrows are just two more
+	   things to miss; from md they are the only obvious way to move the rail
+	   with a mouse. */
+	.rail-nav {
+		display: none;
+		gap: var(--space-2);
+	}
+	@media (min-width: 768px) {
+		.rail-nav {
+			display: flex;
+		}
+	}
+
+	.rail-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		border: var(--border-pill);
+		border-radius: var(--radius-pill);
+		background: transparent;
+		color: var(--ink-900);
+		cursor: pointer;
+		transition:
+			background-color var(--dur-fast) var(--ease-standard),
+			opacity var(--dur-fast) var(--ease-standard);
+	}
+	.rail-btn:hover {
+		background: rgb(16 17 19 / 0.06);
+	}
+	.rail-btn[disabled] {
+		opacity: 0.3;
+		cursor: default;
+	}
+	.rail-btn[data-rail-prev] :global(svg) {
+		transform: rotate(180deg);
+	}
+
+	.rail-wrap {
+		position: relative;
+	}
+
+	.rail {
+		/* Positioned so a card's offsetLeft is measured against the scroll
+		   content itself, not against whatever ancestor happens to be
+		   positioned — that is the number the script centres on. */
+		position: relative;
+		display: flex;
+		gap: var(--rail-gap);
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x mandatory;
+		scroll-behavior: smooth;
+		scrollbar-width: none;
+		/* Room for the focus ring and the card shadow, never clipped. */
+		padding-block: var(--space-6);
+	}
+	.rail::-webkit-scrollbar {
+		display: none;
+	}
+	.rail:focus-visible {
+		outline: 2px solid var(--focus-ring);
+		outline-offset: -2px;
+		border-radius: var(--radius-md);
+	}
+
+	/* Someone who asked for less motion gets the jump, not the slide. */
+	@media (prefers-reduced-motion: reduce), (prefers-reduced-data: reduce) {
+		.rail {
+			scroll-behavior: auto;
+		}
+	}
+
+	/* The spacers are what let the first and last card reach the centre. The
+	   gap between a spacer and its card counts toward that distance, so it
+	   comes off the spacer — without that subtraction the first card sits one
+	   gap right of centre and the rail opens misaligned. */
+	.rail__spacer {
+		flex: none;
+		width: max(0px, calc((100% - var(--card-w)) / 2 - var(--rail-gap)));
+	}
+
+	/* Cards appear to slide under the page edge (§7.4). Pointer-events off so
+	   the fade never eats a click near the edge. */
+	@media (min-width: 1024px) {
+		.rail-wrap::before,
+		.rail-wrap::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 10vw;
+			max-width: 140px;
+			z-index: 2;
+			pointer-events: none;
+		}
+		.rail-wrap::before {
+			left: 0;
+			background: linear-gradient(to right, var(--field), transparent);
+		}
+		.rail-wrap::after {
+			right: 0;
+			background: linear-gradient(to left, var(--field), transparent);
+		}
+	}
+
+	.rail__progress {
+		max-width: calc(var(--container-wide) + 2 * var(--gutter));
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+		margin-top: var(--space-5);
+	}
+	.rail__track {
+		position: relative;
+		height: 2px;
+		background: var(--rule);
+		border-radius: var(--radius-pill);
+	}
+	.rail__thumb {
+		position: absolute;
+		inset-block: -1px;
+		left: 0;
+		width: 30%;
+		background: var(--ink-900);
+		border-radius: var(--radius-pill);
+		transition: transform var(--dur-base) var(--ease-standard);
+		will-change: transform;
+	}
+
+	/* The overflow slot: a quiet card in --field-deep, never a fourth colour. */
+	.card--more {
+		display: flex;
+		flex: none;
+		flex-direction: column;
+		justify-content: flex-end;
+		gap: var(--space-4);
+		width: var(--card-w);
+		height: var(--card-h);
+		padding: var(--space-6);
+		border-radius: var(--radius-card);
+		background: var(--field-deep);
+		color: var(--ink-900);
+		text-decoration: none;
+		scroll-snap-align: center;
+		transition:
+			transform var(--dur-page) var(--ease-entrance),
+			opacity var(--dur-page) var(--ease-entrance);
+	}
+	.card--more:not([data-active]) {
+		transform: scale(0.94);
+		opacity: 0.72;
+	}
+</style>
+
+<script>
+	const railEl = document.querySelector<HTMLElement>('[data-rail]');
+	const thumb = document.querySelector<HTMLElement>('[data-rail-thumb]');
+	const prev = document.querySelector<HTMLButtonElement>('[data-rail-prev]');
+	const next = document.querySelector<HTMLButtonElement>('[data-rail-next]');
+
+	if (railEl) {
+		/* Narrowed alias: the closures below outlive the null check. */
+		const rail = railEl;
+		const cards = Array.from(rail.querySelectorAll<HTMLElement>('.card'));
+		const KEY = 'rail:scroll';
+
+		/* --- Focus tracking -------------------------------------------------
+		   The card whose centre is nearest the rail's centre is the one being
+		   read. Everything visual about focus hangs off this one attribute.
+
+		   `intent` is what stops the scroll events raised by a click from
+		   answering a question the click already answered. For the first half of
+		   a slide the nearest card is still the one being left, so without this
+		   the fill jumps back to the old card and only lands on the new one
+		   halfway across — which is the flicker. While a slide is in flight the
+		   scroll handler may only confirm the intended card, never contradict
+		   it; a drag or a wheel hands control straight back. */
+		let focused = -1;
+		let intent: number | null = null;
+
+		function nearest() {
+			const mid = rail.scrollLeft + rail.clientWidth / 2;
+			let best = 0;
+			let bestDist = Infinity;
+			cards.forEach((card, i) => {
+				const centre = card.offsetLeft + card.offsetWidth / 2;
+				const dist = Math.abs(centre - mid);
+				if (dist < bestDist) {
+					bestDist = dist;
+					best = i;
+				}
+			});
+			return best;
+		}
+
+		function setFocus(index: number) {
+			if (index === focused) return;
+			focused = index;
+			cards.forEach((card, i) => card.toggleAttribute('data-active', i === index));
+			if (prev) prev.disabled = index === 0;
+			if (next) next.disabled = index === cards.length - 1;
+		}
+
+		function goTo(index: number) {
+			const clamped = Math.max(0, Math.min(cards.length - 1, index));
+			const card = cards[clamped];
+			if (!card) return;
+			/* Focus moves with the intent, not with the scroll event: the fill
+			   should start changing as the slide starts, and the scroll event is
+			   not a reliable place to hang state that a click just decided. */
+			intent = clamped;
+			setFocus(clamped);
+			rail.scrollTo({ left: card.offsetLeft + card.offsetWidth / 2 - rail.clientWidth / 2 });
+		}
+
+		/* --- Progress thumb ------------------------------------------------ */
+		function updateThumb() {
+			if (!thumb) return;
+			const max = rail.scrollWidth - rail.clientWidth;
+			const ratio = rail.clientWidth / rail.scrollWidth;
+			thumb.style.width = `${Math.min(100, ratio * 100)}%`;
+			const travel = 100 / ratio - 100;
+			const progress = max > 0 ? rail.scrollLeft / max : 0;
+			thumb.style.transform = `translateX(${progress * travel}%)`;
+		}
+
+		let saveTimer = 0;
+		rail.addEventListener(
+			'scroll',
+			() => {
+				updateThumb();
+				const n = nearest();
+				if (intent === null) setFocus(n);
+				else if (n === intent) intent = null;
+				window.clearTimeout(saveTimer);
+				saveTimer = window.setTimeout(() => {
+					try {
+						sessionStorage.setItem(KEY, String(rail.scrollLeft));
+					} catch {}
+				}, 120);
+			},
+			{ passive: true },
+		);
+		window.addEventListener('resize', () => {
+			intent = null;
+			updateThumb();
+			setFocus(nearest());
+		});
+
+		/* Any direct input on the rail overrides whatever a click asked for. */
+		for (const event of ['pointerdown', 'wheel', 'touchstart'] as const) {
+			rail.addEventListener(event, () => (intent = null), { passive: true });
+		}
+
+		/* --- Back-navigation restores the rail (§4.4 return path) ---------- */
+		try {
+			const saved = sessionStorage.getItem(KEY);
+			if (saved !== null) {
+				const behavior = rail.style.scrollBehavior;
+				rail.style.scrollBehavior = 'auto';
+				rail.scrollLeft = Number(saved);
+				rail.style.scrollBehavior = behavior;
+			}
+		} catch {}
+		updateThumb();
+		setFocus(nearest());
+
+		/* --- Controls -------------------------------------------------------- */
+		prev?.addEventListener('click', () => goTo(focused - 1));
+		next?.addEventListener('click', () => goTo(focused + 1));
+
+		/* Arrow keys move one card when the rail itself has focus; Tab moves
+		   card to card, and the focused card is brought to the centre. */
+		rail.addEventListener('keydown', (event) => {
+			if (event.target !== rail) return;
+			if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+			event.preventDefault();
+			goTo(focused + (event.key === 'ArrowRight' ? 1 : -1));
+		});
+
+		rail.addEventListener('focusin', (event) => {
+			const card = (event.target as HTMLElement).closest<HTMLElement>('.card');
+			if (card) goTo(cards.indexOf(card));
+		});
+
+		/* A click on a card that is not in focus means "show me that one".
+		   Only the card the reader is already looking at opens. */
+		rail.addEventListener(
+			'click',
+			(event) => {
+				const card = (event.target as HTMLElement).closest<HTMLElement>('.card');
+				if (!card) return;
+				const index = cards.indexOf(card);
+				if (index !== focused) {
+					event.preventDefault();
+					goTo(index);
+				}
+			},
+			true,
+		);
+	}
+</script>

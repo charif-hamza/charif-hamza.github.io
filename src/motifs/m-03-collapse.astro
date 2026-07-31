@@ -1,0 +1,39 @@
+---
+/**
+ * M-03 · Batch coating cycle — "collapse"  (SPEC §6.5)
+ *
+ * Concept: a cycle whose time is stacked in layers, with one cell removed —
+ * the notch — and the part everybody optimises sitting on top, alone and
+ * green. The removed cell is the finding: the saving was in a step nobody had
+ * modelled, not in the one on the roof.
+ *
+ * Drawn as a still (see iso.js).
+ */
+import Scene from './Scene.astro';
+import { box, painterSort } from './iso.js';
+
+interface Props {
+	surface?: 'green' | 'white';
+	class?: string;
+}
+
+const { surface = 'green', class: className = '' } = Astro.props;
+
+/* A 2x2 footprint, two courses high, with the front cell of the upper course
+   taken out. The accent cube straddles the four cells below it — a half-step
+   in x and y — which is what puts it optically over the centre of the stack
+   instead of over one corner of it. */
+const lower = [];
+for (let x = 0; x < 2; x++) for (let y = 0; y < 2; y++) lower.push(box(x, y, 0, 1, 1, 1, 'light'));
+
+const upper = [
+	box(0, 0, 1, 1, 1, 1, 'light'),
+	box(0, 1, 1, 1, 1, 1, 'light'),
+	box(1, 0, 1, 1, 1, 1, 'light'),
+	/* (1,1) is the notch — deliberately absent. */
+];
+
+const boxes = painterSort([...lower, ...upper, box(0.5, 0.5, 2, 1, 1, 1, 'accent')]);
+---
+
+<Scene boxes={boxes} shadow={{ x: 2, y: 2, footprint: 2.4 }} surface={surface} class={className} />

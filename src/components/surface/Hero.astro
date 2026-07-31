@@ -1,0 +1,130 @@
+---
+/**
+ * Hero — SPEC §8.1.2, §8.1.3, §8.1.4.
+ *
+ * The whole of Persona A's first 30 seconds. It must be fully comprehensible
+ * with the sound off, the animations disabled and no scrolling past the second
+ * screen (§2.1), which is why every entrance here is a fade or a small rise
+ * and never a reveal that withholds content.
+ *
+ * The status line is the *only* place credentials appear on the site — the
+ * permitted leakage of §3.3, capped at two facts. Everything else that fits on
+ * a CV belongs in the PDF.
+ */
+import Button from '~/components/common/Button.astro';
+import Icon from '~/components/common/Icon.astro';
+import { site, t } from '~/lib/site.ts';
+
+const [line1, line2] = t.hero;
+---
+
+<section class="hero">
+	<div class="u-container">
+		<h1 class="hero__title t-display">
+			<span class="hero__line enter" style="--enter-at:80ms;--rise:14px">{line1}</span>
+			<span class="hero__line enter" style="--enter-at:140ms;--rise:14px">{line2}</span>
+		</h1>
+
+		<p class="hero__status t-meta enter" style="--enter-at:180ms;--rise:10px">{t.status}</p>
+
+		{/* Fade only — a text block that slides reads as a slideshow (§7.5). */}
+		<p class="hero__intro t-lead u-measure enter enter--fade" style="--enter-at:200ms">
+			{t.intro}
+		</p>
+
+		<div class="hero__cta enter" style="--enter-at:300ms;--rise:10px">
+			<Button href={site.cv.fr.href} variant="primary" icon="download" download>
+				{t.cta.primary}
+			</Button>
+			<a class="link hero__cta-secondary" href={site.cv.en.href} download>{t.cta.secondary}</a>
+			<a class="link hero__cta-secondary" href={`mailto:${site.email}`}>{site.email}</a>
+		</div>
+
+		{/* At most a small pair of glyphs. No social icon farm (§8.1.4). */}
+		<div class="hero__social enter enter--fade" style="--enter-at:360ms">
+			{
+				site.social.github && (
+					<a href={site.social.github} rel="me noopener" target="_blank" aria-label="GitHub">
+						<Icon name="external" size={18} />
+						<span class="t-meta">GitHub</span>
+					</a>
+				)
+			}
+			{
+				site.social.linkedin && (
+					<a href={site.social.linkedin} rel="me noopener" target="_blank" aria-label="LinkedIn">
+						<Icon name="external" size={18} />
+						<span class="t-meta">LinkedIn</span>
+					</a>
+				)
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero {
+		padding-top: var(--space-12);
+		padding-bottom: var(--space-8);
+	}
+
+	.hero__title {
+		margin: 0;
+		max-width: 16em;
+	}
+
+	.hero__line {
+		display: block;
+	}
+	/* The second line steps back so the two-line statement reads as one
+	   sentence with an emphasis, not as two headlines. */
+	.hero__line:last-child {
+		color: var(--ink-700);
+	}
+
+	.hero__status {
+		margin-top: var(--space-5);
+		color: var(--ink-500);
+	}
+
+	.hero__intro {
+		margin-top: var(--space-10);
+		color: var(--ink-900);
+	}
+
+	.hero__cta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-5);
+		margin-top: var(--space-10);
+	}
+
+	.hero__cta-secondary {
+		font-size: var(--t-small);
+	}
+
+	.hero__social {
+		display: flex;
+		gap: var(--space-6);
+		margin-top: var(--space-6);
+	}
+	.hero__social a {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		color: var(--ink-500);
+		text-decoration: none;
+		transition: color var(--dur-fast) var(--ease-standard);
+	}
+	.hero__social a:hover {
+		color: var(--ink-900);
+	}
+
+	@media (min-width: 1024px) {
+		.hero {
+			padding-top: var(--space-20);
+			padding-bottom: var(--space-12);
+		}
+	}
+</style>

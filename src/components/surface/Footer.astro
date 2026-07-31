@@ -1,0 +1,199 @@
+---
+/**
+ * Footer — SPEC §8.1.7.
+ *
+ * Email is the primary contact method and is set large enough to be read as
+ * one: there is no contact form anywhere on this site (§11.1), because a form
+ * invites spam and adds a backend to something that is otherwise static.
+ *
+ * The "réduire les animations" toggle (§7.6) is a courtesy that costs nothing
+ * and signals care — and, unlike the OS preference, it is discoverable by
+ * someone who simply finds the motion distracting today.
+ */
+import Icon from '~/components/common/Icon.astro';
+import { site, t } from '~/lib/site.ts';
+
+const year = new Date().getUTCFullYear();
+const links = [
+	site.social.github && { label: t.footer.github, href: site.social.github },
+	site.social.linkedin && { label: t.footer.linkedin, href: site.social.linkedin },
+	site.social.orcid && { label: t.footer.orcid, href: site.social.orcid },
+	{ label: t.footer.rss, href: '/rss.xml' },
+].filter(Boolean) as Array<{ label: string; href: string }>;
+---
+
+<footer class="site-footer">
+	<div class="u-container">
+		<div class="site-footer__top">
+			<div>
+				<p class="t-meta site-footer__prompt">{t.footer.contactLabel}</p>
+				<a class="site-footer__email t-h3" href={`mailto:${site.email}`}>{site.email}</a>
+			</div>
+
+			<nav class="site-footer__links" aria-label={t.sections.writing}>
+				{
+					links.map((link) => (
+						<a
+							class="t-meta"
+							href={link.href}
+							rel={link.href.startsWith('http') ? 'me noopener' : undefined}
+							target={link.href.startsWith('http') ? '_blank' : undefined}
+						>
+							{link.label}
+						</a>
+					))
+				}
+			</nav>
+		</div>
+
+		<div class="site-footer__bottom t-meta">
+			<span>© {year} {site.name}</span>
+
+			<button
+				class="motion-toggle"
+				type="button"
+				data-motion-toggle
+				data-label-off={t.footer.reduceMotion}
+				data-label-on={t.footer.reduceMotionOn}
+				aria-pressed="false"
+			>
+				{t.footer.reduceMotion}
+			</button>
+
+			{
+				site.social.repo && (
+					<a href={site.social.repo} rel="noopener" target="_blank">
+						{t.footer.viewSource}
+						<Icon name="external" size={12} />
+					</a>
+				)
+			}
+		</div>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		background: var(--field-deep);
+		padding-block: var(--space-20);
+		margin-top: var(--rhythm-section);
+	}
+
+	.site-footer__top {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: flex-end;
+		gap: var(--space-8);
+	}
+
+	.site-footer__prompt {
+		color: var(--ink-500);
+		margin-bottom: var(--space-2);
+	}
+
+	.site-footer__email {
+		color: var(--ink-900);
+		text-decoration: underline;
+		text-decoration-color: var(--green-500);
+		text-decoration-thickness: 2px;
+		text-underline-offset: 4px;
+		transition:
+			color var(--dur-fast) var(--ease-standard),
+			text-decoration-thickness var(--dur-fast) var(--ease-standard);
+	}
+	.site-footer__email:hover {
+		color: var(--green-700);
+		text-decoration-thickness: 3px;
+	}
+
+	.site-footer__links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-5);
+	}
+	.site-footer__links a {
+		color: var(--ink-500);
+		text-decoration: none;
+	}
+	.site-footer__links a:hover {
+		color: var(--ink-900);
+	}
+
+	.site-footer__bottom {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-5);
+		margin-top: var(--space-16);
+		padding-top: var(--space-5);
+		border-top: 1px solid var(--rule);
+		color: var(--ink-500);
+	}
+	.site-footer__bottom a {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-1);
+		color: var(--ink-500);
+		text-decoration: none;
+	}
+	.site-footer__bottom a:hover {
+		color: var(--ink-900);
+	}
+
+	.motion-toggle {
+		background: none;
+		border: 0;
+		padding: 0;
+		font: inherit;
+		color: var(--ink-500);
+		cursor: pointer;
+		text-decoration: underline;
+		text-decoration-color: var(--rule);
+		text-underline-offset: 3px;
+	}
+	.motion-toggle:hover {
+		color: var(--ink-900);
+	}
+	.motion-toggle[aria-pressed='true'] {
+		color: var(--green-700);
+		text-decoration-color: var(--green-500);
+	}
+</style>
+
+<script>
+	/* §7.6 — a persistent user toggle that overrides everything, stored in
+	   localStorage. The pre-paint script in BaseLayout reads the same key, so
+	   the choice survives navigation without a flash. */
+	const toggle = document.querySelector<HTMLButtonElement>('[data-motion-toggle]');
+
+	if (toggle) {
+		const root = document.documentElement;
+		const labelOff = toggle.dataset.labelOff ?? toggle.textContent?.trim() ?? '';
+		const labelOn = toggle.dataset.labelOn ?? labelOff;
+
+		const sync = () => {
+			const reduced = root.dataset.motion === 'reduced';
+			toggle.setAttribute('aria-pressed', String(reduced));
+			toggle.textContent = reduced ? labelOn : labelOff;
+		};
+
+		toggle.addEventListener('click', () => {
+			const reduced = root.dataset.motion === 'reduced';
+			if (reduced) {
+				delete root.dataset.motion;
+				try {
+					localStorage.setItem('motion', 'full');
+				} catch {}
+			} else {
+				root.dataset.motion = 'reduced';
+				try {
+					localStorage.setItem('motion', 'reduced');
+				} catch {}
+			}
+			sync();
+		});
+
+		sync();
+	}
+</script>

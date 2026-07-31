@@ -1,0 +1,168 @@
+---
+/**
+ * Article (/writing/[slug]) — Layer 2.  SPEC §8.3.
+ *
+ * "Identical to the project template minus the facts table and the eight
+ * questions. Retains numbering, sidenotes, figures, callouts."
+ *
+ * The confidentiality line is a standing part of the template, not something
+ * an author has to remember: anything from an internship is published as
+ * method, never as client data (§8.3).
+ */
+import { render } from 'astro:content';
+import DocumentLayout from '~/layouts/DocumentLayout.astro';
+import Callout from '~/components/document/Callout.astro';
+import Figure from '~/components/document/Figure.astro';
+import Sidenote from '~/components/document/Sidenote.astro';
+import { allWriting, writingNeighbours, projectBySlug, readingTime } from '~/lib/collections.ts';
+import { site, en, abs } from '~/lib/site.ts';
+import { dateEn, iso } from '~/lib/typo.ts';
+
+export async function getStaticPaths() {
+	const entries = await allWriting();
+	return entries.map((entry) => ({
+		params: { slug: entry.data.slug },
+		props: { entry },
+	}));
+}
+
+const { entry } = Astro.props;
+const data = entry.data;
+const { Content, headings } = await render(entry);
+const { previous, next } = await writingNeighbours(data.slug);
+
+const related = (
+	await Promise.all(data.related.map((slug: string) => projectBySlug(slug)))
+).filter(Boolean);
+
+const jsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'TechArticle',
+	headline: data.title,
+	description: data.description,
+	inLanguage: data.language,
+	datePublished: iso(data.date),
+	dateModified: iso(data.updated ?? data.date),
+	author: { '@type': 'Person', name: site.name, url: abs('/') },
+	url: abs(`/writing/${data.slug}`),
+	keywords: data.tags.join(', '),
+};
+
+const minutes = readingTime(entry.body);
+const meta = [
+	dateEn(data.date),
+	data.updated ? `${en.updated} ${dateEn(data.updated)}` : '',
+	`${minutes} ${en.readingTime}`,
+]
+	.filter(Boolean)
+	.join(' · ');
+
+const components = { Callout, Figure, Sidenote };
+---
+
+<DocumentLayout
+	title={data.title}
+	subtitle={data.description}
+	description={data.description}
+	headings={headings}
+	breadcrumb={{ label: en.breadcrumbWriting, href: '/writing' }}
+	jsonLd={jsonLd}
+	meta={meta}
+>
+	<Content components={components} />
+
+	<Fragment slot="after">
+		<p class="confidentiality t-small">{en.confidentiality}</p>
+
+		{
+			related.length > 0 && (
+				<section class="related">
+					<h2 class="related__title">{en.relatedProject}</h2>
+					<ul role="list">
+						{related.map((project) => (
+							<li>
+								<a href={`/projects/${project!.data.slug}`}>{project!.data.title}</a>
+								<span class="related__subtitle t-small">{project!.data.subtitle}</span>
+							</li>
+						))}
+					</ul>
+				</section>
+			)
+		}
+	</Fragment>
+
+	<Fragment slot="next">
+		<nav class="writing-nav" aria-label={en.writingIndexTitle}>
+			{previous && <a href={`/writing/${previous.data.slug}`}>← {previous.data.title}</a>}
+			<a href="/writing">{en.writingIndexTitle}</a>
+			{next && <a href={`/writing/${next.data.slug}`}>{next.data.title} →</a>}
+		</nav>
+	</Fragment>
+</DocumentLayout>
+
+<style>
+	.confidentiality {
+		margin-top: var(--space-10);
+		padding-left: var(--space-5);
+		border-left: 3px solid var(--ink-300);
+		color: var(--ink-500);
+		font-family: var(--font-sans);
+	}
+
+	.related {
+		margin-top: var(--space-12);
+		padding-top: var(--space-6);
+		border-top: var(--border-hair);
+		font-family: var(--font-sans);
+	}
+	.related__title {
+		font-size: var(--t-meta);
+		font-weight: 500;
+		letter-spacing: var(--track-meta);
+		text-transform: uppercase;
+		color: var(--ink-500);
+		margin-bottom: var(--space-3);
+	}
+	.related ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.related li {
+		display: grid;
+		gap: var(--space-1);
+		padding-block: var(--space-3);
+		border-top: var(--border-hair);
+	}
+	.related a {
+		font-size: var(--t-h3);
+		font-weight: 600;
+		color: var(--ink-900);
+		text-decoration: underline;
+		text-decoration-color: var(--green-500);
+		text-decoration-thickness: 2px;
+		text-underline-offset: 3px;
+	}
+	.related__subtitle {
+		color: var(--ink-500);
+	}
+
+	.writing-nav {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: var(--space-5);
+		margin-top: var(--space-16);
+		padding-top: var(--space-6);
+		border-top: var(--border-hair);
+		font-family: var(--font-sans);
+		font-size: var(--t-small);
+	}
+	.writing-nav a {
+		color: var(--ink-700);
+		text-decoration: none;
+	}
+	.writing-nav a:hover {
+		color: var(--green-700);
+	}
+</style>

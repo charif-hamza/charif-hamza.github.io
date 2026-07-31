@@ -1,0 +1,49 @@
+---
+/**
+ * Button — SPEC §5.5.2 / §5.5.3.
+ * Metrics live in base.css so the primary and secondary variants can never
+ * drift apart: same 52px height, same pill radius, same focus ring.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+	href?: string;
+	variant?: 'primary' | 'secondary';
+	icon?: 'download' | 'arrow-right' | 'arrow-left' | 'external';
+	iconPosition?: 'start' | 'end';
+	small?: boolean;
+	download?: boolean;
+	external?: boolean;
+	class?: string;
+	'aria-label'?: string;
+	id?: string;
+}
+
+const {
+	href,
+	variant = 'primary',
+	icon,
+	iconPosition = 'start',
+	small = false,
+	download = false,
+	external = false,
+	class: className = '',
+	...rest
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+const classes = ['btn', `btn--${variant}`, small && 'btn--small', className].filter(Boolean).join(' ');
+---
+
+<Tag
+	class={classes}
+	href={href}
+	download={download ? '' : undefined}
+	target={external ? '_blank' : undefined}
+	rel={external ? 'noopener' : undefined}
+	{...rest}
+>
+	{icon && iconPosition === 'start' && <Icon name={icon} />}
+	<span><slot /></span>
+	{icon && iconPosition === 'end' && <Icon name={icon} />}
+</Tag>

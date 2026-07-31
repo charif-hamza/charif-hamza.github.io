@@ -1,0 +1,64 @@
+---
+/**
+ * SurfaceLayout — Layer 1.  SPEC §4.1.
+ *
+ * "A well-made object. Calm, geometric, slightly playful, expensive-looking,
+ * not loud." The background is --field, never pure white, because the white
+ * cards need something to sit on; the colour ratio target is 50% field, 25%
+ * green, 20% white, 5% ink.
+ */
+import BaseLayout from './BaseLayout.astro';
+import SurfaceHeader from '~/components/surface/SurfaceHeader.astro';
+import Footer from '~/components/surface/Footer.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	ogImage?: string;
+	jsonLd?: Record<string, unknown>;
+	canonical?: string;
+	noIndex?: boolean;
+}
+
+const { ...props } = Astro.props;
+---
+
+<BaseLayout {...props} layer="surface" class="surface">
+	<SurfaceHeader />
+	<main id="content">
+		<slot />
+	</main>
+	<Footer />
+</BaseLayout>
+
+<style is:global>
+	.surface {
+		background: var(--field);
+	}
+
+	/* Below-the-fold blocks reveal once at 15% visibility (§7.5). */
+	.surface [data-revealable] {
+		will-change: opacity, transform;
+	}
+</style>
+
+<script>
+	/* A single IntersectionObserver for every below-the-fold reveal, firing
+	   once and then disconnecting from that element. No re-animation on
+	   scroll-up: re-animating punishes the reader for scrolling back (§7.5). */
+	const targets = document.querySelectorAll<HTMLElement>('[data-revealable]');
+
+	if (targets.length && document.documentElement.dataset.entrance === 'play') {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					(entry.target as HTMLElement).dataset.revealed = '';
+					observer.unobserve(entry.target);
+				}
+			},
+			{ threshold: 0.15 },
+		);
+		for (const target of targets) observer.observe(target);
+	}
+</script>

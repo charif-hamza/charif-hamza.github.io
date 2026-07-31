@@ -1,0 +1,174 @@
+---
+/**
+ * Writing index (/writing) — SPEC §8.3.
+ *
+ * "Reverse chronological list, grouped by year, each row = title, one-line
+ * description, date, and 1-2 tags. No cards, no images, no excerpts longer
+ * than one line. It should look like a bibliography."
+ *
+ * Which is exactly why this page lives in Layer 2 rather than Layer 1: a
+ * bibliography that floats on cards is not a bibliography.
+ */
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import DocHeader from '~/components/document/DocHeader.astro';
+import { writingByYear } from '~/lib/collections.ts';
+import { site, en } from '~/lib/site.ts';
+import { dateEn } from '~/lib/typo.ts';
+
+const years = await writingByYear();
+---
+
+<BaseLayout
+	title={`${en.writingIndexTitle} — ${site.name}`}
+	description={en.writingIndexLead}
+	layer="depth"
+	lang={site.docLang}
+	class="doc layer-depth"
+>
+	<DocHeader sectionTitle={en.writingIndexTitle} />
+
+	<main id="content" class="doc__grid">
+		<div class="doc__main">
+			<header class="writing-head">
+				<h1 class="t-h1">{en.writingIndexTitle}</h1>
+				<p class="writing-head__lead t-lead">{en.writingIndexLead}</p>
+			</header>
+
+			{
+				years.length === 0 ? (
+					<p class="writing-empty t-small">{en.writingEmpty}</p>
+				) : (
+					years.map(([year, entries]) => (
+						<section class="writing-year" aria-labelledby={`year-${year}`}>
+							<h2 class="writing-year__label t-meta t-tabular" id={`year-${year}`}>
+								{year}
+							</h2>
+							<ul role="list">
+								{entries.map((entry) => (
+									<li class="writing-row">
+										<a class="writing-row__link" href={`/writing/${entry.data.slug}`}>
+											<span class="writing-row__title">{entry.data.title}</span>
+											<span class="writing-row__desc t-small">{entry.data.description}</span>
+										</a>
+										<span class="writing-row__aside">
+											<span class="writing-row__tags t-meta">{entry.data.tags.join(' · ')}</span>
+											<time class="writing-row__date t-meta t-tabular" datetime={entry.data.date.toISOString()}>
+												{dateEn(entry.data.date)}
+											</time>
+										</span>
+									</li>
+								))}
+							</ul>
+						</section>
+					))
+				)
+			}
+		</div>
+	</main>
+
+	<footer class="doc-foot">
+		<div class="doc-foot__inner t-meta">
+			<a href="/">{site.name}</a>
+			<a href="/rss.xml">{site.strings.fr.footer.rss}</a>
+		</div>
+	</footer>
+</BaseLayout>
+
+<style>
+	.doc__grid {
+		padding-top: var(--space-12);
+		padding-bottom: var(--space-20);
+	}
+
+	.writing-head {
+		padding-bottom: var(--space-8);
+		border-bottom: var(--border-hair);
+	}
+	.writing-head__lead {
+		margin-top: var(--space-4);
+		color: var(--ink-700);
+		max-width: 34em;
+	}
+
+	.writing-year {
+		margin-top: var(--space-12);
+	}
+	.writing-year__label {
+		color: var(--ink-500);
+		margin-bottom: var(--space-4);
+	}
+	.writing-year ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.writing-row {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: var(--space-3) var(--space-6);
+		padding-block: var(--space-5);
+		border-top: var(--border-hair);
+	}
+	.writing-row:last-child {
+		border-bottom: var(--border-hair);
+	}
+
+	.writing-row__link {
+		display: grid;
+		gap: var(--space-1);
+		flex: 1 1 20rem;
+		color: var(--ink-900);
+		text-decoration: none;
+	}
+	.writing-row__title {
+		font-size: var(--t-h3);
+		font-weight: 600;
+		letter-spacing: var(--track-h3);
+		text-decoration: underline;
+		text-decoration-color: var(--green-500);
+		text-decoration-thickness: 2px;
+		text-underline-offset: 3px;
+	}
+	.writing-row__link:hover .writing-row__title {
+		color: var(--green-700);
+		text-decoration-thickness: 3px;
+	}
+	.writing-row__desc {
+		color: var(--ink-500);
+	}
+
+	.writing-row__aside {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-5);
+		color: var(--ink-500);
+	}
+
+	.writing-empty {
+		margin-top: var(--space-10);
+		color: var(--ink-500);
+	}
+
+	.doc-foot {
+		border-top: var(--border-hair);
+		padding-block: var(--space-8);
+	}
+	.doc-foot__inner {
+		display: flex;
+		gap: var(--space-6);
+		max-width: calc(var(--container-doc) + 2 * var(--gutter));
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+		color: var(--ink-500);
+	}
+	.doc-foot__inner a {
+		color: var(--ink-500);
+		text-decoration: none;
+	}
+	.doc-foot__inner a:hover {
+		color: var(--ink-900);
+	}
+</style>

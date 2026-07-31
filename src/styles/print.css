@@ -1,0 +1,126 @@
+/* =============================================================================
+   Print — SPEC §12.3. "Supervisors print things."
+   Hide chrome and the TOC, black on white, show link URLs after link text,
+   keep figures. Acceptance: a project page prints legibly on A4 (§15).
+   ============================================================================= */
+
+@media print {
+	@page {
+		size: A4;
+		margin: 18mm 16mm;
+	}
+
+	:root {
+		--bg-page: #fff;
+	}
+
+	html,
+	body {
+		background: #fff !important;
+		color: #000 !important;
+		font-size: 10.5pt;
+	}
+
+	/* Chrome goes. The document stays. */
+	.doc-header,
+	.toc,
+	.toc-inline,
+	.skip-link,
+	.site-footer,
+	.next-prev,
+	.rail__progress,
+	.motion-toggle,
+	.copy-button {
+		display: none !important;
+	}
+
+	.doc__grid {
+		display: block;
+		max-width: none;
+		padding: 0;
+	}
+	.doc__main {
+		grid-column: auto;
+	}
+
+	.prose {
+		font-size: 10.5pt;
+		line-height: 1.5;
+		color: #000;
+	}
+
+	.prose h2 {
+		margin-top: 18pt;
+		padding-top: 6pt;
+		border-top: 0.5pt solid #999;
+		break-after: avoid;
+	}
+	.prose h3 {
+		break-after: avoid;
+	}
+	.prose :is(p, li) {
+		orphans: 3;
+		widows: 3;
+	}
+
+	/* Show link targets — a printed page with invisible URLs is a dead end. */
+	.prose a[href^='http']::after {
+		content: ' (' attr(href) ')';
+		font-family: var(--font-mono);
+		font-size: 8pt;
+		color: #444;
+		vertical-align: baseline;
+		word-break: break-all;
+	}
+	.prose a {
+		text-decoration: underline;
+		color: #000 !important;
+	}
+
+	.figure,
+	table,
+	pre,
+	.callout {
+		break-inside: avoid;
+	}
+
+	.figure img,
+	.figure svg {
+		border: 0.5pt solid #ccc;
+	}
+
+	/* Sidenotes come back inline so nothing is lost on paper. */
+	.sidenote {
+		position: static !important;
+		width: auto !important;
+		left: auto !important;
+		margin: 6pt 0 !important;
+		font-size: 9pt;
+		color: #333;
+	}
+	.sidenote > summary {
+		display: none !important;
+	}
+	.sidenote__body {
+		display: block !important;
+		border-left: 0.5pt solid #999;
+		padding-left: 8pt;
+	}
+
+	/* The motif prints as a faint watermark (§6.4, item 5). */
+	.motif {
+		opacity: 0.45;
+		filter: grayscale(1);
+	}
+	/* Grain is a screen texture; on paper it is just toner. */
+	.iso-grain {
+		display: none;
+	}
+
+	.facts {
+		border-color: #000;
+	}
+	.facts th {
+		color: #333;
+	}
+}

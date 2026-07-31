@@ -1,0 +1,588 @@
+/* =============================================================================
+   Layer 2 — Depth.  SPEC §4.2, §5.3.4, §8.2
+
+   "A technical note or a preprint that happens to be well designed."
+   Structure comes from rules, numbering and margins — not from boxes and
+   shadows. Layer 2 MUST NOT use --shadow-card; elevation is a Layer 1 language
+   only (§5.4). Colour ratio target: 88% paper, 9% ink, 3% green.
+   ============================================================================= */
+
+.doc {
+	background: var(--paper);
+}
+
+/* --- The document grid (§5.3.4) -------------------------------------------
+   Below lg: single column. At lg: sidenote margin | reading column | TOC.
+   The reading column is a fixed 720px so the measure stays at 68-72 characters
+   whatever the viewport does.                                                */
+.doc__grid {
+	display: grid;
+	grid-template-columns: minmax(0, var(--container-text));
+	justify-content: center;
+	gap: 0 var(--space-10);
+	width: 100%;
+	max-width: calc(var(--container-doc) + 2 * var(--gutter));
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+}
+
+.doc__sidenotes {
+	display: none;
+}
+.doc__toc {
+	display: none;
+}
+
+@media (min-width: 1024px) {
+	.doc__grid {
+		grid-template-columns: 0 minmax(0, var(--container-text)) var(--col-toc);
+	}
+	.doc__toc {
+		display: block;
+	}
+}
+
+@media (min-width: 1440px) {
+	.doc__grid {
+		grid-template-columns: var(--col-sidenote) minmax(0, var(--container-text)) var(--col-toc);
+	}
+	.doc__sidenotes {
+		display: block;
+	}
+}
+
+.doc__main {
+	grid-column: 2;
+	min-width: 0;
+}
+@media (max-width: 1023px) {
+	.doc__main {
+		grid-column: 1;
+	}
+}
+
+/* =============================================================================
+   Prose — §8.2.5
+   ============================================================================= */
+
+.prose {
+	font-family: var(--font-serif);
+	font-size: var(--t-body);
+	line-height: var(--lh-body-serif);
+	color: var(--ink-900);
+	counter-reset: section figure equation sidenote;
+}
+
+/* Single-family alternative (§5.2.1 / D3): set body.doc[data-face="sans"] and
+   the reading column switches to the grotesque at a looser leading. Decide
+   once, never mix. */
+.doc[data-face='sans'] .prose {
+	font-family: var(--font-sans);
+	font-size: 17px;
+	line-height: 1.7;
+}
+
+.prose > p {
+	margin-block: 0 var(--space-5);
+}
+
+.prose > p:first-of-type {
+	margin-top: 0;
+}
+
+/* No first-line indent, no centred paragraphs (§5.2.3). */
+.prose p {
+	text-indent: 0;
+}
+
+/* --- Numbered sections. The strongest "technical document" signal available,
+   and it costs nothing (§8.2.5). ------------------------------------------- */
+.prose h2 {
+	counter-increment: section;
+	counter-reset: subsection;
+	font-family: var(--font-sans);
+	font-size: var(--t-h2);
+	font-weight: 700;
+	letter-spacing: var(--track-h2);
+	line-height: var(--lh-h2);
+	margin-top: var(--space-14);
+	padding-top: var(--space-6);
+	border-top: var(--border-hair);
+	margin-bottom: var(--space-5);
+	scroll-margin-top: calc(var(--space-14) + var(--space-6));
+}
+
+.prose h2::before {
+	content: counter(section) '.';
+	display: inline-block;
+	min-width: 1.7em;
+	/* The number is text and has to be readable: --ink-300 measures 1.89:1 on
+	   paper, which fails even the 3:1 allowed for large text (§12.2). */
+	color: var(--ink-500);
+	font-variant-numeric: tabular-nums;
+}
+
+.prose h3 {
+	counter-increment: subsection;
+	font-family: var(--font-sans);
+	font-size: var(--t-h3);
+	font-weight: 600;
+	letter-spacing: var(--track-h3);
+	line-height: var(--lh-h3);
+	margin-top: var(--space-10);
+	margin-bottom: var(--space-3);
+	scroll-margin-top: calc(var(--space-14) + var(--space-6));
+}
+
+.prose h3::before {
+	content: counter(section) '.' counter(subsection);
+	display: inline-block;
+	min-width: 2.6em;
+	color: var(--ink-500);
+	font-variant-numeric: tabular-nums;
+}
+
+.prose h4 {
+	font-family: var(--font-sans);
+	font-size: var(--t-body);
+	font-weight: 600;
+	margin-top: var(--space-8);
+	margin-bottom: var(--space-2);
+}
+
+/* Heading anchors: visible on hover and on keyboard focus, never a decoration
+   that shifts the text (§3.4 requires a fragment link to every h2/h3). */
+.prose :is(h2, h3) > a.anchor {
+	opacity: 0;
+	margin-left: var(--space-2);
+	color: var(--ink-300);
+	text-decoration: none;
+	font-weight: 400;
+	transition: opacity var(--dur-fast) var(--ease-standard);
+}
+.prose :is(h2, h3):hover > a.anchor,
+.prose :is(h2, h3) > a.anchor:focus-visible {
+	opacity: 1;
+}
+
+/* --- Lists ---------------------------------------------------------------- */
+.prose :is(ul, ol) {
+	margin-block: 0 var(--space-5);
+	padding-left: var(--space-6);
+}
+.prose li {
+	margin-bottom: var(--space-2);
+}
+.prose li::marker {
+	color: var(--ink-500);
+}
+
+/* --- Links (§5.5.4). No colour-only differentiation. ---------------------- */
+.prose a:not(.anchor):not(.artifact) {
+	color: var(--ink-900);
+	text-decoration: underline;
+	text-decoration-color: var(--green-500);
+	text-decoration-thickness: 2px;
+	text-underline-offset: 3px;
+	transition:
+		color var(--dur-fast) var(--ease-standard),
+		text-decoration-thickness var(--dur-fast) var(--ease-standard);
+}
+.prose a:not(.anchor):not(.artifact):hover {
+	color: var(--green-700);
+	text-decoration-thickness: 3px;
+}
+/* External links get a 10px arrow glyph (§5.5.4). */
+.prose a[href^='http']::after {
+	content: '↗';
+	display: inline-block;
+	font-size: 10px;
+	margin-left: 0.25em;
+	vertical-align: 0.35em;
+	color: var(--ink-500);
+	text-decoration: none;
+}
+
+/* --- Emphasis, quotes ----------------------------------------------------- */
+.prose strong {
+	font-weight: 600;
+}
+.prose blockquote {
+	margin: var(--space-6) 0;
+	padding-left: var(--space-5);
+	border-left: 3px solid var(--rule);
+	color: var(--ink-700);
+}
+
+.prose hr {
+	border: 0;
+	border-top: var(--border-hair);
+	margin-block: var(--space-10);
+}
+
+/* --- Code (§8.2.5) --------------------------------------------------------
+   Inline: mono on the faintest green wash. Blocks: paper on a hairline, no
+   traffic lights, no line numbers.                                          */
+.prose :not(pre) > code {
+	font-family: var(--font-mono);
+	font-size: var(--t-mono);
+	background: var(--green-050);
+	border-radius: var(--radius-sm);
+	padding: 2px 5px;
+}
+
+.prose pre,
+.code-block pre {
+	font-family: var(--font-mono);
+	font-size: var(--t-mono);
+	line-height: var(--lh-mono);
+	background: var(--paper) !important;
+	border: var(--border-hair);
+	border-radius: var(--radius-md);
+	padding: var(--space-5);
+	overflow-x: auto;
+	margin-block: var(--space-6);
+	tab-size: 2;
+}
+
+.prose pre code {
+	background: none;
+	padding: 0;
+	font-size: inherit;
+}
+
+/* --- Tables --------------------------------------------------------------- */
+.prose table {
+	width: 100%;
+	border-collapse: collapse;
+	font-family: var(--font-sans);
+	font-size: var(--t-small);
+	margin-block: var(--space-6);
+	font-variant-numeric: tabular-nums;
+}
+.prose :is(th, td) {
+	text-align: left;
+	padding: var(--space-3) var(--space-4) var(--space-3) 0;
+	border-bottom: var(--border-hair);
+	vertical-align: top;
+}
+.prose th {
+	font-weight: 600;
+	font-size: var(--t-meta);
+	letter-spacing: var(--track-meta);
+	color: var(--ink-500);
+	border-bottom: 1px solid var(--ink-300);
+}
+.prose tbody tr:nth-child(even) {
+	background: var(--green-050);
+}
+
+/* Wide tables scroll inside their own box rather than pushing the page out. */
+.prose .table-scroll {
+	overflow-x: auto;
+}
+
+/* --- Equations (§8.2.5): display equations numbered on the right ---------- */
+.prose .katex-display {
+	position: relative;
+	counter-increment: equation;
+	margin-block: var(--space-6);
+	overflow-x: auto;
+	overflow-y: hidden;
+	padding-right: var(--space-10);
+}
+.prose .katex-display::after {
+	content: '(' counter(equation) ')';
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	font-family: var(--font-mono);
+	font-size: var(--t-mono);
+	color: var(--ink-500);
+}
+
+/* =============================================================================
+   Document components
+   ============================================================================= */
+
+/* --- Facts table (§8.2.2). Scannable in 15 seconds; the single most-read
+   element for Persona B. ---------------------------------------------------- */
+.facts {
+	width: 100%;
+	border-collapse: collapse;
+	font-family: var(--font-sans);
+	margin-block: var(--space-8);
+	border-top: 1px solid var(--ink-300);
+	border-bottom: 1px solid var(--ink-300);
+}
+.facts th {
+	width: 8.5rem;
+	text-align: left;
+	vertical-align: baseline;
+	padding: var(--space-3) var(--space-5) var(--space-3) 0;
+	font-size: var(--t-meta);
+	font-weight: 500;
+	letter-spacing: var(--track-meta);
+	color: var(--ink-500);
+	white-space: nowrap;
+}
+.facts td {
+	padding: var(--space-3) 0;
+	font-size: var(--t-body);
+	vertical-align: baseline;
+}
+.facts tr + tr :is(th, td) {
+	border-top: var(--border-hair);
+}
+.facts .is-numeric,
+.facts .is-mono {
+	font-family: var(--font-mono);
+	font-size: var(--t-mono);
+	font-variant-numeric: tabular-nums;
+}
+
+/* --- Callout (§5.5.5). No box fill; a 3px left rule and a label. ---------- */
+.callout {
+	margin-block: var(--space-6);
+	padding-left: var(--space-5);
+	border-left: 3px solid var(--green-500);
+}
+.callout__label {
+	display: block;
+	font-family: var(--font-sans);
+	font-size: var(--t-meta);
+	font-weight: 500;
+	letter-spacing: var(--track-meta);
+	text-transform: uppercase;
+	color: var(--ink-500);
+	margin-bottom: var(--space-2);
+}
+.callout > :last-child {
+	margin-bottom: 0;
+}
+/* Honesty is not an accent colour (§5.5.5). */
+.callout[data-variant='limitation'] {
+	border-left-color: var(--ink-300);
+}
+
+/* --- TL;DR (§8.2.3) — a callout, tightened. ------------------------------- */
+.tldr ul {
+	margin: 0;
+	padding-left: var(--space-5);
+}
+.tldr li {
+	margin-bottom: var(--space-2);
+}
+
+/* --- Figures (§8.2.6) ----------------------------------------------------- */
+.figure {
+	margin-block: var(--space-8);
+}
+.figure img,
+.figure svg {
+	width: 100%;
+	height: auto;
+	border-radius: var(--radius-md);
+	border: var(--border-hair);
+}
+.figure figcaption {
+	counter-increment: figure;
+	margin-top: var(--space-3);
+	font-family: var(--font-sans);
+	font-size: var(--t-small);
+	line-height: var(--lh-small);
+	color: var(--ink-500);
+}
+.figure figcaption::before {
+	content: attr(data-label) ' ' counter(figure) ' — ';
+	color: var(--ink-900);
+}
+/* At xl a figure MAY bleed 180px into the left sidenote margin (§8.2.6). */
+@media (min-width: 1440px) {
+	.figure[data-bleed='left'] {
+		margin-left: calc(-1 * (var(--col-sidenote) + var(--space-10)));
+		width: calc(100% + var(--col-sidenote) + var(--space-10));
+	}
+}
+
+/* --- Sidenotes (§8.2.7) ---------------------------------------------------
+   At xl they sit in the left margin, aligned to their reference point. Below
+   xl they collapse to an inline <details>, which is also the print and no-JS
+   behaviour.                                                                 */
+.sidenote {
+	display: block;
+	margin-block: var(--space-4);
+	font-family: var(--font-sans);
+	font-size: var(--t-small);
+	line-height: var(--lh-small);
+	color: var(--ink-500);
+}
+.sidenote > summary {
+	cursor: pointer;
+	color: var(--ink-700);
+	font-size: var(--t-small);
+}
+.sidenote__body {
+	padding-top: var(--space-2);
+	border-left: 2px solid var(--rule);
+	padding-left: var(--space-4);
+}
+
+@media (min-width: 1440px) {
+	.sidenote {
+		position: absolute;
+		left: calc(-1 * (var(--col-sidenote) + var(--space-10)));
+		width: var(--col-sidenote);
+		margin: 0;
+		text-align: left;
+	}
+	.sidenote > summary {
+		display: none;
+	}
+	.sidenote[open] .sidenote__body,
+	.sidenote .sidenote__body {
+		display: block;
+		border-left: 0;
+		padding-left: 0;
+		padding-top: 0;
+	}
+	.sidenote::before {
+		content: counter(sidenote);
+		counter-increment: sidenote;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--green-700);
+		margin-right: 0.35em;
+		vertical-align: super;
+	}
+	.prose {
+		position: relative;
+	}
+}
+
+/* --- Artifacts block (§8.2.8) --------------------------------------------- */
+.artifacts {
+	display: grid;
+	gap: var(--space-3);
+	margin-block: var(--space-8);
+	padding: 0;
+	list-style: none;
+}
+.artifact {
+	display: flex;
+	align-items: baseline;
+	gap: var(--space-4);
+	padding: var(--space-4) 0;
+	border-top: var(--border-hair);
+	font-family: var(--font-sans);
+	text-decoration: none;
+	color: var(--ink-900);
+}
+.artifacts li:last-child .artifact {
+	border-bottom: var(--border-hair);
+}
+.artifact__type {
+	flex: none;
+	width: 5.5rem;
+	font-size: var(--t-meta);
+	letter-spacing: var(--track-meta);
+	color: var(--ink-500);
+	text-transform: uppercase;
+}
+.artifact__label {
+	font-size: var(--t-body);
+	font-weight: 500;
+	text-decoration: underline;
+	text-decoration-color: var(--green-500);
+	text-decoration-thickness: 2px;
+	text-underline-offset: 3px;
+}
+.artifact:hover .artifact__label {
+	color: var(--green-700);
+	text-decoration-thickness: 3px;
+}
+
+/* --- Table of contents (§5.3.4) ------------------------------------------- */
+.toc {
+	position: sticky;
+	top: calc(var(--space-14) + var(--space-6));
+	max-height: calc(100vh - var(--space-20));
+	overflow-y: auto;
+	padding-left: var(--space-5);
+	border-left: var(--border-hair);
+	font-family: var(--font-sans);
+}
+.toc__title {
+	font-size: var(--t-meta);
+	font-weight: 500;
+	letter-spacing: var(--track-meta);
+	text-transform: uppercase;
+	color: var(--ink-500);
+	margin-bottom: var(--space-3);
+}
+.toc ol {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	counter-reset: toc;
+}
+.toc li {
+	margin-bottom: var(--space-2);
+}
+.toc li[data-depth='3'] {
+	padding-left: var(--space-4);
+}
+.toc a {
+	display: block;
+	font-size: var(--t-small);
+	line-height: 1.35;
+	color: var(--ink-500);
+	text-decoration: none;
+	transition: color var(--dur-base) var(--ease-standard);
+}
+.toc a:hover {
+	color: var(--ink-900);
+}
+.toc a[aria-current='true'] {
+	color: var(--ink-900);
+	font-weight: 500;
+}
+
+/* Below lg the TOC collapses into a <details> block under the title (§5.3.4). */
+.toc-inline {
+	margin-block: var(--space-6);
+	border-top: var(--border-hair);
+	border-bottom: var(--border-hair);
+	padding-block: var(--space-3);
+	font-family: var(--font-sans);
+}
+.toc-inline > summary {
+	cursor: pointer;
+	font-size: var(--t-meta);
+	font-weight: 500;
+	letter-spacing: var(--track-meta);
+	text-transform: uppercase;
+	color: var(--ink-500);
+}
+.toc-inline ol {
+	list-style: none;
+	margin: var(--space-3) 0 0;
+	padding: 0;
+}
+.toc-inline li {
+	margin-bottom: var(--space-2);
+}
+.toc-inline li[data-depth='3'] {
+	padding-left: var(--space-4);
+}
+.toc-inline a {
+	font-size: var(--t-small);
+	color: var(--ink-700);
+	text-decoration: none;
+}
+@media (min-width: 1024px) {
+	.toc-inline {
+		display: none;
+	}
+}

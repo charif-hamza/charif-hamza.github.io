@@ -1,0 +1,133 @@
+---
+/**
+ * NextPrev — SPEC §3.2, §8.2.8.
+ *
+ * "Every Layer 2 page MUST end with a 'next' affordance: next project, or back
+ * to the rail. No dead ends."
+ *
+ * The neighbouring motifs appear at 64px, frozen at their poster frames — the
+ * same asset as the card and the header (§6.4), so the reader recognises where
+ * the link goes before reading the title.
+ */
+import MotifFrame from '~/components/common/MotifFrame.astro';
+import Icon from '~/components/common/Icon.astro';
+import { en } from '~/lib/site.ts';
+import type { Project } from '~/lib/collections.ts';
+import type { MotifId } from '~/motifs/index.ts';
+
+interface Props {
+	previous?: Project;
+	next?: Project;
+}
+
+const { previous, next } = Astro.props;
+---
+
+<nav class="next-prev" aria-label={en.nextProject}>
+	{
+		previous ? (
+			<a class="next-prev__link" href={`/projects/${previous.data.slug}`} data-direction="previous">
+				<span class="next-prev__motif">
+					<MotifFrame id={previous.data.motif as MotifId} surface={previous.data.motifColor} />
+				</span>
+				<span class="next-prev__text">
+					<span class="next-prev__label t-meta">
+						<Icon name="arrow-left" size={12} />
+						{en.previousProject}
+					</span>
+					<span class="next-prev__title t-h3">{previous.data.title}</span>
+				</span>
+			</a>
+		) : (
+			<a class="next-prev__link next-prev__link--plain" href="/projects">
+				<span class="next-prev__text">
+					<span class="next-prev__label t-meta">
+						<Icon name="arrow-left" size={12} />
+						{en.backToProjects}
+					</span>
+				</span>
+			</a>
+		)
+	}
+
+	{
+		next && (
+			<a class="next-prev__link" href={`/projects/${next.data.slug}`} data-direction="next">
+				<span class="next-prev__text">
+					<span class="next-prev__label t-meta">
+						{en.nextProject}
+						<Icon name="arrow-right" size={12} />
+					</span>
+					<span class="next-prev__title t-h3">{next.data.title}</span>
+				</span>
+				<span class="next-prev__motif">
+					<MotifFrame id={next.data.motif as MotifId} surface={next.data.motifColor} />
+				</span>
+			</a>
+		)
+	}
+</nav>
+
+<style>
+	.next-prev {
+		display: grid;
+		gap: var(--space-6);
+		margin-top: var(--space-16);
+		padding-top: var(--space-8);
+		border-top: var(--border-hair);
+	}
+	@media (min-width: 768px) {
+		.next-prev {
+			grid-template-columns: 1fr 1fr;
+			gap: var(--space-10);
+		}
+	}
+
+	.next-prev__link {
+		display: flex;
+		align-items: center;
+		gap: var(--space-4);
+		padding: var(--space-4) 0;
+		color: var(--ink-900);
+		text-decoration: none;
+	}
+	.next-prev__link[data-direction='next'] {
+		justify-content: flex-end;
+		text-align: right;
+	}
+
+	.next-prev__motif {
+		flex: none;
+		width: 64px;
+	}
+
+	.next-prev__text {
+		display: grid;
+		gap: var(--space-1);
+		min-width: 0;
+	}
+
+	.next-prev__label {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		color: var(--ink-500);
+	}
+	.next-prev__link[data-direction='next'] .next-prev__label {
+		justify-content: flex-end;
+	}
+
+	.next-prev__title {
+		text-decoration: underline;
+		text-decoration-color: var(--rule);
+		text-decoration-thickness: 2px;
+		text-underline-offset: 4px;
+		transition:
+			color var(--dur-fast) var(--ease-standard),
+			text-decoration-color var(--dur-fast) var(--ease-standard);
+	}
+	.next-prev__link:hover .next-prev__title {
+		color: var(--green-700);
+		text-decoration-color: var(--green-500);
+	}
+</style>

@@ -1,0 +1,38 @@
+---
+/**
+ * M-02 · WFI route comparison — "two paths, one chosen"  (SPEC §6.5)
+ *
+ * Concept: one duty, met by a stack of stages seen edge-on. Three slabs on a
+ * single axis — the thin one in front, the thick one that carries the load,
+ * and the one behind that the comparison keeps in view. Two of the three
+ * carry green on their lit face: the two compliant routes. The depth between
+ * them is the whole subject of the study.
+ *
+ * Drawn as a still (see iso.js).
+ */
+import Scene from './Scene.astro';
+import { box, painterSort } from './iso.js';
+
+interface Props {
+	surface?: 'green' | 'white';
+	class?: string;
+}
+
+const { surface = 'white', class: className = '' } = Astro.props;
+
+/* Same footprint and height throughout; only the thickness along y changes,
+   which is what makes the stack read as one object seen in section.
+   The quarter-cell gaps are load-bearing: without them each slab's lit face
+   sits exactly where the next slab's shadow face is, and the whole stack
+   collapses into one undifferentiated box. */
+const W = 2; // width along x
+const H = 1.75; // height along z
+
+const boxes = painterSort([
+	box(0, 0.75, 0, W, 0.25, H, 'accent-edge'), // back slab: the route not taken
+	box(0, 1.25, 0, W, 0.75, H, 'accent-soft'), // the stage that carries the duty
+	box(0, 2.25, 0, W, 0.25, H, 'light'), // front slab
+]);
+---
+
+<Scene boxes={boxes} shadow={{ x: 1.5, y: 2, footprint: 2.4 }} surface={surface} class={className} />

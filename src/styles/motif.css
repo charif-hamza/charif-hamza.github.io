@@ -1,0 +1,132 @@
+/* =============================================================================
+   The isometric illustration system — SPEC §6.
+
+   Shared vocabulary only. Every motif is a list of boxes rendered by
+   Scene.astro, so this file is the whole of the drawing's material language:
+   three face tones, one accent, one stroke, one ground.
+
+   Revision (v0.6): the motifs are stills. The loop machinery that used to live
+   here — pause guards, poster-frame pinning, hover speed-up — is gone with it;
+   the motion budget it was spending now goes to the card carousel (§7.4),
+   where it is doing something the reader asked for.
+   ============================================================================= */
+
+.motif {
+	display: block;
+	width: 100%;
+	height: auto;
+	/* CLS budget is 0.02 (§12.1): the box is square and reserved before paint. */
+	aspect-ratio: 1;
+	overflow: visible;
+}
+
+/* --- Stroke (§6.1): a hairline of ink, non-scaling, mitre joins. ---------- */
+.iso {
+	stroke: var(--iso-stroke);
+	stroke-width: var(--iso-stroke-width);
+	stroke-linejoin: miter;
+	vector-effect: non-scaling-stroke;
+}
+
+.iso-face--top {
+	fill: var(--iso-top);
+	vector-effect: non-scaling-stroke;
+}
+.iso-face--left {
+	fill: var(--iso-left);
+	vector-effect: non-scaling-stroke;
+}
+.iso-face--right {
+	fill: var(--iso-right);
+	vector-effect: non-scaling-stroke;
+}
+.iso-edge {
+	fill: none;
+	vector-effect: non-scaling-stroke;
+}
+
+/* --- Face shading, fixed light from the upper left (§6.1 table) -----------
+   Top is paper, the lit face steps back by one hair, and the shadow face is
+   the full ink. The three tones are what carries the volume; nothing else in
+   the drawing is allowed to. */
+.iso--light {
+	--iso-top: var(--paper);
+	--iso-left: var(--iso-lit);
+	--iso-right: var(--iso-shadow);
+}
+
+/* The Dark object (§6.2): a mass rather than a volume. Both flanks sit in
+   shadow, so a tall one reads as a single black column holding the figure
+   together instead of as another box with a lit side. Only the top catches
+   the light, which is what keeps it in the same world as everything else. */
+.iso--dark {
+	--iso-top: var(--paper);
+	--iso-left: var(--iso-shadow);
+	--iso-right: var(--iso-shadow);
+}
+
+/* The accent object. Exactly one per composition carries the eye (§7.3). */
+.iso--accent {
+	--iso-top: var(--green-200);
+	--iso-left: var(--iso-accent-left, var(--green-300));
+	--iso-right: var(--iso-shadow);
+}
+
+/* The accent seen edge-on. A slab's top face is a sliver, and a green sliver
+   between two white ones reads as a mistake rather than as the same object
+   turned sideways — so the flank carries the accent and the top stays paper,
+   exactly as in the reference art. Still the protagonist. */
+.iso--accent-edge {
+	--iso-top: var(--paper);
+	--iso-left: var(--iso-accent-left, var(--green-300));
+	--iso-right: var(--iso-shadow);
+}
+
+/* A second, quieter accent, for compositions where two objects are green and
+   only one of them is the subject. */
+.iso--accent-soft {
+	--iso-top: var(--paper);
+	--iso-left: var(--iso-accent-soft, var(--green-100));
+	--iso-right: var(--iso-shadow);
+}
+
+/* Ghost (§6.2): a candidate not yet evaluated, a hypothesis. */
+.iso--ghost {
+	opacity: 0.3;
+	stroke-dasharray: 3.5 3.5;
+}
+
+/* Frame (§6.2): a bound, an envelope, a certificate. */
+.iso--frame {
+	fill: none;
+	stroke: var(--green-700);
+	stroke-dasharray: 4 3;
+}
+
+/* --- Grain (§6.1) ---------------------------------------------------------
+   A whisper of tooth on the lit faces, so a large white plane is a surface
+   rather than a hole. It is one static filter over a clipped rect: no
+   per-frame cost, because there are no frames.                              */
+.iso-grain {
+	opacity: 0.45;
+	mix-blend-mode: multiply;
+	pointer-events: none;
+}
+
+/* --- Ground shadow (§6.1) -------------------------------------------------
+   The footprint of the object, softened — never a generic blob, and never
+   blue-tinted. Green cards get the green ground, white cards the neutral one
+   (§5.4). The motif does not know which card it is on; the card tells it.   */
+.iso-ground {
+	stroke: none;
+	fill: var(--ground);
+}
+.motif {
+	--ground: var(--shadow-ground-neutral);
+}
+.motif[data-surface='green'] {
+	--ground: var(--shadow-ground);
+}
+
+/* Reduced motion and reduced data have nothing to switch off here — which is
+   the point of the revision. The still IS the poster frame (§6.6). */

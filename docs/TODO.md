@@ -1,0 +1,150 @@
+# TODO register
+
+Everything the specification asked for that could not be supplied from the
+specification itself. Each entry says what is missing, where the placeholder
+lives, and what unblocks it. Nothing here is a hidden assumption — every one of
+these is also marked `TODO` at the place it is used.
+
+`npm run verify` reports the state of the machine-checkable ones on every build.
+
+---
+
+## 1 · Identity and contact
+
+| # | What | Where | Notes |
+|---|---|---|---|
+| T1 | **Domain** (D1, §17) | `site.config.yaml` → `url`, `public/robots.txt` | Placeholder `charif-hamza.com`. Feeds canonical links, `sitemap.xml`, RSS and absolute OG URLs, so it must be right before the first share. Spec recommends buying `.com` and `.fr`, serving `.com`. |
+| T2 | **Email** | `site.config.yaml` → `email` | Placeholder `contact@charif-hamza.com`. It is the only contact method on the site (§11.1 — no forms), and it appears in the hero, the footer, both document layouts and the JSON-LD. |
+| T3 | **GitHub / LinkedIn / ORCID** | `site.config.yaml` → `social` | Placeholders contain `TODO`. An empty string hides the link entirely rather than rendering a dead one. ORCID is intentionally empty until §14 v1.2. |
+| T4 | **Public repo URL** (D7, §17) | `site.config.yaml` → `social.repo` | The "Voir le code de ce site" footer link. D7 resolves to a public repo — it is a credibility artifact for Persona B. |
+| T5 | **Surname order** | `site.config.yaml` → `surname` / `givenName` | Assumed given name Charif, surname Hamza, giving `HAMZA-Charif-CV-FR-2026-07.pdf`. §8.4 requires uppercase surname first (French HR filing convention). **Confirm before generating the CV filenames** — this one is visible to exactly the person it is meant to impress. |
+| T6 | **School legal names** | `site.config.yaml` → `person.alumniOf` | Taken from the spec's draft status line. Feeds `schema.org/Person`, which is what makes you findable as a researcher (§12.3). |
+
+## 2 · Binary assets
+
+| # | What | Where | Notes |
+|---|---|---|---|
+| T7 | **The two CV PDFs** | `public/cv/` | Filenames are already declared in `site.config.yaml`. Set `cv.available: true` and fill `size` / `updated` once they exist. Until then `/cv` renders an explicit note rather than a broken viewer, and the download buttons still render because S1 requires them above the fold. Keep the stable redirects at `/cv/latest-fr.pdf` and `/cv/latest-en.pdf` (§8.4). |
+| T8 | **Font files** | `public/fonts/` | Seven WOFF2 files, listed with their exact names in `src/styles/fonts.css`. Switzer is free from Fontshare; Source Serif 4 and JetBrains Mono are OFL. Subset to `latin` + `latin-ext` — the French accents are not optional. Budget 120 KB total (§12.1). Then set `fonts.installed: true`, which switches the preload hints on. Until then the fallback stacks carry the site and the build prints one Vite warning per missing file — that warning **is** this TODO. |
+| T9 | **Three real figures** | `public/figures/<slug>/` | All three projects currently point at `public/figures/_placeholder.svg`, which is correctly sized so nothing shifts. §8.2.6 makes an unlabelled axis a hard rejection criterion: every chart needs axis labels with units, and the series must use the site palette (`--green-500`, `--ink-900`, `--ink-500`, `--green-700`), never a rainbow default. |
+
+## 3 · Content that needs facts
+
+| # | What | Where | Notes |
+|---|---|---|---|
+| T10 | **RIDGE results and validation** | `content/projects/ridge.mdx` §6, §7 | The structure of the reporting is written; the numbers are not. Needs: optimised vs baseline drying time with grid resolution, the certified gap in hours and percent, solver wall-clock and enumeration count, sensitivity to `K_v` and `R_p`. |
+| T11 | **RIDGE gap argument** | `content/projects/ridge.mdx` §8 | The Lipschitz-type bound connecting the grid optimum to the continuous one is described but not written up. It is currently the least rigorous part of an otherwise rigorous claim, and the page says so. |
+| T12 | **Artifact URLs** | all three project frontmatters | `github.com/TODO/ridge` and two `example.com/TODO` links. The internal link checker skips external URLs; these will fail a real link-check in CI. |
+| T13 | **WFI and batch-coating facts** | both frontmatters | `context` and `period` say `TODO`. Name the organisation *type*, not the employer, unless permission exists. |
+| T14 | **Batch-coating headline figure** | `content/projects/batch-coating.mdx` card + §6 | The card says "more than two thirds"; the spec's brief says >70 %. Confirm the audited number and the baseline it is measured against, then make the card, the motif brief and the page agree. |
+| T15 | **Employer permission** (D8, §17) | WFI and batch coating | Both pages are method-only and say so in a standing callout. D8 resolves to method-only until permission is explicit. Get it in writing before any figure derived from employer data is published (§8.3). |
+| T16 | **French proofread** | `site.config.yaml` → `strings.fr` | §15 requires the French copy to be read by a native speaker. The narrow no-break spaces and guillemet spacing are applied automatically by `src/lib/typo.ts`; the *wording* is not. §10.4 also asks you to rewrite the ~350 words a week after first writing them — that is the highest-leverage hour in the project. |
+
+## 4 · Pipeline
+
+| # | What | Where | Notes |
+|---|---|---|---|
+| T17 | **OG rasterisation** | `site.config.yaml` → `og.format` | `src/pages/og/[slug].svg.ts` produces complete 1200×630 poster-frame cards that are correct in a browser. §6.7 specifies the last step as a headless screenshot; LinkedIn and Slack want raster. Screenshot each `/og/<slug>.svg` at 1200×630, write the PNGs to `public/og/`, then set `og.format: png`. Deliberately not wired to a headless-browser dependency here — that is a CI concern, not a build-time one. |
+| T18 | **Analytics** | `site.config.yaml` → `analytics` | Plausible or Umami, cookieless (§11.1). Google Analytics is not approved: it needs a consent banner in France, and the absence of that banner is itself a design decision. Track only `cv_download`, `project_open`, `artifact_click`, `rail_engaged` (§11.3). The number that matters is CV downloads per 100 home visits. |
+| T19 | **Lighthouse CI** | not present | §12.1 wants the budgets enforced in CI. `npm run verify` covers the ones measurable from a static build (JS, transfer, motif size, fonts, contrast, token set). LCP ≤ 1.8 s, CLS ≤ 0.02, INP ≤ 150 ms and the 95/100/100/100 scores need a real browser on a throttled profile. |
+| T20 | **External link check** | not present | §15 asks for a link-check in CI. `npm run acceptance` verifies every *internal* reference resolves; external URLs are not fetched. |
+
+## 5 · Manual passes before launch
+
+None of these can be automated, and §15 blocks launch on all of them.
+
+- **Screen reader.** One pass with VoiceOver or NVDA. §12.2: once is enough to catch 90 % of problems.
+- **Keyboard.** Tab through home: skip link → wordmark → CV → hero links → each card → writing rows → footer. Arrow keys must move the rail one card when it has focus, and a focused card must scroll into view.
+- **Throttled mobile.** Lighthouse on a 4G profile for the §12.1 budgets.
+- **The motifs as images** (§6.6). `npm run motifs` proves they are static, grid-true, one-protagonist and id-unique. Still needs eyes: look at each of the three on its own, at card size and at OG size, and ask whether it reads as the idea it is named after. §6.6 is now the whole bar rather than half of it — there is no animation to save a composition that does not hold.
+- **The rail on a real device.** One card in focus, neighbours cut by the page edges, and the slide landing on a snap point every time on iOS Safari and Chrome for Android — the one surface that still moves.
+- **OG cards** in the LinkedIn and Slack preview inspectors (after T17).
+- **Print** a project page on A4 and read it.
+- **`prefers-reduced-motion`** on the rail (the slide becomes a jump) and the entrance choreography, plus the footer toggle.
+
+---
+
+## Deviations from the specification
+
+### v0.6 — the motifs are stills, and the rail shows one card at a time
+
+An owner's decision, not a constraint. §6.3, §6.5 and §7.3 specify a looping
+choreography per motif — sweep, prune, certify, on a 9–11 s cycle. Built, the
+loops did not read as satisfying; they read as unresolved, which §7.3 itself
+names as the failure mode. §6.6 already required every motif to stand up as a
+still ("if it is not compelling as a still image, the motif is rejected"), so
+the still was kept and the choreography dropped. Consequences, all deliberate:
+
+- `src/motifs/iso.js` no longer emits keyframes. A motif file is a list of
+  boxes on the unit grid; `Scene.astro` turns it into SVG. `npm run motifs` now
+  proves the motifs are static, grid-true and single-protagonist, in place of
+  the three loop criteria it used to prove.
+- The §7.6 performance guards (pause off-screen, cap at three concurrent loops,
+  pause on `document.hidden`) are gone with the thing they were guarding.
+- The motion budget moved to the rail (§7.4). One card is in focus, its
+  neighbours are cut by the page edges, and the slide is a native smooth scroll
+  over mandatory snap points — so it degrades to a plain scrollable rail with
+  JavaScript off, and to an instant jump under `prefers-reduced-motion`.
+- The card fill no longer alternates down the rail (§5.1.4). Green marks the
+  card in focus; the rest are paper. The alternation is kept on `/projects`,
+  where nothing is in focus and every card is its own subject.
+- `--iso-lit`, `--iso-shadow` and the Dark material were added to the token set
+  so the three face tones match the reference art (Appendix C).
+
+### v0.6 — two things the spec asked for that were simply missing
+
+Not deviations; bugs, now fixed, recorded because both were invisible in the
+build output and neither had a test.
+
+- **`document.css` was never imported.** Layer 2 shipped with none of §5.3.4 or
+  §8.2 applied: no reading column, no gutters, no numbered sections, text
+  running edge to edge. It is imported by `DocumentLayout.astro`, which is the
+  only layer that should carry it.
+- **KaTeX's stylesheet was never imported.** `rehype-katex` was configured and
+  emitting correct markup, but unstyled KaTeX markup renders as token soup
+  rather than as an equation, so every display equation on the site was
+  plain-text mathematics. Self-hosted from `node_modules`, no CDN (§5.2.2).
+  The maths faces get their own line in `npm run budgets`: they are one file
+  per face and a browser fetches only the faces a page actually uses, so they
+  do not belong in the reading-typeface budget.
+
+### Two forced by contrast
+
+Both forced by §12.2's "WCAG 2.2 AA, non-negotiable", both inside the token
+set, both re-checked by `npm run budgets` so they cannot silently regress.
+
+**`--ink-500` darkened from `#6B7079` to `#5E636A`.** §12.2 names this exact
+pair and says to verify it: `#6B7079` measures 4.44:1 on `--field` and 4.06:1
+on `--field-deep`, under the 4.5:1 body-text minimum. The spec's instruction
+for this case is "darken if it fails". The replacement measures 5.40 / 4.94 /
+6.05 on `--field`, `--field-deep` and `--paper`. Appendix A should be amended.
+
+**The focus ring uses `--green-700` rather than `--green-500`.** §5.5.2
+specifies a `--green-500` ring. Measured, `--green-500` is 2.16:1 on `--paper`
+and 1.60:1 on a `--green-300` card — the ring would be effectively invisible on
+half the cards on the home page, and WCAG 2.2 AA requires 3:1 for a focus
+indicator. `--green-700` is the same brand green one step darker and measures
+5.39 / 4.81 / 3.98 on `--paper`, `--field` and `--green-300`.
+
+## One thing left as designed, and flagged
+
+Link underlines are `--green-500` on `--paper` (2.16:1), per §5.5.4. The link
+text itself is `--ink-900` at 18.89:1 and the underline is a shape rather than
+a colour cue, so §12.2's "no colour-only differentiation" is satisfied. A
+strict reading of WCAG 1.4.11 would still want a darker underline. Left as
+specified because it is a deliberate design decision in §5.5.4 rather than an
+oversight — but it is the one place a reviewer may reasonably disagree.
+
+## Partially implemented
+
+**The page transition (§4.4).** Implemented with native cross-document view
+transitions: the motif is the shared element and carries a per-project
+`view-transition-name`, so it scales down, travels to the project header and
+freezes at its poster frame (step 3), while the background crossfades
+`--field` → `--paper` (step 4) and the first three body blocks fade and rise
+12 px on a 60 ms stagger (step 5). Steps 1 and 2 — the clicked card expanding
+to fill the viewport while its siblings fade — need JavaScript to know which
+card was clicked, and §4.4 explicitly accepts a plain navigation with a fade as
+the fallback ("Do not polyfill"). The zero-JS route was taken deliberately;
+adding the full choreography is a contained change to `base.css` plus a small
+click handler on the rail.

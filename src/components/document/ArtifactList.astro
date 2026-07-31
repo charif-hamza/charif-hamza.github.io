@@ -1,0 +1,66 @@
+---
+/**
+ * ArtifactList — SPEC §8.2.8.
+ *
+ * Repeated at the foot of a project page, larger than in the facts table. By
+ * the time Persona B reaches the bottom he has decided whether to look at the
+ * code; making him scroll back up to find the link would be the one avoidable
+ * friction on the page.
+ */
+import Icon from '~/components/common/Icon.astro';
+import { en } from '~/lib/site.ts';
+import type { Project } from '~/lib/collections.ts';
+
+interface Props {
+	artifacts: Project['data']['artifacts'];
+	heading?: boolean;
+}
+
+const { artifacts, heading = true } = Astro.props;
+
+const TYPE_LABEL: Record<string, string> = {
+	repo: 'Code',
+	docs: 'Docs',
+	pdf: 'PDF',
+	dataset: 'Data',
+	slides: 'Slides',
+	paper: 'Paper',
+};
+---
+
+{
+	artifacts.length > 0 && (
+		<section aria-labelledby={heading ? 'artifacts-title' : undefined}>
+			{heading && (
+				<h2 class="artifacts__title" id="artifacts-title">
+					{en.artifacts}
+				</h2>
+			)}
+			<ul class="artifacts" role="list">
+				{artifacts.map((artifact) => (
+					<li>
+						<a class="artifact" href={artifact.url} rel="noopener" target="_blank">
+							<span class="artifact__type">{TYPE_LABEL[artifact.type] ?? artifact.type}</span>
+							<span class="artifact__label">{artifact.label}</span>
+							<Icon name="external" size={12} />
+						</a>
+					</li>
+				))}
+			</ul>
+		</section>
+	)
+}
+
+<style>
+	/* Not a numbered prose heading: this block sits outside the argument, so it
+	   must not increment the section counter. */
+	.artifacts__title {
+		font-family: var(--font-sans);
+		font-size: var(--t-meta);
+		font-weight: 500;
+		letter-spacing: var(--track-meta);
+		text-transform: uppercase;
+		color: var(--ink-500);
+		margin-bottom: var(--space-2);
+	}
+</style>
