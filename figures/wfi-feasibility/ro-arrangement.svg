@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="500" viewBox="0 0 960 500" role="img" aria-label="Two reverse-osmosis arrangements: the installed series train with two passes, and the proposed parallel arrangement with a doubled feed and a single pass.">
+  <!--
+    Schematic, not measured data. It shows the topology of the two arrangements
+    discussed in the validation section. Nothing here is a flow, a duty or a
+    quality figure. Token colours only (SPEC §12.1 budget check).
+  -->
+  <defs>
+    <marker id="wfi-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#101113"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="500" fill="#FFFFFF"/>
+
+  <g font-family="Switzer, 'Helvetica Neue', Arial, sans-serif">
+
+    <!-- ── Lane A · as built ─────────────────────────────────────────── -->
+    <text x="45" y="66" font-size="17" font-weight="600" fill="#101113">As built: two passes in series</text>
+    <text x="45" y="88" font-size="14" fill="#5E636A">Water crosses a membrane stage twice before the still.</text>
+
+    <g stroke="#101113" stroke-width="1.5" fill="#FFFFFF">
+      <rect x="45"  y="106" width="116" height="60" rx="3"/>
+      <rect x="195" y="106" width="116" height="60" rx="3"/>
+      <rect x="345" y="106" width="116" height="60" rx="3"/>
+      <rect x="495" y="106" width="116" height="60" rx="3"/>
+      <rect x="645" y="106" width="116" height="60" rx="3"/>
+      <rect x="795" y="106" width="116" height="60" rx="3"/>
+    </g>
+    <g font-size="14" fill="#101113" text-anchor="middle">
+      <text x="103" y="141">Feed</text>
+      <text x="253" y="141">RO 1</text>
+      <text x="403" y="141">RO 2</text>
+      <text x="553" y="132">DI +</text><text x="553" y="150">storage</text>
+      <text x="703" y="132">3-effect</text><text x="703" y="150">still</text>
+      <text x="853" y="141">WFI</text>
+    </g>
+    <g stroke="#101113" stroke-width="1.5" marker-end="url(#wfi-arrow)">
+      <line x1="161" y1="136" x2="189" y2="136"/>
+      <line x1="311" y1="136" x2="339" y2="136"/>
+      <line x1="461" y1="136" x2="489" y2="136"/>
+      <line x1="611" y1="136" x2="639" y2="136"/>
+      <line x1="761" y1="136" x2="789" y2="136"/>
+    </g>
+
+    <line x1="45" y1="205" x2="915" y2="205" stroke="#E3E5E8" stroke-width="1"/>
+
+    <!-- ── Lane B · proposed ─────────────────────────────────────────── -->
+    <text x="45" y="245" font-size="17" font-weight="600" fill="#101113">Proposed: doubled feed, two units in parallel, one pass</text>
+    <text x="45" y="267" font-size="14" fill="#5E636A">Same membranes, one stage shorter. Quality still met; rejected on the still.</text>
+
+    <g stroke="#101113" stroke-width="1.5" fill="#FFFFFF">
+      <rect x="45"  y="315" width="116" height="60" rx="3"/>
+      <rect x="345" y="315" width="116" height="60" rx="3"/>
+      <rect x="495" y="315" width="116" height="60" rx="3"/>
+      <rect x="645" y="315" width="116" height="60" rx="3"/>
+    </g>
+    <g stroke="#101113" stroke-width="1.5" fill="#A3EFAE">
+      <rect x="195" y="285" width="116" height="52" rx="3"/>
+      <rect x="195" y="353" width="116" height="52" rx="3"/>
+    </g>
+    <g font-size="14" fill="#101113" text-anchor="middle">
+      <text x="103" y="341">Feed</text><text x="103" y="359" font-size="12" fill="#5E636A">×2</text>
+      <text x="253" y="316">RO A</text>
+      <text x="253" y="384">RO B</text>
+      <text x="403" y="341">DI +</text><text x="403" y="359">storage</text>
+      <text x="553" y="341">3-effect</text><text x="553" y="359">still</text>
+      <text x="703" y="350">WFI</text>
+    </g>
+    <g stroke="#101113" stroke-width="1.5" fill="none" marker-end="url(#wfi-arrow)">
+      <path d="M 161 345 L 175 345 L 175 311 L 189 311"/>
+      <path d="M 161 345 L 175 345 L 175 379 L 189 379"/>
+      <path d="M 311 311 L 325 311 L 325 345 L 339 345"/>
+      <path d="M 311 379 L 325 379 L 325 345 L 339 345"/>
+      <line x1="461" y1="345" x2="489" y2="345"/>
+      <line x1="611" y1="345" x2="639" y2="345"/>
+    </g>
+
+    <!-- ── The objection ─────────────────────────────────────────────── -->
+    <circle cx="601" cy="325" r="5" fill="#48C862" stroke="#101113" stroke-width="1.5"/>
+    <circle cx="52" cy="441" r="5" fill="#48C862" stroke="#101113" stroke-width="1.5"/>
+    <text x="70" y="446" font-size="14" fill="#5E636A">Where the saving is lost. A single pass sends a higher dissolved load to the still, scaling its</text>
+    <text x="70" y="466" font-size="14" fill="#5E636A">heat-transfer surfaces faster; the cleaning and downtime cost more than the throughput gained.</text>
+  </g>
+</svg>

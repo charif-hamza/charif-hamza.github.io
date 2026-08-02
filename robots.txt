@@ -1,0 +1,9 @@
+# SPEC §3.1: everything is public and indexable except the CV page, which is
+# noindex in its own meta tag so that the PDF is reached from the site rather
+# than from a search result that has gone stale.
+
+User-agent: *
+Allow: /
+
+# TODO(D1 §17): update the host once the domain is decided and served.
+Sitemap: https://charif-hamza.com/sitemap-index.xml

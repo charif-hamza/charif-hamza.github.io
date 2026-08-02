@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="480" viewBox="0 0 960 480" role="img" aria-label="Three stages of primary drying in a vial: the sublimation front starts near the top and recedes downward, leaving a growing dried layer above it and a shrinking frozen layer below.">
+  <!--
+    Schematic of the moving-boundary geometry described in "The problem".
+    The three panels show the front position qualitatively; no panel encodes a
+    time, a temperature or a front velocity. Token colours only (§12.1).
+  -->
+  <defs>
+    <marker id="ridge-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#101113"/>
+    </marker>
+    <marker id="ridge-arrow-sm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5E636A"/>
+    </marker>
+    <marker id="ridge-arrow-gr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#48C862"/>
+    </marker>
+    <pattern id="ridge-dried" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#B9BDC4" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="960" height="480" fill="#FFFFFF"/>
+
+  <g font-family="Switzer, 'Helvetica Neue', Arial, sans-serif">
+    <text x="45" y="44" font-size="17" font-weight="600" fill="#101113">Primary drying as a moving boundary</text>
+    <text x="45" y="66" font-size="14" fill="#5E636A">Heat enters through the shelf; ice sublimes at the front, which recedes downward through the product.</text>
+
+    <!-- three vials: x offsets 90, 390, 690 · vial box 180 wide, 200 tall, top y=110 -->
+    <!-- front y positions: 150, 210, 268  (dried layer grows downward) -->
+
+    <g id="panel-1">
+      <rect x="90" y="110" width="180" height="200" fill="#FFFFFF" stroke="#101113" stroke-width="1.5"/>
+      <rect x="91" y="111" width="178" height="39" fill="url(#ridge-dried)"/>
+      <rect x="91" y="150" width="178" height="159" fill="#A3EFAE"/>
+      <line x1="91" y1="150" x2="269" y2="150" stroke="#101113" stroke-width="2.5"/>
+      <rect x="90" y="310" width="180" height="14" fill="#101113"/>
+      <text x="180" y="376" font-size="13" fill="#5E636A" text-anchor="middle">early</text>
+    </g>
+
+    <g id="panel-2">
+      <rect x="390" y="110" width="180" height="200" fill="#FFFFFF" stroke="#101113" stroke-width="1.5"/>
+      <rect x="391" y="111" width="178" height="99" fill="url(#ridge-dried)"/>
+      <rect x="391" y="210" width="178" height="99" fill="#A3EFAE"/>
+      <line x1="391" y1="210" x2="569" y2="210" stroke="#101113" stroke-width="2.5"/>
+      <rect x="390" y="310" width="180" height="14" fill="#101113"/>
+      <text x="480" y="376" font-size="13" fill="#5E636A" text-anchor="middle">mid-cycle</text>
+    </g>
+
+    <g id="panel-3">
+      <rect x="690" y="110" width="180" height="200" fill="#FFFFFF" stroke="#101113" stroke-width="1.5"/>
+      <rect x="691" y="111" width="178" height="157" fill="url(#ridge-dried)"/>
+      <rect x="691" y="268" width="178" height="41" fill="#A3EFAE"/>
+      <line x1="691" y1="268" x2="869" y2="268" stroke="#101113" stroke-width="2.5"/>
+      <rect x="690" y="310" width="180" height="14" fill="#101113"/>
+      <text x="780" y="376" font-size="13" fill="#5E636A" text-anchor="middle">late</text>
+    </g>
+
+    <!-- vapour out of the top of each vial -->
+    <g stroke="#5E636A" stroke-width="1.5" marker-end="url(#ridge-arrow-sm)" fill="none">
+      <line x1="180" y1="104" x2="180" y2="82"/>
+      <line x1="480" y1="104" x2="480" y2="82"/>
+      <line x1="780" y1="104" x2="780" y2="82"/>
+    </g>
+
+    <!-- heat in through the shelf -->
+    <g stroke="#101113" stroke-width="1.5" marker-end="url(#ridge-arrow)" fill="none">
+      <line x1="140" y1="352" x2="140" y2="328"/>
+      <line x1="220" y1="352" x2="220" y2="328"/>
+      <line x1="440" y1="352" x2="440" y2="328"/>
+      <line x1="520" y1="352" x2="520" y2="328"/>
+      <line x1="740" y1="352" x2="740" y2="328"/>
+      <line x1="820" y1="352" x2="820" y2="328"/>
+    </g>
+
+    <!-- front travel -->
+    <g stroke="#48C862" stroke-width="2" marker-end="url(#ridge-arrow-gr)" fill="none">
+      <line x1="330" y1="168" x2="330" y2="262"/>
+    </g>
+    <text x="330" y="158" font-size="13" fill="#5E636A" text-anchor="middle">front recedes</text>
+
+    <!-- legend -->
+    <g font-size="13" fill="#5E636A">
+      <rect x="45" y="406" width="26" height="14" fill="url(#ridge-dried)" stroke="#B9BDC4" stroke-width="1"/>
+      <text x="80" y="418" fill="#101113">dried cake, vapour leaves through it</text>
+
+      <rect x="380" y="406" width="26" height="14" fill="#A3EFAE" stroke="#101113" stroke-width="1"/>
+      <text x="415" y="418" fill="#101113">frozen product</text>
+
+      <rect x="620" y="406" width="26" height="14" fill="#101113"/>
+      <text x="655" y="418" fill="#101113">shelf, heat input</text>
+
+      <text x="45" y="458" font-size="13">The recipe sets shelf temperature and chamber pressure; product temperature and equipment capacity bound how hard it can be driven.</text>
+    </g>
+  </g>
+</svg>

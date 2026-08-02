@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" font-family="Switzer, 'Helvetica Neue', Arial, sans-serif">
+<style>
+  :root{--paper:#FFFFFF;--field:#F2F2F1;--ink-900:#101113;--ink-500:#5E636A;
+        --green-100:#DFFAE2;--green-200:#C2F5C9;--green-300:#A3EFAE;
+        --green-400:#7FE18E;--green-500:#48C862;--green-700:#1E7A38;
+        --iso-lit:#FAFAFA;--iso-shadow:#232427;
+        --shadow-ground:rgb(127 225 142 / .22);--shadow-ground-neutral:rgb(16 17 19 / .08);
+        --iso-stroke-width:1.25;}
+  .iso{stroke:var(--iso-shadow);stroke-width:var(--iso-stroke-width);stroke-linejoin:miter;vector-effect:non-scaling-stroke}
+  .iso-face--top{fill:var(--iso-top);vector-effect:non-scaling-stroke}
+  .iso-face--left{fill:var(--iso-left);vector-effect:non-scaling-stroke}
+  .iso-face--right{fill:var(--iso-right);vector-effect:non-scaling-stroke}
+  .iso-edge{fill:none;vector-effect:non-scaling-stroke}
+  .iso--light{--iso-top:var(--paper);--iso-left:var(--iso-lit);--iso-right:var(--iso-shadow)}
+  .iso--dark{--iso-top:var(--paper);--iso-left:var(--iso-shadow);--iso-right:var(--iso-shadow)}
+  .iso--accent{--iso-top:var(--green-200);--iso-left:var(--iso-accent-left,var(--green-300));--iso-right:var(--iso-shadow)}
+  .iso--accent-edge{--iso-top:var(--paper);--iso-left:var(--iso-accent-left,var(--green-300));--iso-right:var(--iso-shadow)}
+  .iso--accent-soft{--iso-top:var(--paper);--iso-left:var(--iso-accent-soft,var(--green-100));--iso-right:var(--iso-shadow)}
+  .iso--ghost{opacity:.3;stroke-dasharray:3.5 3.5}
+  .iso--frame{fill:none;stroke:var(--green-700);stroke-dasharray:4 3}
+  .iso-grain{opacity:.45;mix-blend-mode:multiply}
+  .iso-ground{stroke:none;fill:var(--ground)}
+  .motif{--ground:var(--shadow-ground-neutral)}
+  .motif[data-surface="green"]{--ground:var(--shadow-ground)}
+  .og-title{font-size:64px;font-weight:700;letter-spacing:-0.02em;fill:#101113}
+  .og-sub{font-size:28px;font-weight:400;fill:#3A3D42}
+  .og-meta{font-size:22px;font-weight:500;letter-spacing:0.02em;fill:#5E636A}
+</style>
+<rect width="1200" height="630" fill="#F2F2F1"/>
+<rect x="48" y="48" width="1104" height="534" rx="28" fill="#A3EFAE"/>
+<svg x="730" y="130" width="370" height="370" class="motif" viewBox="-122.84200000000001 -99 183 183" data-surface="green" data-fit="square" style="--iso-accent-left:url(#iso5-accent);--iso-accent-soft:url(#iso5-soft);--iso-aspect:105.76599999999999/183" role="presentation" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="iso5-accent" x1="0" y1="0" x2="0.55" y2="1"><stop offset="0%" stop-color="var(--green-200)"></stop><stop offset="100%" stop-color="var(--green-500)"></stop></linearGradient><linearGradient id="iso5-soft" x1="0" y1="0" x2="0.55" y2="1"><stop offset="0%" stop-color="var(--green-100)"></stop><stop offset="100%" stop-color="var(--green-400)"></stop></linearGradient><filter id="iso5-cast" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.6"></feGaussianBlur></filter><filter id="iso5-grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="3" seed="4"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix><feComponentTransfer><feFuncA type="linear" slope="0.85" intercept="0"></feFuncA></feComponentTransfer></filter><linearGradient id="iso5-grainfade" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff" stop-opacity="0"></stop><stop offset="40%" stop-color="#fff" stop-opacity="0"></stop><stop offset="100%" stop-color="#fff" stop-opacity="1"></stop></linearGradient><mask id="iso5-grainmask"><rect x="-45.608" y="-99" width="183" height="183" fill="url(#iso5-grainfade)"></rect></mask><clipPath id="iso5-lit"><polygon points="-20.785,12 0,24 0,-72 -20.785,-84"></polygon><polygon points="-41.569,24 -20.785,36 -20.785,-12 -41.569,-24"></polygon><polygon points="-20.785,36 0,48 0,24 -20.785,12"></polygon></clipPath></defs><path class="iso-ground" d="M-28.89,44.28Q-42.608,52.2 -28.89,60.12L-6.443,73.08Q7.275,81 20.993,73.08L43.44,60.12Q57.158,52.2 43.44,44.28L20.993,31.32Q7.275,23.4 -6.443,31.32Z" filter="url(#iso5-cast)"></path><g class="iso iso--light"><polygon class="iso-face--right" points="20.785,12 0,24 0,-72 20.785,-84"></polygon><polygon class="iso-face--left" points="-20.785,12 0,24 0,-72 -20.785,-84"></polygon><polygon class="iso-face--top" points="0,-96 20.785,-84 0,-72 -20.785,-84"></polygon></g><g class="iso iso--light"><polygon class="iso-face--right" points="0,24 -20.785,36 -20.785,-12 0,-24"></polygon><polygon class="iso-face--left" points="-41.569,24 -20.785,36 -20.785,-12 -41.569,-24"></polygon><polygon class="iso-face--top" points="-20.785,-36 0,-24 -20.785,-12 -41.569,-24"></polygon></g><g class="iso iso--accent"><polygon class="iso-face--right" points="41.569,24 20.785,36 20.785,-36 41.569,-48"></polygon><polygon class="iso-face--left" points="0,24 20.785,36 20.785,-36 0,-48"></polygon><polygon class="iso-face--top" points="20.785,-60 41.569,-48 20.785,-36 0,-48"></polygon></g><g class="iso iso--light"><polygon class="iso-face--right" points="20.785,36 0,48 0,24 20.785,12"></polygon><polygon class="iso-face--left" points="-20.785,36 0,48 0,24 -20.785,12"></polygon><polygon class="iso-face--top" points="0,0 20.785,12 0,24 -20.785,12"></polygon></g><g clip-path="url(#iso5-lit)" class="iso-grain"><g mask="url(#iso5-grainmask)"><rect x="-228.608" y="-282" width="549" height="549" filter="url(#iso5-grain)"></rect></g></g></svg>
+<text class="og-meta" x="104" y="146">Projets</text>
+<text class="og-title" x="104" y="268">Hamza Charif</text>
+<text class="og-sub" x="104" y="362">Engineering student in process</text>
+<text class="og-sub" x="104" y="400">modelling and optimisation.</text>
+<text class="og-meta" x="104" y="526">Hamza Charif</text>
+</svg>

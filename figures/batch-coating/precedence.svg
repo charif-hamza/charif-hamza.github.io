@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="524" viewBox="0 0 960 524" role="img" aria-label="Two dependency graphs. As the procedure sequenced it, preparing the next solvent mix waits for the drum to finish coating the current batch. What the process requires is only that the mix be ready and the drum free, so the mix can be prepared while the drum runs.">
+  <!--
+    Dependency graph, deliberately not a schedule: there is no time axis and no
+    block encodes a duration, because the durations behind the 60% figure are
+    calculated rather than measured and must not be implied here. Token colours
+    only (SPEC 12.1).
+  -->
+  <defs>
+    <marker id="bc-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#101113"/>
+    </marker>
+    <marker id="bc-arrow-cut" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#48C862"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="524" fill="#FFFFFF"/>
+
+  <g font-family="Switzer, 'Helvetica Neue', Arial, sans-serif">
+
+    <!-- ── Left · as the SOP sequenced it ────────────────────────────── -->
+    <text x="45" y="44" font-size="17" font-weight="600" fill="#101113">As the procedure sequenced it</text>
+    <text x="45" y="66" font-size="14" fill="#5E636A">The operator watches the drum, then starts the next mix.</text>
+
+    <g stroke="#101113" stroke-width="1.5" fill="#FFFFFF">
+      <rect x="105" y="100" width="230" height="44" rx="3"/>
+      <rect x="105" y="176" width="230" height="44" rx="3"/>
+      <rect x="105" y="252" width="230" height="44" rx="3"/>
+      <rect x="105" y="328" width="230" height="44" rx="3"/>
+    </g>
+    <g font-size="14" fill="#101113" text-anchor="middle">
+      <text x="220" y="128">Prepare mix, batch N</text>
+      <text x="220" y="204">Coat batch N in the drum</text>
+      <text x="220" y="280">Prepare mix, batch N+1</text>
+      <text x="220" y="356">Coat batch N+1</text>
+    </g>
+    <g stroke="#101113" stroke-width="1.5" marker-end="url(#bc-arrow)">
+      <line x1="220" y1="144" x2="220" y2="170"/>
+      <line x1="220" y1="296" x2="220" y2="322"/>
+    </g>
+    <g stroke="#48C862" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#bc-arrow-cut)">
+      <line x1="220" y1="220" x2="220" y2="246"/>
+    </g>
+    <text x="351" y="238" font-size="13" fill="#5E636A">written into the SOP,</text>
+    <text x="351" y="256" font-size="13" fill="#5E636A">not required by the process</text>
+
+    <!-- ── Right · what the process requires ─────────────────────────── -->
+    <text x="505" y="44" font-size="17" font-weight="600" fill="#101113">What the process requires</text>
+    <text x="505" y="66" font-size="14" fill="#5E636A">The mix can be made while the drum is still running.</text>
+
+    <g stroke="#101113" stroke-width="1.5" fill="#FFFFFF">
+      <rect x="510" y="100" width="200" height="44" rx="3"/>
+      <rect x="510" y="220" width="200" height="44" rx="3"/>
+      <rect x="620" y="380" width="200" height="44" rx="3"/>
+    </g>
+    <g stroke="#101113" stroke-width="1.5" fill="#A3EFAE">
+      <rect x="730" y="100" width="180" height="44" rx="3"/>
+    </g>
+    <g font-size="14" fill="#101113" text-anchor="middle">
+      <text x="610" y="128">Prepare mix, batch N</text>
+      <text x="820" y="128">Prepare mix, N+1</text>
+      <text x="610" y="248">Coat batch N</text>
+      <text x="720" y="408">Coat batch N+1</text>
+    </g>
+    <g stroke="#101113" stroke-width="1.5" fill="none" marker-end="url(#bc-arrow)">
+      <line x1="610" y1="144" x2="610" y2="214"/>
+      <path d="M 610 264 L 610 330 L 690 330 L 690 374"/>
+      <path d="M 820 144 L 820 330 L 750 330 L 750 374"/>
+    </g>
+    <text x="640" y="310" font-size="13" fill="#5E636A" text-anchor="end">drum free</text>
+    <text x="836" y="310" font-size="13" fill="#5E636A">mix ready</text>
+
+    <!-- ── Note ──────────────────────────────────────────────────────── -->
+    <line x1="45" y1="466" x2="915" y2="466" stroke="#E3E5E8" stroke-width="1"/>
+    <text x="45" y="490" font-size="13" fill="#5E636A">Coating batch N+1 needs the drum free and the mix ready. It never needed those two things to happen in that order,</text>
+    <text x="45" y="509" font-size="13" fill="#5E636A">and removing the ordering is where much of the elapsed time was recovered. It is also what requires the procedure to be revised.</text>
+  </g>
+</svg>
