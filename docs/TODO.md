@@ -130,14 +130,26 @@ they matter:
   no photo. Below `lg` it is not rendered: it is 0.6 as wide as it is tall, and
   stacking it on a phone would buy the illustration with the CV button, which S1
   wants above the fold.
-- **That one motif moves**, which is a deliberate exception to the v0.6 decision
-  above. It is a one-shot entrance, not a loop: the blocks fly in along the
-  isometric axes and stop, finished at 890 ms, inside the 900 ms budget of §7.5
-  and gated on `data-entrance="play"` exactly like the text beside it. So it
-  plays once per session, never on back-navigation, not at all with JavaScript
-  off, and collapses to the finished still under reduced motion, reduced data
-  and the footer toggle. `npm run motifs` still proves no motif emits a keyframe
-  of its own; the entrance lives in the component, with the rest of §7.5.
+- **That one motif loops**, which is a deliberate exception to the v0.6 decision
+  above — the owner's call, overriding it for this one object. The choreography
+  and its timing are the supplied art's, transcribed with the geometry: the
+  blocks fly in bottom-up along the isometric axes over 1.8 s, the assembled
+  figure holds for 2.1 s, everything fades, and it begins again on a 4.4 s
+  cycle. `--hero-loop` in `HeroFigure.astro` is the one number that changes the
+  tempo.
+
+  Three things keep it affordable. It carries **no `animation-fill-mode`**, so
+  the resting state of the markup is the finished object and reduced motion,
+  reduced data, the footer toggle and CSS-off all leave the assembled figure on
+  screen rather than the empty first frame. The **§7.6 guards are real**: an
+  IntersectionObserver pauses the loop once more than a quarter of the figure
+  has left the viewport, and `visibilitychange` pauses it with the tab. And
+  100% is the same invisible state as 0%, so the wrap is **seamless** — which is
+  the criterion the old motif loops failed and the reason they were cut.
+
+  `npm run motifs` still passes: it proves that no *motif* emits a keyframe of
+  its own, and this choreography lives in the hero component rather than in
+  `Scene.astro` or `iso.js`, so the rail motifs remain stills.
 
 Two smaller things went with it: `Scene.astro` gained `fit="natural"` (a
 viewBox cropped to the drawing, for the one motif not sitting on a card) and

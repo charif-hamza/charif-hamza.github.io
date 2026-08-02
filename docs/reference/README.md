@@ -19,11 +19,23 @@ the file, because the file could not be shipped as-is:
   30° isometric of §6.1, so it would not have sat in the same world as the
   three motifs on the rail. Transcribed, every vertex is on the unit grid and
   `npm run motifs` proves it.
-- **Motion.** The animated file loops on a 4.4 s cycle. Motifs have been stills
-  since v0.6 and the site's motion budget is a single 900 ms entrance (§7.5),
-  so the assemble was kept as a one-shot entrance and the loop dropped.
-
 The transcription is exact in structure — same seven blocks, same footprints,
-same stacking, same accent. Reading it back off the geometry: heights are one
-cell throughout, `z` runs −1 to 5, and the arrival vectors in `HeroFigure.astro`
-are the same directions the original slid its blocks in along.
+same stacking, same accent — and the **motion is kept as authored**: the
+`assemble` file's 4.4 s cycle, its arrival directions and its keyframe
+percentages are all transcribed with the geometry. What changed is only how it
+degrades (no fill-mode, so the resting state is the finished object) and that it
+pauses off-screen per §7.6.
+
+Reading the structure back off the geometry: heights are one cell throughout,
+`z` runs −1 to 5, and `shelf` + `riser` are one 2.5-cell bar broken in two,
+contiguous in y at the same x and z — which is what caps the green bar and puts
+the seam where the art has it.
+
+**Depth is not recoverable from a single projection.** Screen position fixes
+only two of a block's three coordinates; the third has to come from the paint
+order and from what the structure has to be for it to stand. Getting `riser`
+wrong the first time put it two levels low, which exposed the accent's top face
+and left a stray cube visible behind it. If any block is ever re-derived from
+this art, check it against the original's paint order — `painterSort` must
+reproduce the reference file's group order for every pair of blocks that
+overlap on screen.

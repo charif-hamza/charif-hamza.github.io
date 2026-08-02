@@ -78,10 +78,12 @@ satisfying, and a compelling still was always the acceptance bar for one
 (§6.6). The motion budget went to the project rail instead, where one card is
 in focus at a time and the neighbours are cut by the page edges.
 
-The one exception is the hero figure (v0.7), which is built from the same
-`Scene.astro` and ends as the same kind of still, but assembles itself once on
-first load — a 900 ms entrance under the §7.5 gate, not a loop. It is why the
-hero has two columns instead of one.
+The one exception is the hero figure (v0.7), built from the same `Scene.astro`
+but looping: it assembles itself block by block, holds, fades and begins again
+on a 4.4 s cycle. It carries no `animation-fill-mode`, so the resting state of
+the markup is the finished object and every reduced-motion path leaves that on
+screen; and it observes the §7.6 guards, pausing off-screen and with the tab.
+It is why the hero has two columns instead of one.
 
 **Content is Markdown and the build defends it.** `src/content.config.ts`
 validates each entry; `src/lib/collections.ts` validates the set. A build fails

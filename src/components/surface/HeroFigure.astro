@@ -1,47 +1,61 @@
 ---
 /**
- * HeroFigure — the object that balances the hero.  SPEC §6.1, §6.2, §7.5.
+ * HeroFigure — the object that balances the hero.  SPEC §6.1, §6.2, §7.6.
  *
  * The hero used to be a column of text against half a screen of nothing. This
- * is what fills it: seven boxes on the unit grid, one of them green, cantilevered
- * into a zig-zag that steps up and to the left. It is the same drawing system as
- * the three motifs on the rail — same projection, same three face tones, same
- * hairline, same ground plate — so the first thing above the fold teaches the
- * visual language that the rest of the page then speaks.
+ * is what fills it: seven boxes on the unit grid, one of them green,
+ * cantilevered into a zig-zag that steps up and to the left. It is the same
+ * drawing system as the three motifs on the rail — same projection, same three
+ * face tones, same hairline, same ground plate — so the first thing above the
+ * fold teaches the visual language that the rest of the page then speaks.
  *
  * Read as an idea (§6.2): a structure that only stands because each block is
  * placed where the one below it can carry it. Exactly one block is the accent,
  * as §7.3 requires, and it is the one the eye lands on first.
  *
- * MOTION.  The motifs on the rail are stills (§6.6, v0.6) and this one ends as a
- * still too — but it is the LCP element of the whole site, so it gets the site's
- * one-shot entrance rather than a loop: each block flies in along the isometric
- * axis it would have been slid in along, bottom-up, and stops. The whole
- * assembly is over at 890 ms, inside the 900 ms entrance budget of §7.5, and it
- * runs only under `data-entrance="play"` — so it plays once per session, never on
- * back-navigation, and not at all with JavaScript off. Reduced motion, reduced
- * data and the footer toggle all collapse it to the finished object via the
- * global rule in base.css, which is why every keyframe ends where the still is.
+ * MOTION.  This one loops, which is a deliberate exception to the v0.6 decision
+ * that motifs are stills — the owner's call, recorded in docs/TODO.md. The
+ * choreography and its timing are the supplied art's, transcribed with it: the
+ * blocks fly in bottom-up along the isometric axes over 1.8 s, the assembled
+ * figure holds for 2.1 s, everything fades, and it begins again.
+ *
+ * Three properties make an infinite loop affordable here:
+ *
+ *   - No `animation-fill-mode`. The resting state of the markup is the finished
+ *     object, so when base.css collapses every animation to 0.01 ms for reduced
+ *     motion, reduced data or the footer toggle, what is left on screen is the
+ *     assembled figure and not the empty first frame. Same with CSS disabled.
+ *   - The §7.6 guards are real: the loop pauses when more than a quarter of the
+ *     figure has left the viewport, and when the tab is hidden. Off the fold it
+ *     costs nothing.
+ *   - The cycle is seamless. 100% is the same invisible state as 0%, so the
+ *     wrap is not a visible cut (§7.3's "seamless" criterion, which is the one
+ *     the old motif loops failed).
  */
 import Scene from '~/motifs/Scene.astro';
 import { box, painterSort } from '~/motifs/iso.js';
 
-/* Unit-grid transcription of the reference art. Heights are one cell
-   throughout; only the footprints change, which is what makes the stack read as
-   one object rather than seven. z runs -1 (the plinth the figure stands on) to
-   5 (the lintel that closes it at the top). */
+/* Unit-grid transcription of the reference art in docs/reference/. Heights are
+   one cell throughout; only the footprints change, which is what makes the
+   stack read as one object rather than seven. z runs -1 (the plinth the figure
+   stands on) to 5 (the lintel that closes it at the top).
+
+   `shelf` and `riser` are one 2.5-cell bar broken in two — same x, same z,
+   contiguous in y — because the two halves arrive from different directions.
+   Together they cap the green bar, which is what stops the accent's top face
+   showing and what puts the seam in the reference art where it is. */
 const boxes = painterSort([
 	{ ...box(0, 0, -1, 1.75, 1, 1, 'light'), id: 'plinth' },
 	{ ...box(0, 1, 0, 1, 1.5, 1, 'light'), id: 'apron' },
 	{ ...box(0, 0, 0, 1, 1, 1, 'light'), id: 'core' },
 	{ ...box(-0.5, 1, 2, 2.5, 1, 1, 'accent'), id: 'bar' },
-	{ ...box(0, 0.25, 2, 1, 0.75, 1, 'light'), id: 'riser' },
 	{ ...box(1, -0.5, 3, 1, 1.75, 1, 'light'), id: 'shelf' },
+	{ ...box(1, 1.25, 3, 1, 0.75, 1, 'light'), id: 'riser' },
 	{ ...box(-0.5, 0.25, 4, 2.5, 1, 1, 'light'), id: 'lintel' },
 ]);
 ---
 
-<div class="hero-figure">
+<div class="hero-figure" data-hero-figure>
 	<Scene
 		boxes={boxes}
 		shadow={{ x: 0.9, y: 0.5, z: -1, footprint: 2.5 }}
@@ -83,76 +97,230 @@ const boxes = painterSort([
 	}
 </style>
 
-{/* Global because the gate is on <html>, which no scoped selector can reach. */}
+{/* Global: these reach inside Scene's markup, which a scoped selector cannot. */}
 <style is:global>
-	/* One keyframe, seven arrival vectors. Each --from pair is a whole number of
-	   cells along one isometric axis in SVG user units (U = 24, so a step along
-	   x or y is 20.78 across and 12 down, and a step up is 24), which is what
-	   makes every block travel along the grid it lands on rather than along an
-	   arbitrary diagonal. */
-	@keyframes hero-block-in {
-		from {
+	/* ---------------------------------------------------------------------
+	   The loop.  One cycle, seven phases of it.
+
+	   Every block runs the same shape on the same clock and differs only in
+	   when its fly-in starts and which isometric axis it arrives along. Each
+	   --from pair is a whole number of cells along one axis in SVG user units
+	   (U = 24, so a step along x or y is 20.78 across and 12 down, and a step
+	   up is 24), which is what makes a block travel along the grid it lands on
+	   rather than along an arbitrary diagonal.
+
+	   Percentages are the reference art's, kept: fly-in 1.4% -> 41%, hold to
+	   88%, fade out by 100%. At 4.4 s that is 1.8 s assembling, 2.1 s standing
+	   and 0.5 s gone. One number changes the tempo — --hero-loop below.
+	   --------------------------------------------------------------------- */
+	[data-hero-figure] {
+		--hero-loop: 4.4s;
+	}
+
+	.hero-figure__scene [data-block] {
+		animation: var(--hero-loop) linear infinite;
+		will-change: transform, opacity;
+	}
+
+	.hero-figure__scene [data-block='plinth'] {
+		animation-name: heroblock-plinth;
+	}
+	@keyframes heroblock-plinth {
+		0%,
+		1.36% {
 			opacity: 0;
-			transform: translate(var(--from-x, 0px), var(--from-y, 0px));
+			transform: translate(26px, 15px);
+			animation-timing-function: var(--ease-entrance);
 		}
-		to {
+		20.68%,
+		88% {
 			opacity: 1;
+			transform: translate(0, 0);
+		}
+		100% {
+			opacity: 0;
 			transform: translate(0, 0);
 		}
 	}
 
-	@keyframes hero-ground-in {
-		from {
+	.hero-figure__scene [data-block='apron'] {
+		animation-name: heroblock-apron;
+	}
+	@keyframes heroblock-apron {
+		0%,
+		4.77% {
+			opacity: 0;
+			transform: translate(-26px, 15px);
+			animation-timing-function: var(--ease-entrance);
+		}
+		24.09%,
+		88% {
+			opacity: 1;
+			transform: translate(0, 0);
+		}
+		100% {
+			opacity: 0;
+			transform: translate(0, 0);
+		}
+	}
+
+	.hero-figure__scene [data-block='core'] {
+		animation-name: heroblock-core;
+	}
+	@keyframes heroblock-core {
+		0%,
+		8.18% {
+			opacity: 0;
+			transform: translate(0, -34px);
+			animation-timing-function: var(--ease-entrance);
+		}
+		27.5%,
+		88% {
+			opacity: 1;
+			transform: translate(0, 0);
+		}
+		100% {
+			opacity: 0;
+			transform: translate(0, 0);
+		}
+	}
+
+	.hero-figure__scene [data-block='bar'] {
+		animation-name: heroblock-bar;
+	}
+	@keyframes heroblock-bar {
+		0%,
+		11.59% {
+			opacity: 0;
+			transform: translate(-26px, -15px);
+			animation-timing-function: var(--ease-entrance);
+		}
+		30.91%,
+		88% {
+			opacity: 1;
+			transform: translate(0, 0);
+		}
+		100% {
+			opacity: 0;
+			transform: translate(0, 0);
+		}
+	}
+
+	.hero-figure__scene [data-block='shelf'] {
+		animation-name: heroblock-shelf;
+	}
+	@keyframes heroblock-shelf {
+		0%,
+		15% {
+			opacity: 0;
+			transform: translate(26px, -15px);
+			animation-timing-function: var(--ease-entrance);
+		}
+		34.32%,
+		88% {
+			opacity: 1;
+			transform: translate(0, 0);
+		}
+		100% {
+			opacity: 0;
+			transform: translate(0, 0);
+		}
+	}
+
+	.hero-figure__scene [data-block='riser'] {
+		animation-name: heroblock-riser;
+	}
+	@keyframes heroblock-riser {
+		0%,
+		18.41% {
+			opacity: 0;
+			transform: translate(0, -34px);
+			animation-timing-function: var(--ease-entrance);
+		}
+		37.73%,
+		88% {
+			opacity: 1;
+			transform: translate(0, 0);
+		}
+		100% {
+			opacity: 0;
+			transform: translate(0, 0);
+		}
+	}
+
+	.hero-figure__scene [data-block='lintel'] {
+		animation-name: heroblock-lintel;
+	}
+	@keyframes heroblock-lintel {
+		0%,
+		21.82% {
+			opacity: 0;
+			transform: translate(-40px, -23px);
+			animation-timing-function: var(--ease-entrance);
+		}
+		41.14%,
+		88% {
+			opacity: 1;
+			transform: translate(0, 0);
+		}
+		100% {
+			opacity: 0;
+			transform: translate(0, 0);
+		}
+	}
+
+	/* The ground arrives with the first blocks and leaves with the last: a
+	   shadow under nothing is the one thing that would give the loop away. */
+	.hero-figure__scene .iso-ground {
+		animation: heroblock-ground var(--hero-loop) linear infinite;
+	}
+	@keyframes heroblock-ground {
+		0%,
+		1% {
 			opacity: 0;
 		}
-		to {
+		25%,
+		88% {
 			opacity: 1;
+		}
+		100% {
+			opacity: 0;
 		}
 	}
 
-	html[data-entrance='play'] .hero-figure__scene [data-block] {
-		animation: hero-block-in var(--dur-slow) var(--ease-entrance) both;
-		animation-delay: var(--enter-at);
-		will-change: transform, opacity;
-	}
-	html[data-entrance='play'] .hero-figure__scene .iso-ground {
-		animation: hero-ground-in var(--dur-slow) var(--ease-standard) both;
-		animation-delay: 250ms;
-	}
-
-	/* Bottom-up, 55 ms apart, starting once the first hero line is on its way:
-	   140 + 6 x 55 + 420 = 890 ms. */
-	.hero-figure__scene [data-block='plinth'] {
-		--from-x: 26px;
-		--from-y: 15px;
-		--enter-at: 140ms;
-	}
-	.hero-figure__scene [data-block='apron'] {
-		--from-x: -26px;
-		--from-y: 15px;
-		--enter-at: 195ms;
-	}
-	.hero-figure__scene [data-block='core'] {
-		--from-y: -34px;
-		--enter-at: 250ms;
-	}
-	.hero-figure__scene [data-block='bar'] {
-		--from-x: -26px;
-		--from-y: -15px;
-		--enter-at: 305ms;
-	}
-	.hero-figure__scene [data-block='riser'] {
-		--from-y: -34px;
-		--enter-at: 360ms;
-	}
-	.hero-figure__scene [data-block='shelf'] {
-		--from-x: 26px;
-		--from-y: -15px;
-		--enter-at: 415ms;
-	}
-	.hero-figure__scene [data-block='lintel'] {
-		--from-x: -40px;
-		--from-y: -23px;
-		--enter-at: 470ms;
+	/* §7.6 — off the fold or off the tab, it stops. */
+	[data-hero-figure][data-paused] .hero-figure__scene [data-block],
+	[data-hero-figure][data-paused] .hero-figure__scene .iso-ground {
+		animation-play-state: paused;
 	}
 </style>
+
+<script>
+	/* The §7.6 performance guards, and nothing else. Deliberately not gated on
+	   `data-entrance`: an entrance plays once per session, and this is not one.
+	   With JavaScript off the loop simply runs, which is the correct
+	   degradation — the guards are an optimisation, not a correctness fix. */
+	const figure = document.querySelector<HTMLElement>('[data-hero-figure]');
+
+	if (figure) {
+		let onScreen = true;
+
+		const sync = () => figure.toggleAttribute('data-paused', !onScreen || document.hidden);
+
+		/* §7.6 says "> 25% out of viewport", which was written for a 200 px card
+		   motif in the rail and does not transfer: this figure is up to 660 px
+		   tall, so on a 1440x600 window it is never 75% visible even sitting at
+		   the top of the page, and the literal rule would leave it paused where
+		   it is plainly on screen. Same intent, inverted threshold — it runs
+		   while a quarter of it is still in view, and stops once it is not. */
+		new IntersectionObserver(
+			([entry]) => {
+				onScreen = entry.intersectionRatio >= 0.25;
+				sync();
+			},
+			{ threshold: [0, 0.25] },
+		).observe(figure);
+
+		document.addEventListener('visibilitychange', sync);
+	}
+</script>
