@@ -17,7 +17,6 @@
 pending:
   - 'D1 domain: served from github.io; charif-hamza.com not registered yet'
   - 'email: Gmail address is temporary; replace with IMT Mines Albi or custom-domain address'
-  - 'CV: not available yet; both CTAs point to the CV status page'
 
 # --- Identity ----------------------------------------------------------------
 name: Hamza Charif
@@ -53,23 +52,20 @@ social:
   repo: https://github.com/charif-hamza/charif-hamza.github.io # §17 D7: public repo
 
 # --- CV (§8.4) ---------------------------------------------------------------
-# TODO(D-cv): drop the two PDFs in public/cv/ — see public/cv/README.md for the
-# filenames and the one flip that turns them on. While `available` is false the
-# entries deliberately address /cv itself, so the CTAs lead to the status page
-# and its explicit note rather than to a 404. S1 is satisfied either way: the CV
-# is one click from home. Restore the PDF paths here when the files land.
+# The versioned PDFs live in public/cv/. Replacing them and updating the date
+# below keeps every download affordance in sync from this one configuration.
 cv:
-  available: false
+  available: true
   fr:
-    href: /cv
-    latest: /cv
-    size: ""
-    updated: ""
+    href: /cv/CHARIF_Hamza_CV_FR.pdf
+    latest: /cv/CHARIF_Hamza_CV_FR.pdf
+    size: '7 Ko'
+    updated: 2026-08
   en:
-    href: /cv
-    latest: /cv
-    size: ""
-    updated: ""
+    href: /cv/CHARIF_Hamza_CV_EN.pdf
+    latest: /cv/CHARIF_Hamza_CV_EN.pdf
+    size: '7 Ko'
+    updated: 2026-08
 
 # --- Fonts (§5.2.2) ----------------------------------------------------------
 # TODO(D4): set to true once the WOFF2 files listed in src/styles/fonts.css are
@@ -145,9 +141,9 @@ strings:
     # verbatim, or the paragraph renders unmarked rather than breaking.
     introHighlight: Je recherche un stage de quatre mois à partir d'avril 2027,
     cta:
-      primary: CV en préparation
-      primaryMobile: CV bientôt
-      secondary: CV anglais en préparation
+      primary: Télécharger le CV
+      primaryMobile: CV
+      secondary: CV en anglais
       email: Écrire un message
     sections:
       projects: Projets
