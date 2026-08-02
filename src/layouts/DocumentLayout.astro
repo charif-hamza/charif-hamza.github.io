@@ -63,7 +63,7 @@ const {
 ---
 
 <BaseLayout
-	title={`${title} — ${site.name}`}
+	title={`${title} · ${site.name}`}
 	description={description}
 	layer="depth"
 	lang={site.docLang}
@@ -130,9 +130,9 @@ const {
 	<footer class="doc-foot">
 		<div class="doc-foot__inner t-meta">
 			<a href="/">{site.name}</a>
-			<a href={site.cv.fr.href} download>
+			<a href={site.cv.fr.href} download={site.cv.available ? '' : undefined}>
 				{site.strings.fr.cta.primary}
-				<Icon name="download" size={12} />
+				<Icon name={site.cv.available ? 'download' : 'arrow-right'} size={12} />
 			</a>
 			{
 				site.social.repo && (

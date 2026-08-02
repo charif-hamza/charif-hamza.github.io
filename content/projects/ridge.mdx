@@ -1,269 +1,264 @@
 ---
 slug: ridge
 title: RIDGE
-subtitle: Gap-certified enumeration for primary drying recipe design
-tag: Optimisation
+subtitle: From primary-drying simulation to certified, PLC-compatible recipe design
+tag: Modélisation
 order: 1
 featured: true
 motif: m-01-certified-gap
 motifColor: green
 card:
   description: >
-    An open-source solver that returns a primary-drying recipe together with a
-    proof that nothing better exists in the search space.
+    An independent project connecting QSS and Stefan-problem simulation, an
+    optimal-control result and dynamic programming for implementable
+    primary-drying recipes.
 facts:
-  context: Independent project
-  period: Nov 2025 – Jul 2026
-  role: 'Sole author: formulation, implementation, validation'
-  domain: Freeze-drying — primary drying
+  context: Independent personal project
+  period: December 2025 to present
+  role: 'Sole author: modelling, numerical implementation, verification and optimisation'
+  domain: Freeze-drying · primary drying
   methods:
-    - MILP
-    - Exhaustive enumeration with optimality certificate
+    - Quasi-steady-state modelling
+    - Moving-boundary Stefan problem
+    - Method of manufactured solutions
+    - Optimal-control analysis
+    - Dynamic programming
   stack:
     - Python
     - NumPy
-    - pytest
-    - Linux
-  status: Released, open source
-artifacts:
-  - label: Repository
-    url: 'https://github.com/TODO/ridge'
-    type: repo
-  - label: Documentation
-    url: 'https://github.com/TODO/ridge#readme'
-    type: docs
+    - Vectorised numerical methods
+    - GPU-accelerated enumeration
+  status: Research and implementation ongoing
+artifacts: []
 seo:
-  description: A solver that returns a freeze-drying primary-drying recipe with a certificate that no better one exists.
+  description: An independent primary-drying project spanning QSS and Stefan-problem simulation, lexmax optimal control and certified recipe discretisation.
 dates:
-  published: 2026-07-15
-  updated: 2026-07-31
+  published: 2026-08-02
+  updated: 2026-08-02
 draft: false
 ---
 
 <Callout variant="note" label="In short">
-- Primary drying is the long, expensive phase of a lyophilisation cycle, and its recipe is usually inherited rather than designed.
-- I formulated recipe design as a discrete search over piecewise-constant shelf temperature and chamber pressure schedules.
-- The solver returns a schedule **and** a certificate: no schedule on the grid is faster, and the gap to the continuous optimum is bounded.
-- The certificate is only as good as the steady-state model behind it. On a real product, that model is the weak link, not the search.
+- I implemented primary-drying simulators from the governing equations, first under a quasi-steady-state approximation and then as a full moving-boundary Stefan problem.
+- The full model uses a Landau transformation and a vectorised method-of-lines discretisation in NumPy; I verified the implementation with the method of manufactured solutions.
+- Repeated simulations suggested a simple control structure. A GPU-accelerated brute-force search recovered the same policy, and I later proved it as the lexicographically maximal optimal policy for the Markovian model.
+- RIDGE extends this work with dynamic programming to convert the continuous ideal into a step-limited, PLC-compatible recipe and stop once the certified economic gap is negligible.
 </Callout>
 
-## The problem, in industrial terms
+## The problem
 
-A lyophilisation cycle has three phases, and primary drying is where the time
-goes. It is the phase in which ice is removed by sublimation, and on a typical
-parenteral product it accounts for the majority of the cycle. A freeze-dryer is
-a capital-intensive machine that is either running a batch or not earning, so
-hours removed from primary drying convert directly into throughput on equipment
-that has already been bought.
-
-The lever is the recipe: a schedule of shelf temperature and chamber pressure
-over the phase. In practice that schedule is very often inherited — from a
-development batch, from a similar product, from a supplier's starting point —
-and then frozen by validation. Nobody can say whether it is the best one,
-because nobody has searched. The question I wanted to answer is narrow and
-answerable: **for a given product, container and dryer, what is the fastest
-admissible primary drying schedule, and how do you know?**
-
-## Why it is hard
-
-The obvious approach — nudge the shelf temperature up until something goes
-wrong — fails for three reasons that compound.
-
-**The feasible region is a region, not a limit.** Two constraints bound the
-process from opposite directions. The product temperature at the sublimation
-front must stay below the collapse temperature of the formulation, which caps
-how much heat you may supply. The sublimation flux must stay below what the
-dryer can remove without choked flow in the duct or overloading the condenser,
-which caps how fast you may go. Raising the shelf temperature helps against one
-and hurts against the other. The admissible set is the intersection, and it
-moves as the cake dries.
-
-**The system is non-stationary.** As the sublimation front recedes, the dried
-layer thickens and its mass-transfer resistance grows. A setpoint pair that is
-comfortably inside the design space at the start of the phase can be outside it
-near the end, and the reverse is also true — which is exactly why a schedule
-beats a constant.
-
-<Sidenote summary="On the design-space framing">
-The design-space construction used here — iso-lines of product temperature and
-of sublimation flux plotted over shelf temperature and chamber pressure — is
-standard in the freeze-drying literature. The contribution is not the map; it
-is searching it exhaustively and being able to say what the search proves.
-</Sidenote>
-
-**The decisions are genuinely discrete.** A dryer does not accept a continuous
-control law. It accepts a small number of segments, each with a setpoint pair
-held for a duration, and its pressure control has a practical resolution. Once
-the schedule is a sequence of segments drawn from a grid of admissible
-setpoints, the design problem is combinatorial, and a gradient tells you
-nothing about whether a better sequence exists two segments away.
-
-## What I actually did
-
-I built a solver that takes a product-and-equipment description and returns the
-fastest admissible piecewise-constant schedule on a user-defined grid, together
-with a certificate of what has been proved.
-
-Scope, stated plainly:
-
-- **In scope.** Primary drying only. Steady-state heat and mass balance at the
-  sublimation front. Piecewise-constant schedules with a bounded number of
-  segments. A single representative vial, plus a worst-case vial for the
-  constraint check.
-- **Out of scope.** Freezing and secondary drying. Transient thermal dynamics
-  within a segment. Full batch heterogeneity beyond the two-vial treatment.
-  Any claim about a specific commercial formulation.
-
-I did not build a digital twin, and the distinction matters: this is a search
-over a model that is deliberately simple enough to be exhaustively searchable.
-
-## The formulation
-
-For a segment held at shelf temperature $T_s$ and chamber pressure $P_c$, the
-steady-state balance equates the heat reaching the sublimation front with the
-enthalpy of sublimation carried away by the vapour flux:
-
-$$
-K_v A_v (T_s - T_b) = \Delta H_s \cdot \dot{m}, \qquad
-\dot{m} = \frac{A_p (P_i(T_i) - P_c)}{R_p(L)}
-$$
-
-where $K_v$ is the vial heat-transfer coefficient, $T_b$ the vial bottom
-temperature, $P_i$ the ice vapour pressure at the front temperature $T_i$,
-$R_p(L)$ the dried-layer resistance at front position $L$, and $A_v$, $A_p$ the
-heat and product areas. Solving the pair for $T_i$ and $\dot m$ at each grid
-point gives the two quantities the constraints act on.
-
-The decision variables are the segment setpoints and their switch positions,
-expressed in terms of the fraction of ice removed rather than in time — which
-makes the constraint checks position-based and removes the need to integrate to
-find out whether a schedule is admissible.
-
-The objective is total primary drying time, obtained by integrating the
-reciprocal of the drying rate over the front position. The constraints are, at
-every position within every segment:
-
-$$
-T_i(L) \le T_{\text{collapse}} - \delta, \qquad \dot m(L) \le \dot m_{\max}
-$$
-
-with $\delta$ an explicit safety margin rather than an implicit one.
-
-<Callout variant="assumption">
-Steady state within a segment; a single lumped $K_v$ per pressure; $R_p$ a
-function of dried-layer thickness only; the collapse temperature known and
-constant. Each of these is defensible for design-space work and each is a place
-where a real product can disagree with the model.
-</Callout>
-
-## Implementation
-
-The solver is about 2 000 lines of Python with NumPy and no solver dependency
-in the default path.
-
-The core is an exhaustive enumeration over the segment grid with two things
-that make it tractable:
-
-1. **Precomputation.** The steady-state solve is the expensive inner
-   operation, and it depends only on the grid point and the front position —
-   not on the schedule. So the whole $(T_s, P_c, L)$ lattice is solved once, up
-   front, and stored. Enumeration afterwards is table lookup and prefix sums.
-2. **Dominance pruning.** A partial schedule that reaches the same front
-   position later than another, having consumed no less of every constraint
-   margin, can never win. Discarding it is exact — this is what makes the
-   result a certificate rather than a heuristic.
-
-A MILP formulation of the same problem is included as a cross-check path. It is
-not the default: on the grid sizes that matter, enumeration with the two
-optimisations above is both faster and easier to trust, and it produces the
-certificate as a by-product rather than as a claim from a black box.
-
-<Sidenote summary="What I would rewrite">
-The precomputation table is dense. It is the reason the grid resolution is
-capped, and a sparse or lazily-evaluated store would lift that cap without
-changing anything about the search.
-</Sidenote>
-
-## Results
-
-<Callout variant="limitation" label="Status of the numbers">
-TODO — the result table, the reference case description and the figure below
-must be regenerated from the released run data before publication. Everything
-in this section is structure awaiting numbers; nothing here should be quoted.
-</Callout>
-
-The intended reporting, which the acceptance criteria of this site require
-(§8.2.6: no unlabelled axes, units on everything, uncertainty stated):
-
-- Primary drying time for the optimised schedule against the constant-setpoint
-  baseline, in hours, with the grid resolution stated.
-- The certified gap: the guaranteed distance between the returned schedule and
-  the true optimum of the continuous problem, in hours and as a percentage.
-- Solver wall-clock time and the number of schedules enumerated after pruning.
-- Sensitivity of the answer to $K_v$ and $R_p$, which are the two most
-  uncertain inputs.
+Primary drying is the moving-boundary phase of freeze-drying: heat supplied
+through the vial drives sublimation at an ice interface that recedes through
+the product. The operating recipe controls shelf temperature and chamber
+pressure, while product-temperature and equipment-capacity constraints limit
+how aggressively the cycle can be run.
 
 <Figure
-  src="/figures/_placeholder.svg"
-  alt="Placeholder for the design-space chart: admissible region in shelf temperature and chamber pressure, with the optimised schedule drawn as a path across it."
+  src="/figures/ridge/moving-boundary.svg"
+  alt="Three stages of primary drying in a vial: the sublimation front starts near the top and recedes downward, leaving a growing dried cake above it and a shrinking frozen layer below, with heat entering through the shelf and vapour leaving through the cake."
   width={960}
-  height={540}
+  height={480}
 >
-  TODO — the design space at three front positions, with the optimised schedule
-  drawn as a path across it. Series follow the site palette; both axes carry
-  units.
+  The geometry the whole project rests on. The front position is the state
+  variable; the recipe acts on it only indirectly, through shelf temperature and
+  chamber pressure. Schematic: the panels show the front qualitatively and
+  encode no time or temperature.
 </Figure>
 
-## Validation
+This creates two related engineering questions:
 
-Validation happens at three levels, and it is worth being precise about which
-of them has been done.
+1. What continuous control policy minimises primary-drying time under the
+   model and its constraints?
+2. How can that ideal policy be converted into the finite setpoint steps that
+   an industrial controller can execute, without giving away an economically
+   meaningful amount of performance?
 
-**The steady-state solve** is checked against published design-space
-constructions for reference formulations: given the same inputs, the model
-should reproduce the same iso-lines. This is a unit-level check and it passes
-in the test suite.
+RIDGE is my attempt to answer the second question on top of a simulator and
+control result built specifically for the first.
 
-**The search** is checked by brute force. On grids small enough to enumerate
-without any pruning at all, the pruned search must return an identical optimum.
-Any divergence is a bug in a dominance rule, and this test is the reason to
-trust the certificate.
+## Why I built more than one model
 
-**The physical result** has not been validated against a real dryer. TODO —
-this requires product temperature and Pirani/capacitance pressure data from a
-run, which I do not have. Until that exists, the honest claim is that the
-solver finds the optimum *of the model*, and nothing stronger.
+A quasi-steady-state model is fast enough to explore large numbers of recipes,
+but it suppresses part of the transient heat dynamics. A full Stefan model
+retains the moving-boundary heat equation, but it is more expensive and more
+difficult to verify.
 
-<Callout variant="result">
-The certificate is a statement about the search, not about the world. It says:
-on this grid, under this model, no admissible schedule is faster, and the
-distance to the continuous optimum is at most the stated bound.
+Rather than treating one as universally correct, I built both. The QSS model
+supports rapid analysis and optimisation; the full model provides a more
+detailed reference for understanding when the approximation is adequate and
+where transient behaviour matters.
+
+This separation also makes the numerical work easier to audit. Disagreement
+between the models can be investigated as modelling error, while disagreement
+between numerical schemes inside one model points to an implementation or
+discretisation issue.
+
+## Stage 1: quasi-steady-state simulator
+
+I derived the QSS implementation from the primary heat- and mass-transfer
+equations instead of starting from a pre-existing simulator. At each state, the
+coupled nonlinear relations determine the sublimation conditions; I solved the
+resulting system with a Newton iteration and then advanced the drying state in
+time.
+
+I implemented and compared several integration options, from explicit Euler to
+fourth-order Runge–Kutta. This was useful for two reasons: it exposed the
+accuracy/runtime trade-off directly, and it gave independent convergence
+behaviour against which to check the trajectory.
+
+The result was not only a forward simulator. It became an experimental tool
+for asking how optimal controls behave across different states, constraints and
+recipe choices.
+
+## Stage 2: full Stefan formulation
+
+The higher-fidelity model treats primary drying as a Stefan problem: a heat
+equation on a domain whose boundary moves with the sublimation front. The
+motion of that front couples the temperature field to the mass removed.
+
+Moving domains are awkward to discretise directly. I used a Landau
+transformation to map the changing physical region onto a fixed computational
+domain. I then discretised the transformed spatial equations and integrated
+the resulting system of ordinary differential equations with the method of
+lines.
+
+The implementation is vectorised in NumPy. That matters here because the model
+must be run repeatedly across controls and parameter sets; avoidable Python
+loops would turn verification and optimisation into the dominant cost.
+
+## Verifying the moving-boundary solver
+
+For the full Stefan implementation, agreement with a plausible-looking drying
+curve is not enough. A numerical solver can produce smooth, physical-looking
+results while carrying an error in a transformed term or boundary condition.
+
+I therefore used the **method of manufactured solutions**. The procedure is to
+choose a known analytical field and moving-front trajectory, substitute them
+into the transformed equations, and derive the forcing terms required to make
+that chosen solution exact. The numerical method is then tested on a problem
+whose answer is known by construction.
+
+This verifies whether the discretised equations, transformed boundary
+conditions and time integration recover the manufactured solution as the grid
+is refined. It is a verification of the code and numerical formulation, not an
+experimental validation on a real product.
+
+## From numerical observation to an optimal-control result
+
+While running the simulators, I repeatedly observed the same structure in the
+best controls. This led me to conjecture that the optimal action was the
+**lexicographically maximal admissible control**: at each Markov state, choose
+the largest feasible control according to a fixed priority ordering, subject
+to the process constraints.
+
+I tested that conjecture computationally with a GPU-accelerated brute-force
+search. Across the cases examined, exhaustive comparison recovered the same
+policy as the conjectured rule.
+
+The brute-force result was evidence, not a proof. After further analysis, I
+proved the lexmax policy to be optimal for the Markovian primary-drying
+formulation. The qualification is important: the theorem is a result about the
+stated model, state definition, admissible controls and objective. It does not
+by itself establish that an unmodelled dryer or product follows the same
+policy.
+
+<Callout variant="result" label="The central result">
+Within the Markovian primary-drying model, the lexicographically maximal
+admissible policy is time-optimal. The computational search independently
+recovers the same structure; the proof is what turns that observation into an
+algorithmic principle.
 </Callout>
 
-## Limitations and next steps
+## RIDGE: from an ideal policy to an executable recipe
 
-- **Model risk dominates.** $R_p$ and $K_v$ carry more uncertainty than the
-  optimisation removes. A schedule that is optimal under a 20 % error in $R_p$
-  is not obviously better than a good schedule that is robust to it.
-- **Steady state within a segment** is an approximation that degrades as
-  segments get short. The solver does not currently forbid segments short
-  enough for that to matter; it should.
-- **A single representative vial** plus a worst case is a coarse treatment of
-  batch heterogeneity. Edge vials see radiation the model handles crudely.
-- **The certificate is grid-relative.** The bound on the gap to the continuous
-  problem rests on a Lipschitz-type argument whose constant is estimated
-  numerically. TODO — this argument needs to be written up properly; it is
-  currently the least rigorous part of an otherwise rigorous claim.
+An optimal continuous policy is not yet a production recipe. A PLC executes a
+limited number of steps, uses finite setpoint resolutions and must respect
+equipment-related restrictions on when and how controls change.
 
-Next: robust optimisation over an uncertainty set on $R_p$, so the answer is a
-schedule that is good across the plausible range rather than optimal at a point
-estimate. That changes the objective, not the machinery.
+RIDGE takes recipes generated from the continuous policy and searches for an
+implementable approximation around the lexmax structure. Its dynamic programme
+tracks the drying state while enforcing constraints such as:
 
-## What I would do differently
+- a fixed budget on the number of recipe steps;
+- discrete controller setpoints;
+- admissible transitions between successive steps;
+- process feasibility along the complete trajectory.
 
-I built the MILP path first, because that is what one is taught to reach for,
-and it was the wrong instinct. The problem is small, its structure is
-dominance-friendly, and a solver would have buried the one property that makes
-this project worth reading about — that the answer arrives with a proof
-attached. I would start from the enumeration and add the MILP only as a
-cross-check, which is the order the code is in now, arrived at backwards.
+Because the search is organised around the proved control structure, it does
+not need to treat every arbitrary recipe as equally plausible. The algorithm
+can stop when it finds a feasible discrete recipe whose certified gap from the
+continuous ideal falls below a chosen threshold of economic significance.
+
+This stopping rule is part of the engineering objective. Pursuing another tiny
+fraction of theoretical improvement is not useful if the difference is worth
+less than the complexity it adds to implementation or qualification.
+
+## What the optimisation actually buys
+
+On the two formulations that serve as references in this literature, the
+optimised policy gives roughly **62 % faster primary drying for 5 % mannitol**
+and **50 % faster for 5 % sucrose**, measured against typical cycle conditions.
+
+Those two numbers are not my contribution, and it would be misleading to present
+them as one. They are consistent with what the continuous-recipe literature
+already reports. Recovering them was a check: it is what a correct model and a
+correct control result are supposed to produce, and failing to reproduce them
+would have been evidence of a mistake.
+
+<Figure
+  src="/figures/ridge/relative-drying-time.svg"
+  alt="Bar chart of primary drying time as a percentage of a typical cycle, for two formulations. Five per cent mannitol falls from 100 per cent to 38 per cent, a 62 per cent reduction. Five per cent sucrose falls from 100 per cent to 50 per cent, a 50 per cent reduction."
+  width={960}
+  height={462}
+>
+  Primary drying time under the optimised policy, relative to typical cycle
+  conditions. The reductions reproduce figures already reported for continuous
+  recipes; what changes here is the equipment they require.
+</Figure>
+
+The contribution is the sentence that carries them. Papers reporting gains of
+this size generally close with a call to modernise equipment or to move to
+continuous control, which places the saving out of reach of the installed base.
+The result here is that the same gains are reachable with a discrete,
+step-limited recipe, executable on a classical industrial lyophilizer, within a
+certified gap from the continuous ideal that is chosen to be economically
+insignificant.
+
+So the claim is not that primary drying can be made much faster. That was
+already known. The claim is that the fast recipe does not require a new machine.
+
+## What is established, and what is not
+
+The project currently supports four distinct claims:
+
+- the QSS equations have been implemented and tested across multiple time
+  integration schemes;
+- the transformed Stefan solver has been numerically verified using
+  manufactured solutions;
+- the GPU brute-force search recovers the conjectured control structure in the
+  tested cases;
+- the lexmax policy has been proved optimal for the defined Markovian model,
+  and RIDGE uses that structure in a constrained dynamic programme.
+
+The project does **not** yet claim experimental validation against a real
+freeze-dryer or a specific product. Physical validation would require measured
+cycle data and identified product/equipment parameters. Until then, the
+certificate concerns optimisation and discretisation within the model, not the
+accuracy of the model relative to a production batch.
+
+## Current limitations and next work
+
+- **Model fidelity.** The QSS and full Stefan descriptions make different
+  approximations. The useful question is not which label is more advanced, but
+  when those approximations alter the preferred recipe.
+- **Parameter uncertainty.** A recipe can be optimal for nominal heat- and
+  mass-transfer parameters and fragile when those values move.
+- **Controller detail.** Step budgets and setpoint discretisation are included,
+  but industrial PLC and equipment constraints must ultimately be defined for
+  a specific dryer.
+- **Experimental validation.** Manufactured solutions verify the mathematics
+  implemented in code; they do not validate product behaviour.
+
+The next stage is to consolidate the theorem, numerical evidence and RIDGE
+algorithm into one reproducible workflow, then test how the certified discrete
+gap behaves when model parameters and controller constraints vary.

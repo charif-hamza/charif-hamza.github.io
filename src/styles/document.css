@@ -395,7 +395,7 @@
 	color: var(--ink-500);
 }
 .figure figcaption::before {
-	content: attr(data-label) ' ' counter(figure) ' — ';
+	content: attr(data-label) ' ' counter(figure) ' · ';
 	color: var(--ink-900);
 }
 /* At xl a figure MAY bleed 180px into the left sidenote margin (§8.2.6). */

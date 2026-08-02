@@ -15,18 +15,16 @@
 # list after every run. Delete an entry once it is settled.
 # The full register, with what unblocks each one, is docs/TODO.md.
 pending:
-  - 'D1 domain — served from github.io; charif-hamza.com not registered yet'
-  - 'email — contact@charif-hamza.com is a placeholder'
-  - 'T5 surname order — assumed given name Charif, surname Hamza (CV filenames)'
-  - 'T6 school legal names in person.alumniOf'
+  - 'D1 domain: served from github.io; charif-hamza.com not registered yet'
+  - 'email: Gmail address is temporary; replace with IMT Mines Albi or custom-domain address'
+  - 'CV: not available yet; both CTAs point to the CV status page'
 
 # --- Identity ----------------------------------------------------------------
-name: Charif Hamza
+name: Hamza Charif
 # Surname-first form used for CV filenames (French HR filing convention, §8.4).
-# TODO(D-name): confirm which of "Charif" / "Hamza" is the surname. Assumed:
-#   given name = Charif, surname = Hamza  ->  HAMZA-Charif-CV-FR-2026-07.pdf
-surname: HAMZA
-givenName: Charif
+# Confirmed: given name = Hamza, surname = Charif.
+surname: CHARIF
+givenName: Hamza
 
 # TODO(D1 §17): buy prenom-nom.com and .fr, serve .com, redirect .fr. Until the
 # domain exists the site is served from GitHub Pages; switching later means
@@ -34,41 +32,44 @@ givenName: Charif
 # This URL feeds canonical links, sitemap.xml, RSS and OG absolute URLs.
 url: https://charif-hamza.github.io
 
-# TODO(D-email): replace with the real contact address before launch.
+# Temporary Gmail address. Replace it with the future IMT Mines Albi or
+# custom-domain address once available.
 # Used for every contact affordance on the site; there is no contact form (§11.1).
-email: contact@charif-hamza.com
+email: charifhamza1709@gmail.com
 
 lang: fr # Layer 1 language, set on <html lang> (§10.2)
 docLang: en # Layer 2 language — projects and writing (§10.3, D6)
 
 tagline:
-  fr: Ingénieur procédés — optimisation discrète appliquée aux procédés.
-  en: Process engineer — discrete optimisation applied to process design.
+  fr: Élève-ingénieur en procédés, modélisation et optimisation.
+  en: Engineering student in process modelling and optimisation.
 
 # --- Social ------------------------------------------------------------------
 # Leave a value empty to hide the link entirely. No social icon farm (§8.1.4).
 social:
   github: https://github.com/charif-hamza
-  linkedin: https://www.linkedin.com/in/TODO-linkedin-handle # TODO(D-social)
+  linkedin: https://www.linkedin.com/in/hamza-charif-3a945a323/
   orcid: "" # §14 v1.2 — add when it exists
   repo: https://github.com/charif-hamza/charif-hamza.github.io # §17 D7: public repo
 
 # --- CV (§8.4) ---------------------------------------------------------------
-# TODO(D-cv): drop the two PDFs in public/cv/ using exactly these filenames.
-# Until they exist the buttons still render (S1 requires them above the fold)
-# but they will 404. `available: false` surfaces a visible note on /cv.
+# TODO(D-cv): drop the two PDFs in public/cv/ — see public/cv/README.md for the
+# filenames and the one flip that turns them on. While `available` is false the
+# entries deliberately address /cv itself, so the CTAs lead to the status page
+# and its explicit note rather than to a 404. S1 is satisfied either way: the CV
+# is one click from home. Restore the PDF paths here when the files land.
 cv:
   available: false
   fr:
-    href: /cv/HAMZA-Charif-CV-FR-2026-07.pdf
-    latest: /cv/latest-fr.pdf
-    size: TODO # e.g. "312 Ko"
-    updated: 2026-07 # TODO: regenerate the date suffix on each update
+    href: /cv
+    latest: /cv
+    size: ""
+    updated: ""
   en:
-    href: /cv/HAMZA-Charif-CV-EN-2026-07.pdf
-    latest: /cv/latest-en.pdf
-    size: TODO
-    updated: 2026-07
+    href: /cv
+    latest: /cv
+    size: ""
+    updated: ""
 
 # --- Fonts (§5.2.2) ----------------------------------------------------------
 # TODO(D4): set to true once the WOFF2 files listed in src/styles/fonts.css are
@@ -79,7 +80,7 @@ fonts:
 
 # --- Feature flags (§9.3, §16) -----------------------------------------------
 features:
-  showWriting: true # flip to false until 2 pieces exist (§16 "Empty writing section")
+  showWriting: false # Re-enable when the essays have been rewritten in the author's own voice.
   showProjectsIndex: true # nav entry appears once N > 4 (§3.1)
   showAbout: false # D9 §17 — later; it competes with the CV
   reduceMotionByDefault: false # user toggle in the footer overrides this (§7.6)
@@ -96,18 +97,17 @@ og:
 # --- Structured data (§12.3) -------------------------------------------------
 # schema.org/Person on the home page. This is what makes you findable as a
 # researcher later, so it is worth keeping accurate.
-# TODO(D-person): confirm the exact legal names of both schools before launch.
+# alumniOf is deliberately empty: the degree is expected in 2028, so there is
+# nothing to claim yet. Add IMT Mines Albi's exact legal name on graduation.
 person:
-  jobTitle: Process systems engineer
-  alumniOf:
-    - IMT Mines Albi
-    - EIA-UIASS
+  jobTitle: Process engineering student
+  alumniOf: []
   knowsAbout:
-    - Process systems engineering
-    - Discrete optimisation
-    - Mixed-integer linear programming
+    - Process modelling and simulation
+    - Mathematical optimisation
     - Freeze-drying
-    - Process design
+    - Water treatment and process utilities
+    - Industrial process improvement
 
 # --- Analytics (§11.1) -------------------------------------------------------
 # Plausible or Umami only. Google Analytics is not approved (consent banner).
@@ -129,23 +129,25 @@ strings:
     # --t-display it wrapped to three lines and swallowed the fold. The hero
     # states what you are; the intro states what you do.
     hero:
-      - Ingénieur procédés.
+      - Du procédé au modèle, du modèle à la décision.
     # At most two credential facts — the permitted leakage of §3.3.
-    status: Double diplôme EIA-UIASS × IMT Mines Albi · Bourse d'excellence Fondation IMT
+    status: Élève-ingénieur IFIE, IMT Mines Albi · Diplôme prévu en 2028
     # --- Intro (§8.1.3): 60-90 words, first person, no adjectives about yourself ---
     intro: >-
-      Je travaille à la frontière entre la conception de procédés et
-      l'optimisation discrète. Ce qui m'intéresse commence presque toujours de la
-      même façon : une usine a une recette qui fonctionne, personne ne peut dire
-      si c'est la meilleure, et l'espace de recherche est combinatoire. Depuis
-      deux ans, je construis des modèles et des logiciels qui répondent à cette
-      question avec un certificat plutôt qu'avec une intuition. Je termine
-      actuellement un double diplôme à IMT Mines Albi et je m'oriente vers la
-      recherche en génie des procédés.
+      Je suis élève-ingénieur en deuxième année à IMT Mines Albi. J'aime partir
+      d'un procédé réel, en comprendre les contraintes, puis construire le bon
+      niveau de modèle pour éclairer une décision : étude technico-économique
+      d'une production d'eau ultrapure, optimisation d'un cycle batch ou
+      simulation de la lyophilisation. Je recherche un stage de quatre mois à
+      partir d'avril 2027, sur un sujet compatible avec le travail à distance,
+      en génie des procédés, modélisation, optimisation ou logiciel scientifique.
+    # Underlined in green inside the intro above. It must appear in `intro`
+    # verbatim, or the paragraph renders unmarked rather than breaking.
+    introHighlight: Je recherche un stage de quatre mois à partir d'avril 2027,
     cta:
-      primary: Télécharger le CV
-      primaryMobile: CV
-      secondary: CV en anglais
+      primary: CV en préparation
+      primaryMobile: CV bientôt
+      secondary: CV anglais en préparation
       email: Écrire un message
     sections:
       projects: Projets
@@ -162,7 +164,7 @@ strings:
       previous: Projet précédent
       next: Projet suivant
     footer:
-      contactLabel: Une question, une collaboration, une thèse ?
+      contactLabel: Un stage, une collaboration ou une question technique ?
       reduceMotion: Réduire les animations
       reduceMotionOn: Animations réduites
       viewSource: Voir le code de ce site
@@ -180,7 +182,8 @@ strings:
       previewLabel: Aperçu du document
       previewFallback: Votre navigateur n'affiche pas les PDF intégrés.
       missing: Le PDF n'est pas encore en ligne.
-      missingHint: TODO — déposer les fichiers dans public/cv/.
+      missingHint: Les projets ci-dessous en couvrent l'essentiel ; écrivez-moi et
+        je vous l'envoie dès qu'il est prêt.
       updatedLabel: Mise à jour
       sizeLabel: Taille
     notFound:
@@ -188,11 +191,11 @@ strings:
       body: Le lien est peut-être ancien, ou l'adresse comporte une faute.
       home: Retour à l'accueil
     meta:
-      homeTitle: Charif Hamza — ingénieur procédés
+      homeTitle: Hamza Charif · procédés, modélisation et optimisation
       homeDescription: >-
-        Ingénieur procédés. Modèles et logiciels d'optimisation discrète pour la
-        conception de procédés : lyophilisation, eau pour préparations
-        injectables, cycles de production.
+        Élève-ingénieur à IMT Mines Albi, à la recherche d'un stage de quatre
+        mois en avril 2027. Projets en génie des procédés, optimisation et
+        logiciel scientifique.
   en:
     docLangNote: Written in English.
     breadcrumbProjects: Projects

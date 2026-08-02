@@ -26,7 +26,13 @@ import { site, t } from '~/lib/site.ts';
 		></span>
 
 		<span class="enter enter--fade" style="--enter-at:0ms">
-			<Button href={site.cv.fr.href} variant="primary" icon="download" small download>
+			<Button
+				href={site.cv.fr.href}
+				variant="primary"
+				icon={site.cv.available ? 'download' : 'arrow-right'}
+				small
+				download={site.cv.available}
+			>
 				<span class="surface-header__label-full">{t.cta.primary}</span>
 				<span class="surface-header__label-short">{t.cta.primaryMobile}</span>
 			</Button>

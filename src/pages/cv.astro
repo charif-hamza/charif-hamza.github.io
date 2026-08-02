@@ -13,7 +13,7 @@ import { site, t } from '~/lib/site.ts';
 ---
 
 <SurfaceLayout
-	title={`${t.cvPage.title} — ${site.name}`}
+	title={`${t.cvPage.title} · ${site.name}`}
 	description={t.cvPage.lead}
 	ogImage={`/og/home.${site.og.format}`}
 	noIndex
@@ -23,25 +23,34 @@ import { site, t } from '~/lib/site.ts';
 			<h1 class="t-h1">{t.cvPage.title}</h1>
 			<p class="cv__lead t-lead u-measure">{t.cvPage.lead}</p>
 
-			<div class="cv__actions">
-				<Button href={site.cv.fr.href} variant="primary" icon="download" download>
-					{t.cvPage.downloadFr}
-				</Button>
-				<Button href={site.cv.en.href} variant="secondary" icon="download" download>
-					{t.cvPage.downloadEn}
-				</Button>
-			</div>
+			{
+				/* The download buttons and the file facts both describe a PDF. Until
+				   one exists they would point this page at itself and label two empty
+				   values, so the note below carries the page on its own. */
+				site.cv.available && (
+					<Fragment>
+						<div class="cv__actions">
+							<Button href={site.cv.fr.href} variant="primary" icon="download" download>
+								{t.cvPage.downloadFr}
+							</Button>
+							<Button href={site.cv.en.href} variant="secondary" icon="download" download>
+								{t.cvPage.downloadEn}
+							</Button>
+						</div>
 
-			<dl class="cv__facts t-meta">
-				<div>
-					<dt>{t.cvPage.updatedLabel}</dt>
-					<dd class="t-tabular">{site.cv.fr.updated}</dd>
-				</div>
-				<div>
-					<dt>{t.cvPage.sizeLabel}</dt>
-					<dd class="t-tabular">{site.cv.fr.size}</dd>
-				</div>
-			</dl>
+						<dl class="cv__facts t-meta">
+							<div>
+								<dt>{t.cvPage.updatedLabel}</dt>
+								<dd class="t-tabular">{site.cv.fr.updated}</dd>
+							</div>
+							<div>
+								<dt>{t.cvPage.sizeLabel}</dt>
+								<dd class="t-tabular">{site.cv.fr.size}</dd>
+							</div>
+						</dl>
+					</Fragment>
+				)
+			}
 
 			{
 				site.cv.available ? (
@@ -56,8 +65,9 @@ import { site, t } from '~/lib/site.ts';
 						</object>
 					</div>
 				) : (
-					/* Honest rather than broken: the buttons still render because S1
-					   requires them, and this says plainly why they will 404. */
+					/* Honest rather than broken: S1 is still satisfied because the
+					   home CTA reaches this page in one click, and this says plainly
+					   that the file is not there yet. */
 					<p class="cv__missing t-small">
 						<strong>{t.cvPage.missing}</strong> {t.cvPage.missingHint}
 					</p>

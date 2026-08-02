@@ -1,236 +1,224 @@
 ---
 slug: batch-coating
-title: Batch coating cycle
-subtitle: Where a coating cycle's time actually goes, and what removing it required
-tag: Procédés
+title: Batch coating optimisation
+subtitle: Combining process calculations, operator observation and production-flow redesign
+tag: Optimisation
 order: 3
 featured: true
 motif: m-03-collapse
 motifColor: green
 card:
   description: >
-    A coating cycle cut by more than two thirds. Most of the saving was in
-    steps nobody had modelled, not in the ones everybody optimises.
+    A solo industrial study that grew from process optimisation into
+    work-sequence redesign, for an estimated 60% cut in the elapsed time
+    between consecutive batches.
 facts:
-  context: Internship — TODO(organisation type)
-  period: TODO — months and year
-  role: 'Sole author: instrumentation, model, sequencing study'
-  domain: Batch coating — cycle time
+  context: Individual project within an industrial organisation
+  period: Completed April 2026
+  role: 'Sole analyst, supervised by the production director'
+  domain: Batch coating · process and operations improvement
   methods:
-    - Discrete-event modelling
-    - Enthalpy balance on the drying air
-    - Sequencing study
+    - Operator shadowing and SOP review
+    - Mass and energy balances
+    - Solvent and occupational-safety research
+    - Production-flow redesign
   stack:
-    - Python
-    - NumPy
-    - Matplotlib
-    - Linux
-  status: Method published; industrial data withheld
-artifacts:
-  - label: Method note (PDF)
-    url: 'https://example.com/TODO'
-    type: pdf
+    - Process calculations
+    - Operational analysis
+    - Technical reporting
+  status: Recommendations delivered; implementation not independently confirmed
+artifacts: []
 seo:
-  description: A batch coating cycle shortened by more than 70 percent — a discrete-event account of where the time was and why the model was the easy part.
+  description: A solo batch-coating optimisation study combining process engineering, operator observation, solvent analysis and production-flow redesign.
 dates:
-  published: 2026-07-28
-  updated: 2026-07-31
+  published: 2026-08-02
+  updated: 2026-08-02
 draft: false
 ---
 
 <Callout variant="note" label="In short">
-- A batch coating cycle on a bottleneck unit sets the length of an entire campaign.
-- The physical limit everyone optimises — spray rate against drying capacity — was not what the cycle was actually spending its time on.
-- A discrete-event account of the real sequence found the majority of the time in waits and repeats that were in nobody's model.
-- The reduction was mostly organisational. That is the interesting finding, and it is not a modelling achievement.
+- The assignment began as a process-engineering optimisation of a batch-coating operation.
+- After shadowing operators and reconstructing the real sequence, I expanded the scope to operational and industrial-engineering changes.
+- The final report combined mass and energy balances, solvent-fraction analysis, operator-safety research, digitalisation proposals and sequence changes such as preparing the next solvent mix while the drum is still running.
+- The complete set of proposals produced a deterministic, compounded reduction of approximately **60%** in the calculated elapsed time between consecutive coating batches, including inter-operation intervals. Implementation was discussed positively but was not verified by me.
 </Callout>
 
-<Callout variant="limitation" label="Confidentiality">
-Internship work, published as method only. No product, no formulation, no site
-figures. Cycle times below are described by structure and proportion rather
-than by value until explicit permission exists (§8.3).
+<Callout variant="limitation" label="How to read the result">
+The 60% figure is a calculated improvement in batch-to-batch elapsed time,
+including the intervals between operations. It is not a post-implementation
+measurement. Product, organisation and operating values are omitted.
 </Callout>
 
-## The problem, in industrial terms
+## The initial problem
 
-Batch coating sits on a single unit that a whole campaign has to pass through.
-Whatever the cycle takes, the campaign takes that multiplied by the number of
-batches, so cycle time is campaign length is delivery date. When the unit is
-the bottleneck, an hour removed from the cycle is an hour of capacity created
-for free — no capital, no qualification of new equipment.
+The project started with a conventional process-engineering question: how
+could a batch-coating operation be made faster and more efficient without
+ignoring drying performance or operator safety?
 
-The standing assumption on the line was that the cycle was spray-rate limited:
-that the coating suspension could not be applied faster because the drying air
-could not remove the water fast enough without the film going tacky. That is a
-real constraint, it is the one described in the literature, and it is the one
-an engineer arriving on the line will try to relax first.
+The first instinct in this type of task is to focus on the unit operation and
+its balances. Those calculations mattered, but they did not explain the whole
+cycle. The process seen in an SOP and the process experienced by operators were
+not the same object: preparation, charging, movement, waiting, manual records
+and coordination around the equipment also shaped the elapsed time.
 
-It was not where the time was.
+That observation changed the scope. The project became an end-to-end study of
+both the physical transformation and the production system around it.
 
-## Why it is hard
+## Why the balances were not the lever
 
-**The binding constraint is not where the physics is.** The enthalpy balance on
-the inlet air is a genuine ceiling, and it is easy to model. Because it is easy
-to model, it gets modelled, and because it gets modelled, it gets treated as
-the explanation. The steps around it — heat-up, equilibration, in-process
-checks, the wait for a result, the second wait when the result requires a
-decision — are not in anyone's model because they are not process engineering.
-They are the majority of the clock.
+Measured in time rather than in efficiency, the gains available from the
+operational changes dwarfed the gains available from the mass and energy
+balances. The unit operation was the part I had been sent to optimise and the
+part least able to move the number. That is the uncomfortable shape of this kind
+of assignment: the tool you are trained to reach for is aimed at the smaller
+share of the problem, and no amount of rigour applied to it will recover what is
+being lost between operations.
 
-**The data does not exist in usable form.** The cycle is recorded, but as batch
-records written for compliance, not as a timeline. Reconstructing what actually
-happened, minute by minute, across enough batches to see the distribution
-rather than one anecdote, was the bulk of the work.
+The second difficulty was not finding the changes but getting them adopted. In a
+regulated manufacturing environment a proposal is assessed first against the
+procedural cost of altering a validated procedure, and only afterwards against
+its engineering merit. That inverts the usual order of argument, and it is the
+reason the largest savings identified here were also the hardest to move.
 
-**Variance matters more than the mean.** A step that usually takes ten minutes
-and occasionally takes ninety costs more than its average suggests, because the
-schedule downstream is built around the worst case. Optimising the mean of the
-wrong step is a common and expensive mistake.
+## Grounding the analysis in the shop floor
 
-<Sidenote summary="On the honesty of this project">
-The satisfying version of this story is a clever model that unlocked a physical
-limit. The true version is that careful measurement showed the limit was not
-binding, and the saving came from removing waiting. The second version is more
-useful to anyone reading it, so it is the one on this page.
-</Sidenote>
+I shadowed the operators to understand how the cycle was actually executed,
+then compared that sequence with the written procedures. Questioning an SOP did
+not mean assuming it was wrong. It meant identifying which steps protected
+quality or safety, which reflected the current equipment layout, and which had
+become routine without an explicit technical reason.
 
-## What I actually did
+The clearest example was also the simplest. An operator would stand at the
+coating drum and watch it turn, waiting for the batch to finish before starting
+to prepare the solvent mix for the next one. Nothing about the process requires
+that ordering: the mix can be made while the drum runs. The wait existed because
+the written procedure sequenced it that way, so it was not an operator habit to
+be corrected but a designed step to be revised. That distinction mattered for
+how the finding could be raised at all.
 
-- **Instrumented the cycle.** Reconstructed a timeline per batch from the
-  available records, to a resolution fine enough to separate the process steps
-  from the waits between them, across enough batches to get a distribution.
-- **Built a discrete-event model** of the sequence: operations with durations
-  drawn from the measured distributions, precedence constraints, and the
-  resource contentions that were actually present.
-- **Modelled the physical ceiling** with an enthalpy balance on the drying air,
-  so the spray-rate constraint was quantified rather than assumed.
-- **Searched the sequence** — which steps can be removed, merged, run in
-  parallel, or moved off the critical path — under the precedence and quality
-  constraints.
-- **Did not** change any formulation, any product specification, or any
-  quality-relevant parameter. The saving had to come from sequencing or it did
-  not count.
+This produced two complementary views:
 
-## The formulation
+- a **process view**, covering material quantities, solvent composition,
+  heating and drying duties;
+- an **operations view**, covering sequence, parallel work, charging, manual
+  information flows and avoidable delays.
 
-The drying ceiling. For inlet air at mass flow $\dot m_a$, the water the air
-can carry away between inlet and outlet humidity sets a maximum spray rate:
+Keeping both views was essential. A faster solvent system is of little value if
+it increases exposure in the dryer room; a better production sequence is not
+acceptable if it violates a quality-critical dependency.
 
-$$
-\dot m_{\text{spray}}^{\max} = \dot m_a \,\bigl(Y_{\text{out}}^{\max} - Y_{\text{in}}\bigr)
-$$
+## Process-engineering analysis
 
-with the outlet humidity capped below saturation by the margin the film needs
-to avoid tackiness. This gives a hard lower bound on the spray phase and
-nothing else — which is precisely the point: it bounds one segment of a cycle
-that has many.
+I completed mass and energy balances for the operation and compared the
+solvent fractions used in the SOP with alternative fractions. The calculations
+showed substantial room for improvement relative to the documented operating
+choice.
 
-The sequencing problem. Operations $i$ with durations $d_i$, precedence pairs
-$(i,j) \in P$, start times $s_i$, and a makespan objective:
+I also researched the solvents from an occupational-safety perspective because
+operators remained in the dryer room. The purpose was to ensure that a proposed
+process improvement did not transfer cost or risk from the equipment to the
+people operating it.
 
-$$
-\min\; \max_i \,(s_i + d_i)
-\quad\text{s.t.}\quad
-s_j \ge s_i + d_i \;\;\forall (i,j) \in P
-$$
+The solvent analysis was therefore not treated as an isolated optimisation.
+Candidate fractions had to be considered together with drying demand, handling
+conditions and operator exposure.
 
-subject to resource exclusion on the unit. Every candidate change is a
-modification to $P$ or to the operation set, and each one has to be justifiable
-to somebody who will have to sign the revised procedure.
+## Operational redesign
 
-<Callout variant="assumption">
-Durations independent between steps; the measured distributions representative
-of normal operation; quality outcomes unaffected by the sequence changes
-considered. The last of these is an assumption in the model and a requirement
-in reality, and it is where the burden of proof sat.
-</Callout>
+The shop-floor study identified opportunities outside the core unit operation.
+The final proposal included:
 
-## Implementation
-
-A small discrete-event simulation — a few hundred lines — with the candidate
-changes enumerated rather than searched heuristically, because the operation
-set is small enough that enumeration is instant and an exhaustive answer is
-easier to defend in a meeting than a heuristic one.
-
-The two things that made it useful:
-
-1. **Sampled durations, not means.** Every run draws from the measured
-   distributions, so the output is a makespan distribution and the reported
-   improvement carries a spread. A point estimate would have overstated the
-   result and been correctly disbelieved.
-2. **Changes are tagged by who has to agree.** Each candidate carries a label:
-   engineering decision, procedural change, or quality change. This turned the
-   output from a list of savings into a list of conversations, ranked by hours
-   saved per conversation — which is what actually got things implemented.
-
-## Results
-
-<Callout variant="limitation" label="Status of the numbers">
-TODO — the measured baseline, the achieved cycle time and the breakdown by
-step category are not published pending explicit permission. The headline
-reduction quoted on the card is TODO pending confirmation of the audited
-figure and the exact baseline it is measured against.
-</Callout>
-
-The structure of the result, which is the part that generalises:
-
-- The physical spray-rate ceiling was **not** the binding constraint on the
-  original cycle. It became closer to binding only after the sequencing changes.
-- The majority of the removed time came from steps in the "wait" and "repeat"
-  categories rather than from process operations.
-- The reduction was distributed across a number of small changes, not
-  concentrated in one. No single change accounted for anything like the total,
-  which is why it had not been found by inspection.
+- preparing the next batch’s solvent mix during coating, instead of after it;
+- digitalisation of selected records and information flows;
+- removal or restructuring of avoidable sequential work;
+- clearer coordination between preparation, charging, coating and drying;
+- revision candidates for SOP steps whose purpose or timing required review.
 
 <Figure
-  src="/figures/_placeholder.svg"
-  alt="Placeholder for the cycle breakdown: measured time per step category before and after, with the distribution shown rather than the mean."
+  src="/figures/batch-coating/precedence.svg"
+  alt="Two dependency graphs. As the procedure sequenced it, preparing the next solvent mix waits for the drum to finish coating the current batch. What the process requires is only that the mix be ready and the drum free, so the mix can be prepared while the drum is still running."
   width={960}
-  height={540}
+  height={524}
 >
-  TODO — time per step category, before and after, as distributions rather than
-  bars. Axis in hours; category definitions given in the method note.
+  The single link worth most on this page. Preparing the next mix waited on the
+  drum because the procedure said so, not because anything in the process
+  required it. Dependency graph, not a schedule: no box here represents a
+  duration.
 </Figure>
 
-## Validation
+These changes moved the project into operations research and industrial
+engineering. The objective was no longer merely to improve one rate or one
+balance, but to reduce the total completion time subject to process, safety and
+organisational constraints.
 
-**The model was validated against the measured baseline** before any change was
-proposed: fed the original sequence, it had to reproduce the observed makespan
-distribution within a stated tolerance. A sequencing model that cannot
-reproduce the present has no standing to predict the future.
+## Building a defensible recommendation
 
-**The drying ceiling was checked** against outlet humidity measurements at
-known spray rates, which is the only way to know whether the enthalpy balance
-is describing the actual air path rather than an idealised one.
+Each proposed change was evaluated with a before-and-after calculation. The
+effects were then compounded in sequence rather than simply added as unrelated
+percentages. This matters because one improvement changes the baseline on which
+the next one acts.
 
-**The implemented cycle was measured, not assumed.** TODO — the post-change
-measurement campaign and its comparison against the prediction are the part of
-this work that most deserves publication, and the part most constrained by
-confidentiality.
+Across the full package, the deterministic analysis indicated an approximate
+60% reduction in the elapsed time between consecutive coating batches, with
+inter-operation intervals included. The report presented the contribution of
+the different levers so the production team could separate changes that were
+immediately operational from those requiring an SOP revision, further safety
+review or additional validation.
+
+## Outcome and implementation status
+
+I delivered an end-to-end report covering the technical calculations,
+operational diagnosis, digitalisation proposal and recommended changes. The
+production director verbally indicated that the findings would be implemented.
+
+I did not have access to the later implementation data. For that reason, the
+responsible claim is that the study **demonstrated a projected compound
+reduction of about 60% in batch-to-batch elapsed time, including inter-operation
+intervals, under its stated assumptions**. It is not evidence that the site
+achieved the same reduction in routine production.
 
 ## Limitations and next steps
 
-- **One product, one line.** Nothing here establishes that the same breakdown
-  holds elsewhere. The method transfers; the answer does not.
-- **The saving is organisational,** which means it can be lost again. A change
-  in personnel or procedure can quietly reinstate a wait, and nothing in the
-  model prevents that.
-- **Quality was held constant by construction, not demonstrated.** The
-  sequencing changes were chosen to be quality-neutral by argument; a formal
-  demonstration across enough batches is a separate piece of work.
-- **Distributions came from records** written for a different purpose, and
-  inherit whatever rounding and habit those records contain.
+The 60 % is a calculated figure, not a measured one, and the standing note at the
+top of this page says so. That is the limitation a reader will look for first. It
+is not the one that would actually decide the outcome.
 
-Next: the same instrumentation applied before any modelling on a second line,
-to test whether "the time is in the waits" is a property of this cycle or of
-batch operations generally. I suspect the latter, which is exactly the kind of
-suspicion that should be tested rather than published.
+The binding constraint here is procedural rather than technical. Several of the
+strongest proposals require revising a procedure that was written and validated
+long before the study existed, and revalidation can refuse a change whose
+engineering and economic case is exceptional. A study that ranks changes only by
+the time they save will therefore overstate what is available in practice,
+because it prices the engineering and ignores the paperwork that governs whether
+the engineering is allowed to happen. I regard that as the honest criticism of
+my own report.
 
-## What I would do differently
+Two next steps follow from it. The first is to make procedural cost a primary
+axis rather than a footnote: the report already separates changes that are
+immediately operational from those needing an SOP revision, further safety
+review or additional validation, and that separation deserves to drive the
+sequencing, so the site can bank the unblocked savings while the harder cases
+work through approval. The second is to instrument the line and measure a real
+baseline, so that any change which does clear the procedural bar can be assessed
+against observed elapsed time rather than against a calculation of it.
 
-I spent the first weeks refining the drying model, because it was the part that
-looked like process engineering. The measurement campaign that actually
-answered the question was cheap and could have come first. The general lesson —
-measure where the time is before modelling why it is there — is obvious in
-retrospect and was not obvious to me at the time, which is the only reason it
-is worth writing down.
+## What this project taught me
+
+The key lesson was about problem boundaries. A task labelled “process
+optimisation” can be dominated by scheduling, information flow or work design.
+The right response is not to force every cause into a process model, but to
+combine the appropriate tools: observation for the real workflow, balances for
+the physical limits, safety research for acceptable choices and operational
+analysis for the sequence.
+
+That broader frame turned a local calculation into a set of decisions the
+production team could evaluate and act on.
+
+The second lesson was about how proposals die, and it only became clear by
+comparison. In the [water production study](/projects/wfi-feasibility/) my best
+idea was rejected because a senior engineer knew something about scaling that I
+did not, an argument I could follow, learn from and concede. Here the limiting
+factor was rarely whether a change was right. It was what revalidating a
+long-standing procedure would cost. Both are legitimate constraints and an
+engineer has to work inside both. But they teach very different things, and I
+would rather spend my time where a proposal has to survive the first kind of
+scrutiny.

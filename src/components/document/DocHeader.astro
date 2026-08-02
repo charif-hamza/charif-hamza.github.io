@@ -31,9 +31,9 @@ const { sectionTitle } = Astro.props;
 
 		{sectionTitle && <span class="doc-header__title t-meta">{sectionTitle}</span>}
 
-		<a class="doc-header__cv t-meta" href={site.cv.fr.href} download>
+		<a class="doc-header__cv t-meta" href={site.cv.fr.href} download={site.cv.available ? '' : undefined}>
 			{t.cta.primaryMobile}
-			<Icon name="download" size={14} />
+			<Icon name={site.cv.available ? 'download' : 'arrow-right'} size={14} />
 		</a>
 	</div>
 </header>

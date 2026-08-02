@@ -1,229 +1,240 @@
 ---
 slug: wfi-feasibility
-title: WFI route comparison
-subtitle: Structuring the choice between a distillation train and a membrane route for water for injection
-tag: Étude technico-économique
+title: Ultrapure water production
+subtitle: From node-by-node plant documentation to a terminal-UF investment case
+tag: Procédés
 order: 2
 featured: true
 motif: m-02-two-paths
 motifColor: white
 card:
   description: >
-    Two compliant ways to make water for injection. A comparison framework that
-    survives the fact that most of its inputs are uncertain.
+    A team study of a 400 L/h PW and 250 L/h WFI station, combining process
+    documentation, balances, configuration comparison and targeted investment
+    proposals.
 facts:
-  context: Internship — TODO(organisation type)
-  period: TODO — months and year
-  role: 'Sole author: framing, cost model, sensitivity analysis'
-  domain: Pharmaceutical utilities — water for injection
+  context: Industrial team project
+  period: Completed January 2025
+  role: 'Team documentation; personal ownership of selected nodes, flowsheets, calculations and vendor comparison'
+  domain: Process utilities · ultrapure water treatment
   methods:
-    - Techno-economic comparison
-    - Life-cycle cost
-    - Monte Carlo sensitivity
+    - Node-by-node process analysis
+    - Mass and energy balances
+    - Configuration comparison
+    - Equipment vendor comparison
   stack:
     - Python
-    - NumPy
-    - Matplotlib
-    - Linux
-  status: Method published; industrial data withheld
-artifacts:
-  - label: Method note (PDF)
-    url: 'https://example.com/TODO'
-    type: pdf
+    - Process flowsheets
+    - Technical documentation
+  status: Study completed; findings carried into the following qualification work
+artifacts: []
 seo:
-  description: How to structure the comparison between multiple-effect distillation and a membrane route for WFI, when most inputs are uncertain.
+  description: A node-by-node engineering study of a 400 L/h PW and 250 L/h WFI station and its proposed terminal-UF configuration.
 dates:
-  published: 2026-07-20
-  updated: 2026-07-31
+  published: 2026-08-02
+  updated: 2026-08-02
 draft: false
 ---
 
 <Callout variant="note" label="In short">
-- Since the pharmacopoeia allows non-distillation routes, a site building WFI capacity has two compliant options rather than one.
-- The two routes are usually compared on the wrong axis — capital cost — because it is the number that is easiest to obtain.
-- I built a comparison whose output is a decision boundary in the uncertain parameters, not a single winner.
-- The framework is publishable; the client's numbers are not, and this page contains none of them.
+- We documented an operating **400 L/h purified-water (PW)** and **250 L/h injection-grade water (WFI)** production station from end to end.
+- My own scope covered the deionisation stage, storage tank and multiple-effect distillation (MED), followed by the flowsheets and quantitative comparison of the existing and proposed terminal-UF configurations.
+- I produced mass- and energy-balance calculations, Python analyses and an equipment-vendor comparison used to frame targeted investment options.
+- The study supported a favourable decision on terminal ultrafiltration, particularly on energy use and regulatory alignment. According to the project sponsor, the report was reused in the following year's qualification work.
 </Callout>
 
 <Callout variant="limitation" label="Confidentiality">
-This project was carried out during an internship. What follows is method
-only: no client figures, no site data, no vendor quotations. Where a number
-would normally appear, the structure of the number is described instead.
+The process capacities and the structure of the work can be disclosed. Vendor
+quotations, site operating data and organisation-specific qualification
+documents are omitted.
 </Callout>
 
-## The problem, in industrial terms
+## The engineering question
 
-Water for injection is the highest-grade water a pharmaceutical site produces
-and one of its larger continuous energy consumers. For decades there was
-effectively one compliant way to make it: distillation, usually a
-multiple-effect still. The European Pharmacopoeia's admission of
-non-distillation methods opened a second route — a membrane train, typically
-reverse osmosis followed by electrodeionisation and ultrafiltration, with a
-sanitisation regime that carries the microbiological burden distillation
-carries thermally.
+The initial task was not to optimise a single item of equipment. It was to
+understand a complete ultrapure-water station well enough to compare its
+current architecture with a future configuration including terminal
+ultrafiltration.
 
-So a site adding WFI capacity now has a genuine choice, and the choice is
-consequential: the two routes have different capital costs, very different
-energy signatures, different failure modes and different qualification effort.
-In practice the decision is often made by precedent — the site already runs
-stills, so it buys another still. That is not obviously wrong. It is just
-undefended.
+That required following both production chains from inlet treatment to storage
+and distribution, identifying what each node removes or controls, and then
+placing energy, water quality, operability and qualification requirements in
+the same picture. A configuration can be attractive in a balance sheet and
+still be difficult to operate, maintain or qualify. Conversely, an apparently
+redundant barrier may address a different failure mode from the equipment
+upstream.
 
-## Why it is hard
+## Why the obvious comparison fails
 
-**The two routes do not fail in the same way.** A still is a thermal barrier:
-it is sanitised by the fact that it boils. A membrane train is a physical
-barrier maintained by a control regime, and its risk is biofilm on the
-downstream side. These are not comparable on a single risk axis, and any
-comparison that reduces them to one is hiding the decision rather than making
-it.
+Two things made this harder than reading a datasheet.
 
-**The economics depend on things the study cannot fix.** The energy comparison
-turns on the price of steam relative to electricity, on the number of effects
-in the still, on the plant's utilisation profile, and on whether waste heat has
-somewhere to go. Every one of these is site-specific and several are volatile.
-A single-point comparison is a comparison of two guesses.
+The first was that the station's own flowsheet was withheld until late in the
+project for confidentiality reasons. The documentation had to be reconstructed
+from the installation itself: following lines, reading equipment plates,
+asking what each node was there to do. Only then could a comparison begin. I
+was also learning the domain from zero, with a senior engineer of some decades'
+experience as supervisor. Neither of those is an obstacle worth complaining
+about, but both mean the analysis started from the plant rather than from a
+drawing of it.
 
-**The obvious metric is the least informative one.** Capital cost is the number
-that arrives first and the one everybody asks for, and over a twenty-year asset
-life it is frequently not the one that decides. But life-cycle cost requires
-assumptions, and assumptions get argued with, whereas a capex figure gets
-believed.
+The second is more interesting, because it is the reason the decision is not
+the formality it looks like. On the two variables that are easy to see (energy
+consumption and alignment with the intended regulatory approach), terminal
+ultrafiltration wins clearly enough that the choice appears settled before any
+study is done. The variables that actually decide it do not appear in a balance:
 
-<Sidenote summary="Why a boundary, not a winner">
-A study that outputs "route A wins" is fragile: it is falsified by one input
-moving. A study that outputs "route A wins whenever the steam-to-electricity
-price ratio exceeds X, at utilisation above Y" survives the input moving, and
-it tells the reader something they can check against their own site.
-</Sidenote>
+- operators know the existing equipment, and that familiarity is what makes
+  maintenance cheap and fast today;
+- new equipment brings a qualification burden that has to be paid before it
+  produces anything;
+- and an organisation that has run a configuration for years has real inertia
+  against replacing it, which is not irrational: it is the accumulated value
+  of knowing how the current one fails.
 
-## What I actually did
+A configuration can therefore win on paper and lose on the floor. The difficult
+part of this study was not computing the comparison. It was working out which
+terms belonged in it.
 
-I built a comparison framework and applied it. The framework is the deliverable
-here; the application is the client's.
+## How the work was divided
 
-- **In scope.** A common functional unit and a shared system boundary; a
-  life-cycle cost model with explicit annuitisation; an energy model for each
-  route; a Monte Carlo sensitivity over the inputs that are genuinely
-  uncertain; and a presentation of the result as a decision boundary.
-- **Out of scope.** Qualification cost beyond an order-of-magnitude allowance.
-  Site integration — piping runs, plant-room space, existing steam headroom.
-  Monetised microbiological risk, which I judged not defensible.
+The station documentation was produced jointly by two students. We divided the
+plant by nodes so that each person could investigate a smaller part in depth
+before the complete process was assembled.
 
-The boundary definition did more work than anything else in the study. Both
-routes need pretreatment, and how much of it you attribute to the WFI step
-changes the answer. Fixing that boundary first, in writing, before any number
-was collected, is the step I would insist on again.
+My personal scope included:
 
-## The formulation
+- the deionisation stage;
+- the storage tank;
+- the multiple-effect distillation unit;
+- hand-built process flowsheets for the existing installation and the proposed
+  terminal-UF configuration;
+- mass- and energy-balance calculations and their comparison in Python;
+- a comparison of equipment vendors;
+- engineering questions and investment options derived from the combined
+  process view.
 
-Life-cycle cost per cubic metre of WFI, over an asset life $N$ at discount rate
-$r$:
+My teammate covered other nodes, including reverse osmosis and activated-carbon
+filtration, and led the qualification and regulatory sections. We then
+compiled the contributions into a report of more than 40 pages.
 
-$$
-C = \frac{\text{CAPEX} \cdot a(r, N) + C_{\text{energy}} + C_{\text{cons}} + C_{\text{labour}}}{V_{\text{annual}}},
-\qquad a(r,N) = \frac{r(1+r)^N}{(1+r)^N - 1}
-$$
+## From documentation to configuration choices
 
-The two routes differ almost entirely inside $C_{\text{energy}}$.
+The node-by-node documentation was the foundation rather than the final
+deliverable. Once the full station was legible, I redrew the process as two
+flowsheets: the existing route and the proposed route with terminal UF. This
+made it possible to compare not only equipment blocks but also interfaces,
+bypasses, utilities and fallback modes.
 
-For a multiple-effect still with $n$ effects, the specific steam demand falls
-roughly with $1/n$, so the energy term is a steam cost multiplied by a
-distillate-to-steam ratio that the number of effects fixes. The still also
-consumes cooling water, which is not free and is regularly left out.
+Several practical questions emerged from that comparison:
 
-For the membrane route the energy is electrical — high-pressure pumping across
-the RO stages, plus the EDI current — with an added thermal term for periodic
-hot-water sanitisation. That last term is small per cycle and matters because
-of how often it is done, which is a control-regime decision rather than an
-equipment property.
+- Should the MED be retained as a backup instead of being treated as obsolete?
+- Could a dual-production arrangement feed the MED from the first-RO stream,
+  bypassing the second RO when that operating mode is appropriate?
+- What does each configuration imply for energy consumption, equipment wear,
+  maintenance and qualification?
+- Why add terminal UF downstream of a double-RO train when a simple comparison
+  of nominal pore sizes can make the order look counter-intuitive?
 
-<Callout variant="assumption">
-Constant demand profile; a single tariff for each energy carrier; membrane and
-still both operated at design point; replacement of membranes on a fixed
-schedule rather than on performance. The first and last of these are the ones
-most likely to be wrong on a real site.
-</Callout>
+The last question captures the main lesson of the project. A treatment train
+cannot be assessed by ranking barriers on one physical dimension. Each node has
+a removal duty, a control role and an operational context. Understanding the
+sequence requires process engineering, water quality, equipment behaviour and
+regulatory compliance to be considered together.
 
-## Implementation
+## Quantitative work
 
-A parameterised model in Python, roughly 800 lines, deliberately kept small
-enough that every equation in it can be traced to a line in the method note.
+I calculated mass and energy balances for the configurations and wrote Python
+scripts to make the comparison reproducible. The objective was to show where
+the energy demand moved when the architecture changed and which assumptions
+were driving the result, rather than to present a single unexplained saving.
 
-Two implementation choices did most of the work:
+I also compared equipment vendors against the needs identified in the process
+study. That work connected the flowsheet-level conclusion to concrete,
+targeted investment suggestions: what equipment would be required, which
+claims needed verification and which questions should be taken back to a
+supplier before purchase.
 
-1. **Every input is a distribution, not a number.** Costs, tariffs, utilisation
-   and lifetimes enter as ranges with a stated shape. A point estimate is
-   available but it is a derived view, not the primary object. This makes it
-   impossible to report a single number without also reporting its spread.
-2. **The output is a map.** The model sweeps the two inputs the site actually
-   controls or knows — the steam-to-electricity price ratio and the annual
-   utilisation — and reports which route is cheaper at each point, with the
-   region where the difference is smaller than the model's own uncertainty
-   marked as undecided. That region is the honest part of the answer.
+## Outcome
 
-## Results
+The final techno-economic and engineering comparison supported investment in
+terminal ultrafiltration. Energy consumption and alignment with the intended
+regulatory approach were important parts of the favourable verdict.
 
-<Callout variant="limitation" label="Status of the numbers">
-TODO — no results are published here. The decision map, the cost breakdown and
-the sensitivity ranking are derived from client data and require explicit
-permission before any version of them appears (§8.3 of the site specification,
-and the standing rule for internship work).
-</Callout>
+The report did not reduce the decision to “UF versus MED”. It preserved
+fallback and hybrid options, including keeping the MED as a backup and
+examining alternative feed paths. This made the recommendation more robust to
+the industrial realities that a simplified flowsheet leaves out.
 
-What can be said about the shape of the answer without disclosing it: the
-comparison is decided by the energy term and the utilisation, the capital
-difference is recovered or not recovered within a small number of years, and
-there is a genuine region of the parameter space in which the two routes are
-indistinguishable within the model's uncertainty. A study that had produced a
-confident winner everywhere would have been a study with too few uncertain
-inputs.
+According to the project sponsor, the document was used during the following
+year's qualification pipeline. I did not personally execute or audit that later
+so I present this as reported downstream use rather than as an implementation
+claim.
+
+## How the conclusions were checked
+
+I did not validate this work myself, and it would be misleading to present it as
+though I had. The checking was done by the senior engineer supervising the
+project, who was both the recipient of the report and its reviewer: he flagged
+errors, issued corrections and validated the sections as they were rewritten.
+The document went through several rounds on that basis. Whatever robustness it
+has comes from that review, not from a verification I performed on my own work.
+
+The clearest illustration is a proposal of mine that did not survive it. I
+suggested doubling the feed and running the two reverse-osmosis units in
+parallel rather than in series, so that the water takes a single pass instead of
+two. I checked the side I knew how to check: with the three-effect still
+downstream, the specification was still met on one RO pass, because the effects
+were strong enough to absorb the difference in ionic load. On quality grounds
+the proposal held.
 
 <Figure
-  src="/figures/_placeholder.svg"
-  alt="Placeholder for the decision map: which route is cheaper as a function of the steam-to-electricity price ratio and annual utilisation, with an undecided band between them."
+  src="/figures/wfi-feasibility/ro-arrangement.svg"
+  alt="Two reverse-osmosis arrangements. As built, the water crosses two membrane stages in series before the still. In the proposed arrangement, a doubled feed splits across two units in parallel, so the water takes a single pass and the route is one stage shorter."
   width={960}
-  height={540}
+  height={500}
 >
-  TODO — decision map with the undecided band shown explicitly. Both axes carry
-  units; the band is drawn from the Monte Carlo spread, not chosen by eye.
+  The proposal and the reason it failed. On the membrane side the shorter route
+  holds; the cost lands downstream, on a unit the arrangement never touches.
+  Schematic: topology only, with no flows or duties shown.
 </Figure>
 
-## Validation
+The objection was one I had not thought of. A higher dissolved load arriving at
+the still scales its heat-transfer surfaces faster, and the cleaning and
+downtime that follows costs more than the throughput the parallel arrangement
+buys. The idea was rejected on process grounds, which is the right way for an
+idea to die, and the reason I remember it better than the parts that were
+accepted.
 
-**Energy figures** were checked against published specific-consumption ranges
-for both technologies. Anything falling outside the literature range was
-treated as an input error until proven otherwise, which caught two of them.
+The one validation still outstanding is the one that matters most. The equipment
+is at the time of writing still under specification, so the report's assumptions
+have not yet met an installed plant. Whether they hold is a question only the
+commissioned station can answer.
 
-**The cost model** was checked by reconstruction: an independently built
-spreadsheet reproducing the same case within a stated tolerance. Agreement
-between two implementations of the same assumptions is weak validation, but it
-does catch arithmetic, and arithmetic is what usually goes wrong.
+## Limitations and what I would revisit
 
-**The conclusion has not been validated against an operating installation.**
-TODO — that would require post-commissioning consumption data from both route
-types on comparable duties, which was not available.
+The part of the recommendation I would contest today is the verdict on the
+still. Keeping the multiple-effect unit as a standby against a membrane failure
+means a large, capital-intensive item sitting idle waiting for the fault it
+insures against. That is a defensible answer to a reliability question, but it
+was never posed as a utilisation question, and those have different answers. If
+the still is to be retained, the better question is whether it can carry a duty
+elsewhere on the site rather than wait. And if it cannot, whether standby
+capacity is really what that capital is for.
 
-## Limitations and next steps
+The study also has no post-installation evidence behind it, for the reason given
+above, and its cost side cannot be published. A reader should treat the
+conclusion as a well-reviewed engineering argument, not as a measured outcome.
 
-- **Risk is not in the objective.** The microbiological risk profile differs
-  between the routes and is the reason a conservative site chooses
-  distillation regardless of cost. Leaving it out is defensible only because
-  it is stated; monetising it would not have been.
-- **Site integration is excluded** and can be decisive — available steam
-  headroom in particular can make the still nearly free or nearly impossible.
-- **A constant demand profile** flatters the still, which does not like being
-  cycled.
-- **Vendor data is vendor data.** Specific consumptions came from suppliers
-  with an interest in the answer.
+The next step I would take is the one the study skipped: reopen the standby
+decision as an asset-utilisation problem. What duty could the still carry, what
+does the site lose if it is redeployed and a membrane does fail, and is that
+exposure worth less than the unit is worth doing something else.
 
-Next: a variable-demand version, because the utilisation profile is where the
-two routes diverge most and it is the input a site actually knows.
+## What this project taught me
 
-## What I would do differently
-
-I collected numbers before fixing the boundary, and paid for it by having to
-re-collect a third of them. The order should have been: functional unit,
-boundary, uncertainty structure, then data — and only then a conversation with
-a vendor. The framework in this project is essentially that order, written down
-after learning it the expensive way.
+The strongest part of the work was not an isolated calculation. It was moving
+from detailed equipment understanding to a system-level decision without
+losing the practical constraints between them. The balances made the energy
+case visible; the vendor comparison made the investment actionable; and the
+configuration questions tested whether the preferred answer could survive
+maintenance, qualification and real operation.

@@ -7,7 +7,7 @@ date: 2026-08-12
 tags:
   - Optimisation
   - Méthode
-draft: false
+draft: true
 related:
   - ridge
 ---
@@ -25,7 +25,7 @@ only one of them has an end.
 
 Give a client a better schedule and you have given them an improvement of
 unknown size against an unknown ceiling. The rational response is to keep
-looking — to run another study next year, to entertain the next vendor with a
+looking: to run another study next year, to entertain the next vendor with a
 better story. Give them a certified schedule and you have given them a reason
 to close the file. The saving is not the eight hours you removed from the
 cycle; it is the eight hours plus the studies nobody now has to commission.
@@ -56,7 +56,7 @@ usually the least certain thing in the room.
 
 **Over search space $S$.** A grid is not the continuum. Proving that no grid
 point is better says nothing about the points between them unless you add an
-argument — a Lipschitz bound, a convexity result, a monotonicity property —
+argument (a Lipschitz bound, a convexity result, a monotonicity property)
 that connects them. That argument is a separate piece of work and it is
 routinely skipped.
 
@@ -77,8 +77,8 @@ at.
 Many design problems have small decision spaces. A handful of segments, a
 handful of setpoints per segment, a resolution set by what the equipment can
 physically hold. That is thousands or millions of candidates, not $10^{30}$.
-With a dominance rule — a partial solution that is behind on the objective and
-no better on every constraint margin can be discarded exactly — enumeration
+With a dominance rule (a partial solution that is behind on the objective and
+no better on every constraint margin can be discarded exactly), enumeration
 finishes in the time it takes to make coffee, and it finishes with a proof.
 
 <Sidenote summary="Where this stops working">
@@ -89,7 +89,7 @@ enumerate?" is worth asking before assuming it is not.
 </Sidenote>
 
 The cost of the exact route is usually not compute. It is the discipline of
-writing the model down completely enough to enumerate it — every constraint
+writing the model down completely enough to enumerate it: every constraint
 explicit, every assumption named, no tuning parameters smuggled in as
 "engineering judgement". That discipline is the actual deliverable, and a
 heuristic lets you avoid it.
@@ -97,13 +97,13 @@ heuristic lets you avoid it.
 ## What it changes about how you write
 
 If you are going to hand over a certificate, the model has to be legible. Not
-merely correct — legible, so that the person deciding whether to trust it can
+merely correct. Legible, so that the person deciding whether to trust it can
 find the assumption they doubt and check it.
 
 In practice that means the assumption list is part of the result rather than an
 appendix, the safety margins are explicit numbers rather than conservative
-choices buried in a coefficient, and the failure of the certificate — the case
-where the model is wrong — is described before anyone asks.
+choices buried in a coefficient, and the failure of the certificate (the case
+where the model is wrong) is described before anyone asks.
 
 None of this is specific to optimisation. It is what makes a piece of
 engineering reviewable rather than merely deliverable. Optimality certificates

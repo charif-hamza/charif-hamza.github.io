@@ -32,6 +32,17 @@ import { site, t } from '~/lib/site.ts';
 /* One line since v0.7 (see the note in site.config.yaml), but still authored as
    a list: §8.1.2 allows two and the layout does not care which it is given. */
 const lines: string[] = t.hero;
+
+/* The intro carries one underlined phrase: the sentence a recruiter is actually
+   scanning for. Both strings come from site.config.yaml and both pass through
+   frDeep, so they are corrected identically and indexOf still matches. If the
+   phrase is ever edited out of `intro`, the paragraph renders plain. */
+const intro: string = t.intro;
+const mark: string = t.introHighlight ?? '';
+const at = mark ? intro.indexOf(mark) : -1;
+const introBefore = at === -1 ? intro : intro.slice(0, at);
+const introMark = at === -1 ? '' : intro.slice(at, at + mark.length);
+const introAfter = at === -1 ? '' : intro.slice(at + mark.length);
 ---
 
 <section class="hero">
@@ -51,14 +62,24 @@ const lines: string[] = t.hero;
 
 			{/* Fade only — a text block that slides reads as a slideshow (§7.5). */}
 			<p class="hero__intro t-lead enter enter--fade" style="--enter-at:200ms">
-				{t.intro}
+				{introBefore}{introMark && <span class="hero__intro-mark">{introMark}</span>}{introAfter}
 			</p>
 
+			{/* While `cv.available` is false the CTAs address the /cv status page
+			    rather than a PDF, so `download` has to come off with them: a
+			    download attribute on an HTML route saves the page to disk. */}
 			<div class="hero__cta enter" style="--enter-at:300ms;--rise:10px">
-				<Button href={site.cv.fr.href} variant="primary" icon="download" download>
+				<Button
+					href={site.cv.fr.href}
+					variant="primary"
+					icon={site.cv.available ? 'download' : 'arrow-right'}
+					download={site.cv.available}
+				>
 					{t.cta.primary}
 				</Button>
-				<a class="link hero__cta-secondary" href={site.cv.en.href} download>{t.cta.secondary}</a>
+				<a class="link hero__cta-secondary" href={site.cv.en.href} download={site.cv.available ? '' : undefined}
+					>{t.cta.secondary}</a
+				>
 				<a class="link hero__cta-secondary" href={`mailto:${site.email}`}>{site.email}</a>
 			</div>
 
@@ -107,9 +128,14 @@ const lines: string[] = t.hero;
 		color: var(--ink-700);
 	}
 
+	/* The only credentials on the site (§3.3), so they are set to be read rather
+	   than found: --t-body over --t-meta, and ink-700 over ink-500. At meta size
+	   under a --t-display line they were functionally invisible. */
 	.hero__status {
 		margin-top: var(--space-6);
-		color: var(--ink-500);
+		font-size: var(--t-body);
+		font-weight: 600;
+		color: var(--ink-700);
 	}
 
 	/* Its own measure rather than .u-measure: 34em of --t-lead is 68 characters,
@@ -119,6 +145,17 @@ const lines: string[] = t.hero;
 		margin-top: var(--space-8);
 		max-width: 30em;
 		color: var(--ink-900);
+	}
+
+	/* Thicker and further from the baseline than a link underline (2px at 3px),
+	   so it reads as emphasis rather than as something clickable. skip-ink is
+	   off: the line should be continuous under the descenders of "recherche". */
+	.hero__intro-mark {
+		text-decoration: underline;
+		text-decoration-color: var(--green-500);
+		text-decoration-thickness: 3px;
+		text-underline-offset: 5px;
+		text-decoration-skip-ink: none;
 	}
 
 	.hero__cta {

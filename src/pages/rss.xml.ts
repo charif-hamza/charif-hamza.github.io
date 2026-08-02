@@ -15,7 +15,7 @@ export async function GET(context: APIContext) {
 	const entries = await allWriting();
 
 	return rss({
-		title: `${site.name} — ${en.writingIndexTitle}`,
+		title: `${site.name} · ${en.writingIndexTitle}`,
 		description: en.writingIndexLead,
 		site: context.site ?? site.url,
 		trailingSlash: false,
