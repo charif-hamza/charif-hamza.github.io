@@ -15,7 +15,6 @@
 # list after every run. Delete an entry once it is settled.
 # The full register, with what unblocks each one, is docs/TODO.md.
 pending:
-  - 'D1 domain: served from github.io; charif-hamza.com not registered yet'
   - 'email: Gmail address is temporary; replace with IMT Mines Albi or custom-domain address'
 
 # --- Identity ----------------------------------------------------------------
@@ -25,11 +24,8 @@ name: Hamza Charif
 surname: CHARIF
 givenName: Hamza
 
-# TODO(D1 §17): buy prenom-nom.com and .fr, serve .com, redirect .fr. Until the
-# domain exists the site is served from GitHub Pages; switching later means
-# changing this line and adding public/CNAME.
 # This URL feeds canonical links, sitemap.xml, RSS and OG absolute URLs.
-url: https://charif-hamza.github.io
+url: https://charifhamza.com
 
 # Temporary Gmail address. Replace it with the future IMT Mines Albi or
 # custom-domain address once available.

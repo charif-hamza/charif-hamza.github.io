@@ -13,7 +13,7 @@ these is also marked `TODO` at the place it is used.
 
 | # | What | Where | Notes |
 |---|---|---|---|
-| T1 | **Domain** (D1, §17) | `site.config.yaml` → `url`, `public/robots.txt` | Placeholder `charif-hamza.com`. Feeds canonical links, `sitemap.xml`, RSS and absolute OG URLs, so it must be right before the first share. Spec recommends buying `.com` and `.fr`, serving `.com`. |
+| ~~T1~~ | ~~**Domain** (D1, §17)~~ | — | **Resolved.** `charifhamza.com` is registered with Cloudflare and is the canonical site domain. `site.config.yaml`, `public/CNAME`, and `public/robots.txt` carry the same host. |
 | T2 | **Email** | `site.config.yaml` → `email` | Now a real address, but a temporary one: `charifhamza1709@gmail.com`. Replace with the IMT Mines Albi or custom-domain address once it exists. It is the only contact method on the site (§11.1 — no forms), and it appears in the hero, the footer, both document layouts and the JSON-LD. |
 | T3 | **GitHub / LinkedIn / ORCID** | `site.config.yaml` → `social` | Placeholders contain `TODO`. An empty string hides the link entirely rather than rendering a dead one. ORCID is intentionally empty until §14 v1.2. |
 | T4 | **Public repo URL** (D7, §17) | `site.config.yaml` → `social.repo` | The "Voir le code de ce site" footer link. D7 resolves to a public repo — it is a credibility artifact for Persona B. |
@@ -24,7 +24,7 @@ these is also marked `TODO` at the place it is used.
 
 | # | What | Where | Notes |
 |---|---|---|---|
-| T7 | **The two CV PDFs** | `public/cv/` | See `public/cv/README.md` for the filenames and the flip. Until they exist, `cv.href` points at `/cv`, the home CTAs read "CV en préparation" and lead to the status page, and `/cv` shows the note instead of the buttons and the viewer — S1 is still met, since the CV is one click from home. On arrival: restore the PDF paths, set `available: true`, fill `size` / `updated`, and keep the stable redirects at `/cv/latest-fr.pdf` and `/cv/latest-en.pdf` (§8.4). |
+| ~~T7~~ | ~~**The two CV PDFs**~~ | — | **Resolved.** The French and English PDFs live in `public/cv/`; `cv.available` is enabled and all home, header, and `/cv` download affordances address the published files. |
 | T8 | **Font files** | `public/fonts/` | Seven WOFF2 files, listed with their exact names in `src/styles/fonts.css`. Switzer is free from Fontshare; Source Serif 4 and JetBrains Mono are OFL. Subset to `latin` + `latin-ext` — the French accents are not optional. Budget 120 KB total (§12.1). Then set `fonts.installed: true`, which switches the preload hints on. Until then the fallback stacks carry the site and the build prints one Vite warning per missing file — that warning **is** this TODO. |
 | T9 | **Quantitative figures** | `public/figures/<slug>/` | Each project now carries one hand-drawn *schematic* — RO topology, the moving boundary, the precedence graph — which answer §8.2.4 question 6 without inventing data. None is a chart. The pages still have no plot of a result, and cannot until the numbers behind T10 exist. §8.2.6 makes an unlabelled axis a hard rejection criterion: every chart needs axis labels with units, and the series must use the site palette (`--green-500`, `--ink-900`, `--ink-500`, `--green-700`), never a rainbow default. |
 
