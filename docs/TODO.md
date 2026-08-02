@@ -14,7 +14,7 @@ these is also marked `TODO` at the place it is used.
 | # | What | Where | Notes |
 |---|---|---|---|
 | ~~T1~~ | ~~**Domain** (D1, §17)~~ | — | **Resolved.** `charifhamza.com` is registered with Cloudflare and is the canonical site domain. `site.config.yaml`, `public/CNAME`, and `public/robots.txt` carry the same host. |
-| T2 | **Email** | `site.config.yaml` → `email` | Now a real address, but a temporary one: `charifhamza1709@gmail.com`. Replace with the IMT Mines Albi or custom-domain address once it exists. It is the only contact method on the site (§11.1 — no forms), and it appears in the hero, the footer, both document layouts and the JSON-LD. |
+| ~~T2~~ | ~~**Email**~~ | — | **Resolved.** `contact@charifhamza.com` is the site-wide contact address. It appears in the hero, footer, document layouts, JSON-LD and both CVs. |
 | T3 | **GitHub / LinkedIn / ORCID** | `site.config.yaml` → `social` | Placeholders contain `TODO`. An empty string hides the link entirely rather than rendering a dead one. ORCID is intentionally empty until §14 v1.2. |
 | T4 | **Public repo URL** (D7, §17) | `site.config.yaml` → `social.repo` | The "Voir le code de ce site" footer link. D7 resolves to a public repo — it is a credibility artifact for Persona B. |
 | ~~T5~~ | ~~**Surname order**~~ | — | **Resolved.** Given name Hamza, surname Charif, giving `CHARIF-Hamza-CV-FR-YYYY-MM.pdf`. §8.4 requires uppercase surname first (French HR filing convention). |

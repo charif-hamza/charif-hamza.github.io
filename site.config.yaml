@@ -14,8 +14,7 @@
 # no pattern match can catch them. The build prints whatever is left in this
 # list after every run. Delete an entry once it is settled.
 # The full register, with what unblocks each one, is docs/TODO.md.
-pending:
-  - 'email: Gmail address is temporary; replace with IMT Mines Albi or custom-domain address'
+pending: []
 
 # --- Identity ----------------------------------------------------------------
 name: Hamza Charif
@@ -27,10 +26,8 @@ givenName: Hamza
 # This URL feeds canonical links, sitemap.xml, RSS and OG absolute URLs.
 url: https://charifhamza.com
 
-# Temporary Gmail address. Replace it with the future IMT Mines Albi or
-# custom-domain address once available.
 # Used for every contact affordance on the site; there is no contact form (§11.1).
-email: charifhamza1709@gmail.com
+email: contact@charifhamza.com
 
 lang: fr # Layer 1 language, set on <html lang> (§10.2)
 docLang: en # Layer 2 language — projects and writing (§10.3, D6)
@@ -131,8 +128,8 @@ strings:
       niveau de modèle pour éclairer une décision : étude technico-économique
       d'une production d'eau ultrapure, optimisation d'un cycle batch ou
       simulation de la lyophilisation. Je recherche un stage de quatre mois à
-      partir d'avril 2027, sur un sujet compatible avec le travail à distance,
-      en génie des procédés, modélisation, optimisation ou logiciel scientifique.
+      partir d'avril 2027, en génie des procédés, modélisation, optimisation ou
+      logiciel scientifique.
     # Underlined in green inside the intro above. It must appear in `intro`
     # verbatim, or the paragraph renders unmarked rather than breaking.
     introHighlight: Je recherche un stage de quatre mois à partir d'avril 2027,
