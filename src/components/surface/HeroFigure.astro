@@ -15,9 +15,11 @@
  *
  * MOTION.  This one loops, which is a deliberate exception to the v0.6 decision
  * that motifs are stills — the owner's call, recorded in docs/TODO.md. The
- * choreography and its timing are the supplied art's, transcribed with it: the
- * blocks fly in bottom-up along the isometric axes over 1.8 s, the assembled
- * figure holds for 2.1 s, everything fades, and it begins again.
+ * choreography is the supplied art's: the blocks fly in bottom-up along the
+ * isometric axes over 1.5 s, the assembled figure holds for 2.4 s, everything
+ * fades, and it begins again. The timing is re-cut from the art's — see the
+ * long note on the keyframes below for why equal travel, an early opacity
+ * resolve and --ease-land are what make it read as an assembly.
  *
  * Three properties make an infinite loop affordable here:
  *
@@ -102,16 +104,30 @@ const boxes = painterSort([
 	/* ---------------------------------------------------------------------
 	   The loop.  One cycle, seven phases of it.
 
-	   Every block runs the same shape on the same clock and differs only in
-	   when its fly-in starts and which isometric axis it arrives along. Each
-	   --from pair is a whole number of cells along one axis in SVG user units
-	   (U = 24, so a step along x or y is 20.78 across and 12 down, and a step
-	   up is 24), which is what makes a block travel along the grid it lands on
-	   rather than along an arbitrary diagonal.
+	   Every block runs an identical shape on the same clock: it is invisible at
+	   its start offset, becomes solid over 200 ms, travels for 560 ms, and stops.
+	   Only two things differ per block — when it starts (140 ms apart, bottom
+	   first) and which isometric axis it arrives along.
 
-	   Percentages are the reference art's, kept: fly-in 1.4% -> 41%, hold to
-	   88%, fade out by 100%. At 4.4 s that is 1.8 s assembling, 2.1 s standing
-	   and 0.5 s gone. One number changes the tempo — --hero-loop below.
+	   Three properties are what make it read as an assembly rather than as a
+	   drift, and all three were missing from the first pass:
+
+	     - Equal travel.  Every offset is exactly 1.25 cells = 30 user units,
+	       whichever axis it is on (a unit step along x or y is 20.78 across and
+	       12 down, which is 24 long; a step up is 24 straight). Same distance in
+	       the same time is the same speed, so seven blocks moving at once look
+	       like one mechanism instead of seven unrelated arrivals.
+	     - Opacity resolves first.  It finishes at M, a third of the way through
+	       the travel, so a block is solid while it is still moving. Fading and
+	       travelling on the same clock is what made the whole thing look hazy.
+	     - --ease-land, not --ease-entrance.  See the note in tokens.css: over a
+	       560 ms travel the near-exponential curve spends most of its time
+	       creeping the last few percent, which is the "constant slowness".
+
+	   At 4.4 s: 1.5 s assembling, 2.4 s standing, 0.5 s gone. One number changes
+	   the tempo — --hero-loop below. The percentages are spelled out per block
+	   because keyframe offsets cannot be custom properties; nothing else here is
+	   per-block except the two translate values.
 	   --------------------------------------------------------------------- */
 	[data-hero-figure] {
 		--hero-loop: 4.4s;
@@ -127,15 +143,19 @@ const boxes = painterSort([
 	}
 	@keyframes heroblock-plinth {
 		0%,
-		1.36% {
+		1.4% {
 			opacity: 0;
 			transform: translate(26px, 15px);
-			animation-timing-function: var(--ease-entrance);
+			animation-timing-function: var(--ease-land);
 		}
-		20.68%,
+		5.95% {
+			opacity: 1;
+		}
+		14.13%,
 		88% {
 			opacity: 1;
 			transform: translate(0, 0);
+			animation-timing-function: var(--ease-exit);
 		}
 		100% {
 			opacity: 0;
@@ -148,15 +168,19 @@ const boxes = painterSort([
 	}
 	@keyframes heroblock-apron {
 		0%,
-		4.77% {
+		4.58% {
 			opacity: 0;
 			transform: translate(-26px, 15px);
-			animation-timing-function: var(--ease-entrance);
+			animation-timing-function: var(--ease-land);
 		}
-		24.09%,
+		9.13% {
+			opacity: 1;
+		}
+		17.31%,
 		88% {
 			opacity: 1;
 			transform: translate(0, 0);
+			animation-timing-function: var(--ease-exit);
 		}
 		100% {
 			opacity: 0;
@@ -169,15 +193,19 @@ const boxes = painterSort([
 	}
 	@keyframes heroblock-core {
 		0%,
-		8.18% {
+		7.76% {
 			opacity: 0;
-			transform: translate(0, -34px);
-			animation-timing-function: var(--ease-entrance);
+			transform: translate(0, -30px);
+			animation-timing-function: var(--ease-land);
 		}
-		27.5%,
+		12.31% {
+			opacity: 1;
+		}
+		20.49%,
 		88% {
 			opacity: 1;
 			transform: translate(0, 0);
+			animation-timing-function: var(--ease-exit);
 		}
 		100% {
 			opacity: 0;
@@ -190,15 +218,19 @@ const boxes = painterSort([
 	}
 	@keyframes heroblock-bar {
 		0%,
-		11.59% {
+		10.94% {
 			opacity: 0;
 			transform: translate(-26px, -15px);
-			animation-timing-function: var(--ease-entrance);
+			animation-timing-function: var(--ease-land);
 		}
-		30.91%,
+		15.49% {
+			opacity: 1;
+		}
+		23.67%,
 		88% {
 			opacity: 1;
 			transform: translate(0, 0);
+			animation-timing-function: var(--ease-exit);
 		}
 		100% {
 			opacity: 0;
@@ -211,15 +243,19 @@ const boxes = painterSort([
 	}
 	@keyframes heroblock-shelf {
 		0%,
-		15% {
+		14.12% {
 			opacity: 0;
 			transform: translate(26px, -15px);
-			animation-timing-function: var(--ease-entrance);
+			animation-timing-function: var(--ease-land);
 		}
-		34.32%,
+		18.67% {
+			opacity: 1;
+		}
+		26.85%,
 		88% {
 			opacity: 1;
 			transform: translate(0, 0);
+			animation-timing-function: var(--ease-exit);
 		}
 		100% {
 			opacity: 0;
@@ -232,15 +268,19 @@ const boxes = painterSort([
 	}
 	@keyframes heroblock-riser {
 		0%,
-		18.41% {
+		17.3% {
 			opacity: 0;
-			transform: translate(0, -34px);
-			animation-timing-function: var(--ease-entrance);
+			transform: translate(0, -30px);
+			animation-timing-function: var(--ease-land);
 		}
-		37.73%,
+		21.85% {
+			opacity: 1;
+		}
+		30.03%,
 		88% {
 			opacity: 1;
 			transform: translate(0, 0);
+			animation-timing-function: var(--ease-exit);
 		}
 		100% {
 			opacity: 0;
@@ -253,15 +293,19 @@ const boxes = painterSort([
 	}
 	@keyframes heroblock-lintel {
 		0%,
-		21.82% {
+		20.48% {
 			opacity: 0;
-			transform: translate(-40px, -23px);
-			animation-timing-function: var(--ease-entrance);
+			transform: translate(-26px, -15px);
+			animation-timing-function: var(--ease-land);
 		}
-		41.14%,
+		25.03% {
+			opacity: 1;
+		}
+		33.21%,
 		88% {
 			opacity: 1;
 			transform: translate(0, 0);
+			animation-timing-function: var(--ease-exit);
 		}
 		100% {
 			opacity: 0;
@@ -269,19 +313,21 @@ const boxes = painterSort([
 		}
 	}
 
-	/* The ground arrives with the first blocks and leaves with the last: a
+	/* The ground arrives under the first block and leaves with the last: a
 	   shadow under nothing is the one thing that would give the loop away. */
 	.hero-figure__scene .iso-ground {
 		animation: heroblock-ground var(--hero-loop) linear infinite;
 	}
 	@keyframes heroblock-ground {
 		0%,
-		1% {
+		1.4% {
 			opacity: 0;
+			animation-timing-function: var(--ease-land);
 		}
-		25%,
+		14.13%,
 		88% {
 			opacity: 1;
+			animation-timing-function: var(--ease-exit);
 		}
 		100% {
 			opacity: 0;
