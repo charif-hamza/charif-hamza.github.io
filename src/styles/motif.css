@@ -20,6 +20,12 @@
 	overflow: visible;
 }
 
+/* A motif cropped to its own drawing reserves the drawing's ratio instead —
+   still a reserved box, so the CLS budget is unaffected. */
+.motif[data-fit='natural'] {
+	aspect-ratio: var(--iso-aspect);
+}
+
 /* --- Stroke (§6.1): a hairline of ink, non-scaling, mitre joins. ---------- */
 .iso {
 	stroke: var(--iso-stroke);

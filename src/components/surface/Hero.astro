@@ -10,55 +10,80 @@
  * The status line is the *only* place credentials appear on the site — the
  * permitted leakage of §3.3, capped at two facts. Everything else that fits on
  * a CV belongs in the PDF.
+ *
+ * Layout (v0.7): two columns from `lg`, text against the isometric figure. The
+ * one-column version left the right half of a 1440 px screen empty for the
+ * whole height of the hero, which on the site's own terms — "a well-made
+ * object", §4.1 — read as an unfinished page rather than as generous space. The
+ * figure is not decoration bolted on to fill it: it is the same drawing system
+ * as the rail, so the fold now introduces the visual language instead of
+ * deferring it to the first card.
+ *
+ * Below `lg` the figure is not rendered at all. It is 0.6 as wide as it is tall,
+ * so stacking it would push the CV button — which S1 requires above the fold —
+ * off a phone screen, and buying the illustration with the primary conversion is
+ * a bad trade.
  */
 import Button from '~/components/common/Button.astro';
 import Icon from '~/components/common/Icon.astro';
+import HeroFigure from '~/components/surface/HeroFigure.astro';
 import { site, t } from '~/lib/site.ts';
 
-const [line1, line2] = t.hero;
+/* One line since v0.7 (see the note in site.config.yaml), but still authored as
+   a list: §8.1.2 allows two and the layout does not care which it is given. */
+const lines: string[] = t.hero;
 ---
 
 <section class="hero">
-	<div class="u-container">
-		<h1 class="hero__title t-display">
-			<span class="hero__line enter" style="--enter-at:80ms;--rise:14px">{line1}</span>
-			<span class="hero__line enter" style="--enter-at:140ms;--rise:14px">{line2}</span>
-		</h1>
+	<div class="u-container hero__grid">
+		<div class="hero__body">
+			<h1 class="hero__title t-display">
+				{
+					lines.map((line, i) => (
+						<span class="hero__line enter" style={`--enter-at:${80 + i * 60}ms;--rise:14px`}>
+							{line}
+						</span>
+					))
+				}
+			</h1>
 
-		<p class="hero__status t-meta enter" style="--enter-at:180ms;--rise:10px">{t.status}</p>
+			<p class="hero__status t-meta enter" style="--enter-at:180ms;--rise:10px">{t.status}</p>
 
-		{/* Fade only — a text block that slides reads as a slideshow (§7.5). */}
-		<p class="hero__intro t-lead u-measure enter enter--fade" style="--enter-at:200ms">
-			{t.intro}
-		</p>
+			{/* Fade only — a text block that slides reads as a slideshow (§7.5). */}
+			<p class="hero__intro t-lead enter enter--fade" style="--enter-at:200ms">
+				{t.intro}
+			</p>
 
-		<div class="hero__cta enter" style="--enter-at:300ms;--rise:10px">
-			<Button href={site.cv.fr.href} variant="primary" icon="download" download>
-				{t.cta.primary}
-			</Button>
-			<a class="link hero__cta-secondary" href={site.cv.en.href} download>{t.cta.secondary}</a>
-			<a class="link hero__cta-secondary" href={`mailto:${site.email}`}>{site.email}</a>
+			<div class="hero__cta enter" style="--enter-at:300ms;--rise:10px">
+				<Button href={site.cv.fr.href} variant="primary" icon="download" download>
+					{t.cta.primary}
+				</Button>
+				<a class="link hero__cta-secondary" href={site.cv.en.href} download>{t.cta.secondary}</a>
+				<a class="link hero__cta-secondary" href={`mailto:${site.email}`}>{site.email}</a>
+			</div>
+
+			{/* At most a small pair of glyphs. No social icon farm (§8.1.4). */}
+			<div class="hero__social enter enter--fade" style="--enter-at:360ms">
+				{
+					site.social.github && (
+						<a href={site.social.github} rel="me noopener" target="_blank" aria-label="GitHub">
+							<Icon name="external" size={18} />
+							<span class="t-meta">GitHub</span>
+						</a>
+					)
+				}
+				{
+					site.social.linkedin && (
+						<a href={site.social.linkedin} rel="me noopener" target="_blank" aria-label="LinkedIn">
+							<Icon name="external" size={18} />
+							<span class="t-meta">LinkedIn</span>
+						</a>
+					)
+				}
+			</div>
 		</div>
 
-		{/* At most a small pair of glyphs. No social icon farm (§8.1.4). */}
-		<div class="hero__social enter enter--fade" style="--enter-at:360ms">
-			{
-				site.social.github && (
-					<a href={site.social.github} rel="me noopener" target="_blank" aria-label="GitHub">
-						<Icon name="external" size={18} />
-						<span class="t-meta">GitHub</span>
-					</a>
-				)
-			}
-			{
-				site.social.linkedin && (
-					<a href={site.social.linkedin} rel="me noopener" target="_blank" aria-label="LinkedIn">
-						<Icon name="external" size={18} />
-						<span class="t-meta">LinkedIn</span>
-					</a>
-				)
-			}
-		</div>
+		<div class="hero__aside"><HeroFigure /></div>
 	</div>
 </section>
 
@@ -76,19 +101,23 @@ const [line1, line2] = t.hero;
 	.hero__line {
 		display: block;
 	}
-	/* The second line steps back so the two-line statement reads as one
-	   sentence with an emphasis, not as two headlines. */
-	.hero__line:last-child {
+	/* A second line, if one is ever authored again, steps back so the statement
+	   reads as one sentence with an emphasis rather than as two headlines. */
+	.hero__line:nth-child(2) {
 		color: var(--ink-700);
 	}
 
 	.hero__status {
-		margin-top: var(--space-5);
+		margin-top: var(--space-6);
 		color: var(--ink-500);
 	}
 
+	/* Its own measure rather than .u-measure: 34em of --t-lead is 68 characters,
+	   which is right for the paragraph but wide enough that the text column
+	   stops holding together as a block against the figure. */
 	.hero__intro {
-		margin-top: var(--space-10);
+		margin-top: var(--space-8);
+		max-width: 30em;
 		color: var(--ink-900);
 	}
 
@@ -97,7 +126,7 @@ const [line1, line2] = t.hero;
 		flex-wrap: wrap;
 		align-items: center;
 		gap: var(--space-5);
-		margin-top: var(--space-10);
+		margin-top: var(--space-8);
 	}
 
 	.hero__cta-secondary {
@@ -121,10 +150,42 @@ const [line1, line2] = t.hero;
 		color: var(--ink-900);
 	}
 
+	/* Nothing to lay out until there are two things to lay out. */
+	.hero__aside {
+		display: none;
+	}
+
 	@media (min-width: 1024px) {
+		/* Was space-20. The hero is a two-column block now and carries its own
+		   height; the extra 32 px at the top only bought a longer scroll to the
+		   CV button on a 768 px-tall laptop. */
 		.hero {
-			padding-top: var(--space-20);
+			padding-top: var(--space-12);
 			padding-bottom: var(--space-12);
+		}
+
+		.hero__grid {
+			display: grid;
+			/* The text column is capped at its own measure rather than given a
+			   share of the width. A proportional split leaves slack inside BOTH
+			   columns — text that stops short of its edge, a drawing floating in
+			   the middle of its own — and the two slacks add up into one soft
+			   200 px hole down the middle of the fold. Capping the text pushes all
+			   of the spare width into a single gutter, which reads as spacing
+			   rather than as a gap. */
+			grid-template-columns: minmax(0, 40rem) minmax(280px, 1fr);
+			align-items: center;
+			gap: var(--space-12);
+		}
+
+		.hero__aside {
+			display: block;
+		}
+	}
+
+	@media (min-width: 1280px) {
+		.hero__grid {
+			gap: var(--space-16);
 		}
 	}
 </style>

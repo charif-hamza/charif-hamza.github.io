@@ -37,7 +37,7 @@ deploy behaviour of §13.
 src/
   layouts/      BaseLayout · SurfaceLayout (Layer 1) · DocumentLayout (Layer 2)
   components/
-    surface/    Hero, ProjectRail, ProjectCard, WritingTeaser, Footer, header
+    surface/    Hero, HeroFigure, ProjectRail, ProjectCard, WritingTeaser, Footer, header
     document/   FactsTable, Callout, Figure, Sidenote, Toc, ArtifactList, NextPrev
     common/     Button, PillTag, Wordmark, MotifFrame, Icon
   motifs/       iso.js + Scene.astro + one .astro file per motif (inline SVG)
@@ -51,6 +51,7 @@ public/         cv/ · fonts/ · og/ · figures/
 site.config.yaml
 docs/SPEC.md    the build contract
 docs/TODO.md    everything still outstanding
+docs/reference/ source art, kept for provenance, never shipped
 ```
 
 Three ideas carry most of the weight.
@@ -76,6 +77,13 @@ originally called for was cut: the loops read as unresolved rather than
 satisfying, and a compelling still was always the acceptance bar for one
 (§6.6). The motion budget went to the project rail instead, where one card is
 in focus at a time and the neighbours are cut by the page edges.
+
+The one exception is the hero figure (v0.7), built from the same `Scene.astro`
+but looping: it assembles itself block by block, holds, fades and begins again
+on a 4.4 s cycle. It carries no `animation-fill-mode`, so the resting state of
+the markup is the finished object and every reduced-motion path leaves that on
+screen; and it observes the §7.6 guards, pausing off-screen and with the tab.
+It is why the hero has two columns instead of one.
 
 **Content is Markdown and the build defends it.** `src/content.config.ts`
 validates each entry; `src/lib/collections.ts` validates the set. A build fails

@@ -21,6 +21,8 @@ interface Box {
 	right: string;
 	/** Material: light | accent | accent-soft | dark. */
 	m: string;
+	/** Optional handle, emitted as data-block so a caller can address one box. */
+	id?: string;
 }
 
 interface Props {
@@ -33,10 +35,23 @@ interface Props {
 	surface?: 'green' | 'white';
 	/** Extra padding around the composition, in SVG user units. */
 	pad?: number;
+	/**
+	 * 'square' (default) is the card geometry: a square box the composition
+	 * hangs on the right of. 'natural' crops the viewBox to the drawing, for the
+	 * one place a motif is not sitting on a card and the caller controls the box.
+	 */
+	fit?: 'square' | 'natural';
 	class?: string;
 }
 
-const { boxes, shadow, surface = 'white', pad = 3, class: className = '' } = Astro.props;
+const {
+	boxes,
+	shadow,
+	surface = 'white',
+	pad = 3,
+	fit = 'square',
+	class: className = '',
+} = Astro.props;
 
 const uid = nextUid();
 
@@ -75,7 +90,10 @@ const height = Math.max(...ys) - Math.min(...ys) + 2 * pad;
    square, so there is no slack between them for it to distribute. The slack is
    inside the viewBox, which means it has to be spent here. */
 const side = Math.max(width, height);
-const viewBox = `${minX - (side - width)} ${minY - (side - height) / 2} ${side} ${side}`;
+const viewBox =
+	fit === 'natural'
+		? `${minX} ${minY} ${width} ${height}`
+		: `${minX - (side - width)} ${minY - (side - height) / 2} ${side} ${side}`;
 
 /* Grain sits on the lit faces of the plain boxes only — the accent object's
    gradient is what carries it, and grain on top of that reads as dirt. */
@@ -86,7 +104,8 @@ const grainFaces = boxes.filter((b) => b.m === 'light').map((b) => b.left);
 	class:list={['motif', className]}
 	viewBox={viewBox}
 	data-surface={surface}
-	style={`--iso-accent-left:url(#${uid}-accent);--iso-accent-soft:url(#${uid}-soft)`}
+	data-fit={fit}
+	style={`--iso-accent-left:url(#${uid}-accent);--iso-accent-soft:url(#${uid}-soft);--iso-aspect:${width}/${height}`}
 	role="presentation"
 	aria-hidden="true"
 	focusable="false"
@@ -146,7 +165,7 @@ const grainFaces = boxes.filter((b) => b.m === 'light').map((b) => b.left);
 
 	{
 		boxes.map((b) => (
-			<g class:list={['iso', `iso--${b.m}`]}>
+			<g class:list={['iso', `iso--${b.m}`]} data-block={b.id}>
 				<polygon class="iso-face--right" points={b.right} />
 				<polygon class="iso-face--left" points={b.left} />
 				<polygon class="iso-face--top" points={b.top} />

@@ -7,6 +7,11 @@
  * is left is a wordmark and the CV button, and the strip scrolls away rather
  * than sticking — on home the CV button is above the fold anyway (S1), so
  * pinning it would only steal vertical space on a phone.
+ *
+ * The hairline between the two is the same device as the section labels below
+ * (§8.1.5, .section-label::after). Two objects a thousand pixels apart do not
+ * read as a strip; a rule running between them does, and it costs no ink and no
+ * new vocabulary — the top of the page now rhymes with "Projets" and "Écrits".
  */
 import Wordmark from '~/components/common/Wordmark.astro';
 import Button from '~/components/common/Button.astro';
@@ -16,6 +21,9 @@ import { site, t } from '~/lib/site.ts';
 <header class="surface-header">
 	<div class="u-container surface-header__inner">
 		<span class="enter enter--fade" style="--enter-at:0ms"><Wordmark /></span>
+
+		<span class="surface-header__rule enter enter--fade" style="--enter-at:120ms" aria-hidden="true"
+		></span>
 
 		<span class="enter enter--fade" style="--enter-at:0ms">
 			<Button href={site.cv.fr.href} variant="primary" icon="download" small download>
@@ -38,11 +46,25 @@ import { site, t } from '~/lib/site.ts';
 		gap: var(--space-4);
 	}
 
+	/* No room for it beside a collapsed "CV" pill on a phone; it appears with the
+	   full-width button. */
+	.surface-header__rule {
+		display: none;
+	}
+
 	/* On mobile the button collapses to a pill with the icon and "CV" (§8.1.1). */
 	.surface-header__label-full {
 		display: none;
 	}
 	@media (min-width: 768px) {
+		.surface-header__rule {
+			display: block;
+			flex: 1;
+			height: 1px;
+			margin-inline: var(--space-2);
+			background: var(--rule);
+		}
+
 		.surface-header__label-full {
 			display: inline;
 		}

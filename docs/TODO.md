@@ -108,6 +108,58 @@ build output and neither had a test.
   per face and a browser fetches only the faces a page actually uses, so they
   do not belong in the reading-typeface budget.
 
+### v0.7 — the hero is two columns, and one of them is an object
+
+The §8.1.2 hero was a text column and nothing else, which on a 1440 px screen
+left the right half of the fold empty for the full height of the hero. On the
+site's own terms — §4.1, "a well-made object" — that read as a page that had not
+been finished rather than as generous space. Three changes, in order of how much
+they matter:
+
+- **The second hero line is gone.** §8.1.2 drafts the hero as
+  *« Ingénieur procédés. J'optimise des procédés avec des méthodes discrètes. »*
+  At `--t-display` the second sentence wrapped to three lines, pushed the CV
+  button most of a screen down, and said in headline type what the intro
+  paragraph two blocks below says properly. The hero states what he is; the
+  intro states what he does. §8.1.2's "maximum two lines" is a ceiling, not a
+  quota.
+- **A figure fills the other column** (`HeroFigure.astro`): seven blocks on the
+  §6.1 unit grid with one green accent, built out of `Scene.astro` like every
+  other motif, so the fold now teaches the drawing language instead of deferring
+  it to the first card. It is not the optional §8.1.2 portrait — there is still
+  no photo. Below `lg` it is not rendered: it is 0.6 as wide as it is tall, and
+  stacking it on a phone would buy the illustration with the CV button, which S1
+  wants above the fold.
+- **That one motif loops**, which is a deliberate exception to the v0.6 decision
+  above — the owner's call, overriding it for this one object. The choreography
+  and its timing are the supplied art's, transcribed with the geometry: the
+  blocks fly in bottom-up along the isometric axes over 1.8 s, the assembled
+  figure holds for 2.1 s, everything fades, and it begins again on a 4.4 s
+  cycle. `--hero-loop` in `HeroFigure.astro` is the one number that changes the
+  tempo.
+
+  Three things keep it affordable. It carries **no `animation-fill-mode`**, so
+  the resting state of the markup is the finished object and reduced motion,
+  reduced data, the footer toggle and CSS-off all leave the assembled figure on
+  screen rather than the empty first frame. The **§7.6 guards are real**: an
+  IntersectionObserver pauses the loop once more than a quarter of the figure
+  has left the viewport, and `visibilitychange` pauses it with the tab. And
+  100% is the same invisible state as 0%, so the wrap is **seamless** — which is
+  the criterion the old motif loops failed and the reason they were cut.
+
+  `npm run motifs` still passes: it proves that no *motif* emits a keyframe of
+  its own, and this choreography lives in the hero component rather than in
+  `Scene.astro` or `iso.js`, so the rail motifs remain stills.
+
+Two smaller things went with it: `Scene.astro` gained `fit="natural"` (a
+viewBox cropped to the drawing, for the one motif not sitting on a card) and
+per-box `id`s, and the header strip gained the hairline the section labels below
+already use, so the wordmark and the CV button read as one strip rather than as
+two objects a thousand pixels apart.
+
+The source art is in `docs/reference/`, with a note on why it was transcribed
+rather than shipped.
+
 ### Two forced by contrast
 
 Both forced by §12.2's "WCAG 2.2 AA, non-negotiable", both inside the token
