@@ -1,0 +1,158 @@
+---
+/**
+ * HeroFigure — the object that balances the hero.  SPEC §6.1, §6.2, §7.5.
+ *
+ * The hero used to be a column of text against half a screen of nothing. This
+ * is what fills it: seven boxes on the unit grid, one of them green, cantilevered
+ * into a zig-zag that steps up and to the left. It is the same drawing system as
+ * the three motifs on the rail — same projection, same three face tones, same
+ * hairline, same ground plate — so the first thing above the fold teaches the
+ * visual language that the rest of the page then speaks.
+ *
+ * Read as an idea (§6.2): a structure that only stands because each block is
+ * placed where the one below it can carry it. Exactly one block is the accent,
+ * as §7.3 requires, and it is the one the eye lands on first.
+ *
+ * MOTION.  The motifs on the rail are stills (§6.6, v0.6) and this one ends as a
+ * still too — but it is the LCP element of the whole site, so it gets the site's
+ * one-shot entrance rather than a loop: each block flies in along the isometric
+ * axis it would have been slid in along, bottom-up, and stops. The whole
+ * assembly is over at 890 ms, inside the 900 ms entrance budget of §7.5, and it
+ * runs only under `data-entrance="play"` — so it plays once per session, never on
+ * back-navigation, and not at all with JavaScript off. Reduced motion, reduced
+ * data and the footer toggle all collapse it to the finished object via the
+ * global rule in base.css, which is why every keyframe ends where the still is.
+ */
+import Scene from '~/motifs/Scene.astro';
+import { box, painterSort } from '~/motifs/iso.js';
+
+/* Unit-grid transcription of the reference art. Heights are one cell
+   throughout; only the footprints change, which is what makes the stack read as
+   one object rather than seven. z runs -1 (the plinth the figure stands on) to
+   5 (the lintel that closes it at the top). */
+const boxes = painterSort([
+	{ ...box(0, 0, -1, 1.75, 1, 1, 'light'), id: 'plinth' },
+	{ ...box(0, 1, 0, 1, 1.5, 1, 'light'), id: 'apron' },
+	{ ...box(0, 0, 0, 1, 1, 1, 'light'), id: 'core' },
+	{ ...box(-0.5, 1, 2, 2.5, 1, 1, 'accent'), id: 'bar' },
+	{ ...box(0, 0.25, 2, 1, 0.75, 1, 'light'), id: 'riser' },
+	{ ...box(1, -0.5, 3, 1, 1.75, 1, 'light'), id: 'shelf' },
+	{ ...box(-0.5, 0.25, 4, 2.5, 1, 1, 'light'), id: 'lintel' },
+]);
+---
+
+<div class="hero-figure">
+	<Scene
+		boxes={boxes}
+		shadow={{ x: 0.9, y: 0.5, z: -1, footprint: 2.5 }}
+		fit="natural"
+		pad={4}
+		class="hero-figure__scene"
+	/>
+</div>
+
+<style>
+	.hero-figure {
+		display: flex;
+		justify-content: center;
+	}
+
+	/* Height-driven, not width-driven: the composition is 0.6 as wide as it is
+	   tall, so sizing it on width would either dwarf the text column or leave
+	   most of the figure's own box empty. Width comes from the viewBox ratio, so
+	   the element's box is the drawing and the flexbox above centres the drawing
+	   rather than centring a mostly-empty square. The box is still fully reserved
+	   before paint, which is what the CLS budget needs (§12.1). */
+	.hero-figure :global(.hero-figure__scene) {
+		width: auto;
+		max-width: 100%;
+		height: clamp(380px, 42vw, 600px);
+	}
+
+	/* Grain is authored for a 200 px card motif and does not scale with the
+	   drawing: at three times that size the same 0.45 reads as speckle on the
+	   white faces rather than as tooth in the paper. */
+	.hero-figure :global(.iso-grain) {
+		opacity: 0.3;
+	}
+
+	@media (min-width: 1280px) {
+		.hero-figure :global(.hero-figure__scene) {
+			height: clamp(520px, 40vw, 660px);
+		}
+	}
+</style>
+
+{/* Global because the gate is on <html>, which no scoped selector can reach. */}
+<style is:global>
+	/* One keyframe, seven arrival vectors. Each --from pair is a whole number of
+	   cells along one isometric axis in SVG user units (U = 24, so a step along
+	   x or y is 20.78 across and 12 down, and a step up is 24), which is what
+	   makes every block travel along the grid it lands on rather than along an
+	   arbitrary diagonal. */
+	@keyframes hero-block-in {
+		from {
+			opacity: 0;
+			transform: translate(var(--from-x, 0px), var(--from-y, 0px));
+		}
+		to {
+			opacity: 1;
+			transform: translate(0, 0);
+		}
+	}
+
+	@keyframes hero-ground-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	html[data-entrance='play'] .hero-figure__scene [data-block] {
+		animation: hero-block-in var(--dur-slow) var(--ease-entrance) both;
+		animation-delay: var(--enter-at);
+		will-change: transform, opacity;
+	}
+	html[data-entrance='play'] .hero-figure__scene .iso-ground {
+		animation: hero-ground-in var(--dur-slow) var(--ease-standard) both;
+		animation-delay: 250ms;
+	}
+
+	/* Bottom-up, 55 ms apart, starting once the first hero line is on its way:
+	   140 + 6 x 55 + 420 = 890 ms. */
+	.hero-figure__scene [data-block='plinth'] {
+		--from-x: 26px;
+		--from-y: 15px;
+		--enter-at: 140ms;
+	}
+	.hero-figure__scene [data-block='apron'] {
+		--from-x: -26px;
+		--from-y: 15px;
+		--enter-at: 195ms;
+	}
+	.hero-figure__scene [data-block='core'] {
+		--from-y: -34px;
+		--enter-at: 250ms;
+	}
+	.hero-figure__scene [data-block='bar'] {
+		--from-x: -26px;
+		--from-y: -15px;
+		--enter-at: 305ms;
+	}
+	.hero-figure__scene [data-block='riser'] {
+		--from-y: -34px;
+		--enter-at: 360ms;
+	}
+	.hero-figure__scene [data-block='shelf'] {
+		--from-x: 26px;
+		--from-y: -15px;
+		--enter-at: 415ms;
+	}
+	.hero-figure__scene [data-block='lintel'] {
+		--from-x: -40px;
+		--from-y: -23px;
+		--enter-at: 470ms;
+	}
+</style>

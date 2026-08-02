@@ -108,6 +108,46 @@ build output and neither had a test.
   per face and a browser fetches only the faces a page actually uses, so they
   do not belong in the reading-typeface budget.
 
+### v0.7 — the hero is two columns, and one of them is an object
+
+The §8.1.2 hero was a text column and nothing else, which on a 1440 px screen
+left the right half of the fold empty for the full height of the hero. On the
+site's own terms — §4.1, "a well-made object" — that read as a page that had not
+been finished rather than as generous space. Three changes, in order of how much
+they matter:
+
+- **The second hero line is gone.** §8.1.2 drafts the hero as
+  *« Ingénieur procédés. J'optimise des procédés avec des méthodes discrètes. »*
+  At `--t-display` the second sentence wrapped to three lines, pushed the CV
+  button most of a screen down, and said in headline type what the intro
+  paragraph two blocks below says properly. The hero states what he is; the
+  intro states what he does. §8.1.2's "maximum two lines" is a ceiling, not a
+  quota.
+- **A figure fills the other column** (`HeroFigure.astro`): seven blocks on the
+  §6.1 unit grid with one green accent, built out of `Scene.astro` like every
+  other motif, so the fold now teaches the drawing language instead of deferring
+  it to the first card. It is not the optional §8.1.2 portrait — there is still
+  no photo. Below `lg` it is not rendered: it is 0.6 as wide as it is tall, and
+  stacking it on a phone would buy the illustration with the CV button, which S1
+  wants above the fold.
+- **That one motif moves**, which is a deliberate exception to the v0.6 decision
+  above. It is a one-shot entrance, not a loop: the blocks fly in along the
+  isometric axes and stop, finished at 890 ms, inside the 900 ms budget of §7.5
+  and gated on `data-entrance="play"` exactly like the text beside it. So it
+  plays once per session, never on back-navigation, not at all with JavaScript
+  off, and collapses to the finished still under reduced motion, reduced data
+  and the footer toggle. `npm run motifs` still proves no motif emits a keyframe
+  of its own; the entrance lives in the component, with the rest of §7.5.
+
+Two smaller things went with it: `Scene.astro` gained `fit="natural"` (a
+viewBox cropped to the drawing, for the one motif not sitting on a card) and
+per-box `id`s, and the header strip gained the hairline the section labels below
+already use, so the wordmark and the CV button read as one strip rather than as
+two objects a thousand pixels apart.
+
+The source art is in `docs/reference/`, with a note on why it was transcribed
+rather than shipped.
+
 ### Two forced by contrast
 
 Both forced by §12.2's "WCAG 2.2 AA, non-negotiable", both inside the token

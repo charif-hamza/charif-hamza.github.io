@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 784 1194" width="784" height="1194">
+  <title>Isometric zig-zag block figure</title>
+  <defs>
+    <linearGradient id="g-topBar" gradientUnits="userSpaceOnUse" x1="0" y1="235.8" x2="0" y2="394.9"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dedede"/></linearGradient>
+    <linearGradient id="g-riser" gradientUnits="userSpaceOnUse" x1="0" y1="368.1" x2="0" y2="582.8"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e0e0e0"/></linearGradient>
+    <linearGradient id="g-lowerLeft" gradientUnits="userSpaceOnUse" x1="0" y1="739.7" x2="0" y2="956.3"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e0e0e0"/></linearGradient>
+    <linearGradient id="g-lowerRight" gradientUnits="userSpaceOnUse" x1="0" y1="770.0" x2="0" y2="1040.6"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d5d5d5"/></linearGradient>
+    <linearGradient id="g-shelf" gradientUnits="userSpaceOnUse" x1="0" y1="300.0" x2="0" y2="512.6"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e0e0e0"/></linearGradient>
+    <linearGradient id="g-column" gradientUnits="userSpaceOnUse" x1="0" y1="640.0" x2="0" y2="851.4"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e0e0e0"/></linearGradient>
+    <linearGradient id="g-greenBar" gradientUnits="userSpaceOnUse" x1="104.6" y1="0" x2="406.1" y2="0"><stop offset="0" stop-color="#b4f9ba"/><stop offset="1" stop-color="#67df70"/></linearGradient>
+    <filter id="softShadow" x="-40%" y="-60%" width="180%" height="220%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="25.6"/></filter>
+  </defs>
+  <rect width="784" height="1194" fill="#ffffff"/>
+  <g id="shadow"><polygon points="-65,958 375,752 815,958 375,1164" fill="#000000" fill-opacity="0.0395" filter="url(#softShadow)"/></g>
+  <g id="blocks" stroke="#242424" stroke-width="1.8" stroke-linejoin="round">
+    <g class="blk" id="lowerRight">
+      <polygon fill="#242424" points="611.6,829.9 489.2,901.0 489.2,1040.6 611.6,970.6"/>
+      <polygon fill="url(#g-lowerRight)" points="278.1,781.7 489.2,901.0 489.2,1040.6 278.1,921.3"/>
+      <polygon fill="#ffffff" points="400.6,710.6 611.6,829.9 489.2,901.0 278.1,781.7"/>
+    </g>
+    <g class="blk" id="column">
+      <polygon fill="#242424" points="528.7,651.9 408.1,716.0 408.1,852.9 528.7,785.8"/>
+      <polygon fill="url(#g-column)" points="287.5,647.9 408.1,716.0 408.1,852.9 287.5,783.9"/>
+      <polygon fill="#ffffff" points="408.1,583.8 528.7,651.9 408.1,716.0 287.5,647.9"/>
+    </g>
+    <g class="blk" id="greenBar">
+      <polygon fill="#242424" points="528.7,516.4 408.1,582.8 408.1,716.0 528.7,651.9"/>
+      <polygon fill="url(#g-greenBar)" points="103.8,409.3 408.1,582.8 408.1,716.0 103.8,546.9"/>
+      <polygon fill="#b4f9bb" points="224.1,340.9 528.7,516.4 408.1,582.8 103.8,409.3"/>
+    </g>
+    <g class="blk" id="shelf">
+      <polygon fill="#242424" points="715.5,274.7 500.3,394.9 500.3,535.2 715.5,415.0"/>
+      <polygon fill="url(#g-shelf)" points="379.7,326.8 500.3,394.9 500.3,535.2 379.7,467.1"/>
+      <polygon fill="#ffffff" points="594.9,206.6 715.5,274.7 500.3,394.9 379.7,326.8"/>
+    </g>
+    <g class="blk" id="lowerLeft">
+      <polygon fill="#242424" points="408.1,714.9 222.4,816.4 222.4,956.3 408.1,853.6"/>
+      <polygon fill="url(#g-lowerLeft)" points="103.8,747.5 222.4,816.4 222.4,956.3 103.8,884.8"/>
+      <polygon fill="#ffffff" points="284.5,647.0 408.1,714.9 222.4,816.4 103.8,747.5"/>
+    </g>
+    <g class="blk" id="topBar">
+      <polygon fill="#242424" points="620.6,186.8 500.3,258.2 500.3,394.9 620.6,326.8"/>
+      <polygon fill="url(#g-topBar)" points="195.9,89.3 500.3,258.2 500.3,394.9 195.9,226.4"/>
+      <polygon fill="#ffffff" points="316.4,20.2 620.6,186.8 500.3,258.2 195.9,89.3"/>
+    </g>
+    <g class="blk" id="riser">
+      <polygon fill="#242424" points="500.3,394.9 408.1,445.7 408.1,582.8 500.3,531.9"/>
+      <polygon fill="url(#g-riser)" points="289.0,376.7 408.1,445.7 408.1,582.8 289.0,513.4"/>
+      <polygon fill="#ffffff" points="377.6,327.1 500.3,394.9 408.1,445.7 289.0,376.7"/>
+    </g>
+  </g>
+</svg>

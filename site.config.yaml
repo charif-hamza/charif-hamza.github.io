@@ -123,9 +123,13 @@ strings:
   fr:
     skipToContent: Aller au contenu
     # --- Home hero (§8.1.2): max two lines, max 12 words ---
+    # One line, not the two of the §8.1.2 draft. The second line ("J'optimise
+    # des procédés avec des méthodes discrètes") said again, at display size,
+    # what the intro paragraph two blocks down says better and in full — and at
+    # --t-display it wrapped to three lines and swallowed the fold. The hero
+    # states what you are; the intro states what you do.
     hero:
       - Ingénieur procédés.
-      - J'optimise des procédés avec des méthodes discrètes.
     # At most two credential facts — the permitted leakage of §3.3.
     status: Double diplôme EIA-UIASS × IMT Mines Albi · Bourse d'excellence Fondation IMT
     # --- Intro (§8.1.3): 60-90 words, first person, no adjectives about yourself ---
