@@ -40,7 +40,7 @@ tagline:
 # Leave a value empty to hide the link entirely. No social icon farm (§8.1.4).
 social:
   github: https://github.com/charif-hamza
-  linkedin: https://www.linkedin.com/in/hamza-charif-3a945a323/
+  linkedin: https://www.linkedin.com/in/hamza-charif/
   orcid: "" # §14 v1.2 — add when it exists
   repo: https://github.com/charif-hamza/charif-hamza.github.io # §17 D7: public repo
 
