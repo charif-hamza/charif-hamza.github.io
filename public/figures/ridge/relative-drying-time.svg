@@ -30,18 +30,18 @@
 
     <!-- 5 % mannitol : 100 -> 38 -->
     <rect x="290" y="90"    width="90" height="240" fill="#FFFFFF" stroke="#101113" stroke-width="1.5"/>
-    <rect x="400" y="238.8" width="90" height="91.2" fill="#A3EFAE" stroke="#101113" stroke-width="1.5"/>
+    <rect x="400" y="238.8" width="90" height="91.2" fill="#97DAFD" stroke="#101113" stroke-width="1.5"/>
     <text x="335" y="82"  font-size="14" fill="#5E636A" text-anchor="middle">100 %</text>
     <text x="445" y="231" font-size="14" font-weight="600" fill="#101113" text-anchor="middle">38 %</text>
 
     <!-- 5 % sucrose : 100 -> 50 -->
     <rect x="590" y="90"  width="90" height="240" fill="#FFFFFF" stroke="#101113" stroke-width="1.5"/>
-    <rect x="700" y="210" width="90" height="120" fill="#A3EFAE" stroke="#101113" stroke-width="1.5"/>
+    <rect x="700" y="210" width="90" height="120" fill="#97DAFD" stroke="#101113" stroke-width="1.5"/>
     <text x="635" y="82"  font-size="14" fill="#5E636A" text-anchor="middle">100 %</text>
     <text x="745" y="202" font-size="14" font-weight="600" fill="#101113" text-anchor="middle">50 %</text>
 
     <!-- reduction brackets -->
-    <g stroke="#48C862" stroke-width="1.5" fill="none">
+    <g stroke="#21A5DB" stroke-width="1.5" fill="none">
       <path d="M 500 90 L 512 90 L 512 238.8 L 500 238.8"/>
       <path d="M 800 90 L 812 90 L 812 210 L 800 210"/>
     </g>
@@ -58,7 +58,7 @@
     <g font-size="13">
       <rect x="290" y="386" width="24" height="14" fill="#FFFFFF" stroke="#101113" stroke-width="1.5"/>
       <text x="324" y="398" fill="#101113">typical cycle conditions</text>
-      <rect x="520" y="386" width="24" height="14" fill="#A3EFAE" stroke="#101113" stroke-width="1.5"/>
+      <rect x="520" y="386" width="24" height="14" fill="#97DAFD" stroke="#101113" stroke-width="1.5"/>
       <text x="554" y="398" fill="#101113">optimised policy</text>
     </g>
     <text x="45" y="430" font-size="13" fill="#5E636A">Both reductions are consistent with figures already published for continuous recipes. The result of this project is that</text>

@@ -14,13 +14,13 @@
 
 /** @type {Record<string, string>} */
 export const colour = {
-	'green-050': '#F1FDF2',
-	'green-100': '#DFFAE2',
-	'green-200': '#C2F5C9',
-	'green-300': '#A3EFAE',
-	'green-400': '#7FE18E',
-	'green-500': '#48C862',
-	'green-700': '#1E7A38',
+	'blue-050': '#F0F9FE',
+	'blue-100': '#DDF2FE',
+	'blue-200': '#BDE7FD',
+	'blue-300': '#97DAFD',
+	'blue-400': '#5CC8FB',
+	'blue-500': '#21A5DB',
+	'blue-700': '#10698D',
 	'ink-900': '#101113',
 	'ink-700': '#3A3D42',
 	/* Darkened from Appendix A's #6B7079 for AA on --field / --field-deep;
@@ -38,7 +38,7 @@ export const colour = {
 
 /**
  * Syntax highlighting theme — SPEC §8.2.5: "a muted theme using
- * --ink-900/--ink-500/--green-700 only". Three greys and one green; code on a
+ * --ink-900/--ink-500/--blue-700 only". Three greys and one blue; code on a
  * project page is evidence, not decoration.
  */
 export const paperTheme = {
@@ -65,7 +65,7 @@ export const paperTheme = {
 				'variable.language',
 				'keyword.operator.new',
 			],
-			settings: { foreground: colour['green-700'], fontStyle: 'bold' },
+			settings: { foreground: colour['blue-700'], fontStyle: 'bold' },
 		},
 		{
 			scope: ['entity.name.function', 'support.function', 'meta.function-call.generic'],
@@ -95,7 +95,7 @@ export const paperTheme = {
 		},
 		{
 			scope: ['entity.name.tag', 'meta.tag'],
-			settings: { foreground: colour['green-700'] },
+			settings: { foreground: colour['blue-700'] },
 		},
 		{
 			scope: ['entity.other.attribute-name'],

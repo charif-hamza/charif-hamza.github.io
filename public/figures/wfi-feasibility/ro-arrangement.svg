@@ -54,7 +54,7 @@
       <rect x="495" y="315" width="116" height="60" rx="3"/>
       <rect x="645" y="315" width="116" height="60" rx="3"/>
     </g>
-    <g stroke="#101113" stroke-width="1.5" fill="#A3EFAE">
+    <g stroke="#101113" stroke-width="1.5" fill="#97DAFD">
       <rect x="195" y="285" width="116" height="52" rx="3"/>
       <rect x="195" y="353" width="116" height="52" rx="3"/>
     </g>
@@ -76,8 +76,8 @@
     </g>
 
     <!-- ── The objection ─────────────────────────────────────────────── -->
-    <circle cx="601" cy="325" r="5" fill="#48C862" stroke="#101113" stroke-width="1.5"/>
-    <circle cx="52" cy="441" r="5" fill="#48C862" stroke="#101113" stroke-width="1.5"/>
+    <circle cx="601" cy="325" r="5" fill="#21A5DB" stroke="#101113" stroke-width="1.5"/>
+    <circle cx="52" cy="441" r="5" fill="#21A5DB" stroke="#101113" stroke-width="1.5"/>
     <text x="70" y="446" font-size="14" fill="#5E636A">Where the saving is lost. A single pass sends a higher dissolved load to the still, scaling its</text>
     <text x="70" y="466" font-size="14" fill="#5E636A">heat-transfer surfaces faster; the cleaning and downtime cost more than the throughput gained.</text>
   </g>

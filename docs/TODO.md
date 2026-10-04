@@ -26,7 +26,7 @@ these is also marked `TODO` at the place it is used.
 |---|---|---|---|
 | ~~T7~~ | ~~**The two CV PDFs**~~ | — | **Resolved.** The French and English PDFs live in `public/cv/`; `cv.available` is enabled and all home, header, and `/cv` download affordances address the published files. |
 | T8 | **Font files** | `public/fonts/` | Seven WOFF2 files, listed with their exact names in `src/styles/fonts.css`. Switzer is free from Fontshare; Source Serif 4 and JetBrains Mono are OFL. Subset to `latin` + `latin-ext` — the French accents are not optional. Budget 120 KB total (§12.1). Then set `fonts.installed: true`, which switches the preload hints on. Until then the fallback stacks carry the site and the build prints one Vite warning per missing file — that warning **is** this TODO. |
-| T9 | **Quantitative figures** | `public/figures/<slug>/` | Each project now carries one hand-drawn *schematic* — RO topology, the moving boundary, the precedence graph — which answer §8.2.4 question 6 without inventing data. None is a chart. The pages still have no plot of a result, and cannot until the numbers behind T10 exist. §8.2.6 makes an unlabelled axis a hard rejection criterion: every chart needs axis labels with units, and the series must use the site palette (`--green-500`, `--ink-900`, `--ink-500`, `--green-700`), never a rainbow default. |
+| T9 | **Quantitative figures** | `public/figures/<slug>/` | Each project now carries one hand-drawn *schematic* — RO topology, the moving boundary, the precedence graph — which answer §8.2.4 question 6 without inventing data. None is a chart. The pages still have no plot of a result, and cannot until the numbers behind T10 exist. §8.2.6 makes an unlabelled axis a hard rejection criterion: every chart needs axis labels with units, and the series must use the site palette (`--blue-500`, `--ink-900`, `--ink-500`, `--blue-700`), never a rainbow default. |
 
 ## 3 · Content that needs facts
 
@@ -90,7 +90,7 @@ the still was kept and the choreography dropped. Consequences, all deliberate:
   neighbours are cut by the page edges, and the slide is a native smooth scroll
   over mandatory snap points — so it degrades to a plain scrollable rail with
   JavaScript off, and to an instant jump under `prefers-reduced-motion`.
-- The card fill no longer alternates down the rail (§5.1.4). Green marks the
+- The card fill no longer alternates down the rail (§5.1.4). Blue marks the
   card in focus; the rest are paper. The alternation is kept on `/projects`,
   where nothing is in focus and every card is its own subject.
 - `--iso-lit`, `--iso-shadow` and the Dark material were added to the token set
@@ -129,7 +129,7 @@ they matter:
   intro states what he does. §8.1.2's "maximum two lines" is a ceiling, not a
   quota.
 - **A figure fills the other column** (`HeroFigure.astro`): seven blocks on the
-  §6.1 unit grid with one green accent, built out of `Scene.astro` like every
+  §6.1 unit grid with one blue accent, built out of `Scene.astro` like every
   other motif, so the fold now teaches the drawing language instead of deferring
   it to the first card. It is not the optional §8.1.2 portrait — there is still
   no photo. Below `lg` it is not rendered: it is 0.6 as wide as it is tall, and
@@ -176,16 +176,16 @@ on `--field-deep`, under the 4.5:1 body-text minimum. The spec's instruction
 for this case is "darken if it fails". The replacement measures 5.40 / 4.94 /
 6.05 on `--field`, `--field-deep` and `--paper`. Appendix A should be amended.
 
-**The focus ring uses `--green-700` rather than `--green-500`.** §5.5.2
-specifies a `--green-500` ring. Measured, `--green-500` is 2.16:1 on `--paper`
-and 1.60:1 on a `--green-300` card — the ring would be effectively invisible on
+**The focus ring uses `--blue-700` rather than `--blue-500`.** §5.5.2
+specifies a `--blue-500` ring. Measured, `--blue-500` is 2.81:1 on `--paper`
+and 1.84:1 on a `--blue-300` card — the ring would be effectively invisible on
 half the cards on the home page, and WCAG 2.2 AA requires 3:1 for a focus
-indicator. `--green-700` is the same brand green one step darker and measures
-5.39 / 4.81 / 3.98 on `--paper`, `--field` and `--green-300`.
+indicator. `--blue-700` is the same brand blue one step darker and measures
+6.13 / 5.47 / 4.02 on `--paper`, `--field` and `--blue-300`.
 
 ## One thing left as designed, and flagged
 
-Link underlines are `--green-500` on `--paper` (2.16:1), per §5.5.4. The link
+Link underlines are `--blue-500` on `--paper` (2.81:1), per §5.5.4. The link
 text itself is `--ink-900` at 18.89:1 and the underline is a shape rather than
 a colour cue, so §12.2's "no colour-only differentiation" is satisfied. A
 strict reading of WCAG 1.4.11 would still want a darker underline. Left as

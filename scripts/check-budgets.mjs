@@ -148,16 +148,16 @@ const files = walk(DIST);
 		['ink-900', 'paper', 4.5, 'document body'],
 		['ink-700', 'paper', 4.5, 'project subtitle'],
 		['ink-500', 'paper', 4.5, 'sidenotes, TOC, section numbers'],
-		['ink-900', 'green-300', 4.5, 'text on a green card'],
-		['ink-900', 'green-200', 4.5, 'text on the card gradient top'],
-		['ink-900', 'green-400', 4.5, 'text on the card gradient bottom'],
-		['green-700', 'paper', 4.5, 'green text in Layer 2'],
-		['green-700', 'green-050', 4.5, 'green text on the faint wash'],
+		['ink-900', 'blue-300', 4.5, 'text on a blue card'],
+		['ink-900', 'blue-200', 4.5, 'text on the card gradient top'],
+		['ink-900', 'blue-400', 4.5, 'text on the card gradient bottom'],
+		['blue-700', 'paper', 4.5, 'blue text in Layer 2'],
+		['blue-700', 'blue-050', 4.5, 'blue text on the faint wash'],
 		['paper', 'ink-900', 4.5, 'primary button label'],
 		/* Non-text: the focus indicator must be visible on every surface it can
-		   land on, including a green card. */
-		['green-700', 'field', 3, 'focus ring on the surface'],
-		['green-700', 'green-300', 3, 'focus ring on a green card'],
+		   land on, including a blue card. */
+		['blue-700', 'field', 3, 'focus ring on the surface'],
+		['blue-700', 'blue-300', 3, 'focus ring on a blue card'],
 	];
 
 	for (const [fg, bg, min, what] of pairs) {

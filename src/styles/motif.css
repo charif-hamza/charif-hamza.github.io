@@ -73,26 +73,26 @@
 
 /* The accent object. Exactly one per composition carries the eye (§7.3). */
 .iso--accent {
-	--iso-top: var(--green-200);
-	--iso-left: var(--iso-accent-left, var(--green-300));
+	--iso-top: var(--blue-200);
+	--iso-left: var(--iso-accent-left, var(--blue-300));
 	--iso-right: var(--iso-shadow);
 }
 
-/* The accent seen edge-on. A slab's top face is a sliver, and a green sliver
+/* The accent seen edge-on. A slab's top face is a sliver, and a blue sliver
    between two white ones reads as a mistake rather than as the same object
    turned sideways — so the flank carries the accent and the top stays paper,
    exactly as in the reference art. Still the protagonist. */
 .iso--accent-edge {
 	--iso-top: var(--paper);
-	--iso-left: var(--iso-accent-left, var(--green-300));
+	--iso-left: var(--iso-accent-left, var(--blue-300));
 	--iso-right: var(--iso-shadow);
 }
 
-/* A second, quieter accent, for compositions where two objects are green and
+/* A second, quieter accent, for compositions where two objects are blue and
    only one of them is the subject. */
 .iso--accent-soft {
 	--iso-top: var(--paper);
-	--iso-left: var(--iso-accent-soft, var(--green-100));
+	--iso-left: var(--iso-accent-soft, var(--blue-100));
 	--iso-right: var(--iso-shadow);
 }
 
@@ -105,7 +105,7 @@
 /* Frame (§6.2): a bound, an envelope, a certificate. */
 .iso--frame {
 	fill: none;
-	stroke: var(--green-700);
+	stroke: var(--blue-700);
 	stroke-dasharray: 4 3;
 }
 
@@ -120,8 +120,8 @@
 }
 
 /* --- Ground shadow (§6.1) -------------------------------------------------
-   The footprint of the object, softened — never a generic blob, and never
-   blue-tinted. Green cards get the green ground, white cards the neutral one
+   The footprint of the object, softened — never a generic blob. Blue cards
+   get a ground in their own hue, white cards the neutral ink one
    (§5.4). The motif does not know which card it is on; the card tells it.   */
 .iso-ground {
 	stroke: none;
@@ -130,7 +130,7 @@
 .motif {
 	--ground: var(--shadow-ground-neutral);
 }
-.motif[data-surface='green'] {
+.motif[data-surface='blue'] {
 	--ground: var(--shadow-ground);
 }
 

@@ -6,11 +6,11 @@
  * shadow.
  */
 interface Props {
-	surface?: 'green' | 'white';
+	surface?: 'blue' | 'white';
 	class?: string;
 }
 
-const { surface = 'green', class: className = '' } = Astro.props;
+const { surface = 'blue', class: className = '' } = Astro.props;
 ---
 
 <span class:list={['pill', surface === 'white' && 'pill--on-paper', className]}>

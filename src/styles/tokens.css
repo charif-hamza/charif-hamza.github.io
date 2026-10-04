@@ -6,21 +6,25 @@
    the palette for the two build-time contexts that cannot read CSS (the Shiki
    theme and the OG image generator) and is diffed against this file by
    `npm run budgets`.
+
+   The accent was mint green (signature #a3efae) until 04/10/2026; it is now
+   sky blue, the hue of the IMT Mines Albi logo. Same seven roles, same
+   contrast rule, every ratio below re-measured on the new values.
    ============================================================================= */
 
 :root {
 	/* --- Colour · core palette (§5.1.1) ------------------------------------ */
-	--green-050: #f1fdf2; /* faintest wash — table zebra, Layer 2 code background */
-	--green-100: #dffae2; /* hover tint on white cards, callout fill */
-	--green-200: #c2f5c9; /* card gradient top, light isometric faces */
-	--green-300: #a3efae; /* SIGNATURE GREEN — card fill, motif accent faces */
-	--green-400: #7fe18e; /* card gradient bottom, motif shading, ground shadow */
-	--green-500: #48c862; /* interactive accent: link underline, focus ring, series 1 */
-	--green-700: #1e7a38; /* green text on paper (rare). Passes AA. */
+	--blue-050: #f0f9fe; /* faintest wash — table zebra, Layer 2 code background */
+	--blue-100: #ddf2fe; /* hover tint on white cards, callout fill */
+	--blue-200: #bde7fd; /* card gradient top, light isometric faces */
+	--blue-300: #97dafd; /* SIGNATURE BLUE — card fill, motif accent faces */
+	--blue-400: #5cc8fb; /* card gradient bottom, motif shading, ground shadow */
+	--blue-500: #21a5db; /* interactive accent: link underline, focus ring, series 1 */
+	--blue-700: #10698d; /* blue text on paper (rare). Passes AA. */
 
-	/* Contrast rule (§5.1.1): --green-300 and lighter are FILL ONLY.
-	   Text on green fill is --ink-900. Text *in* green is --green-700 or darker.
-	   Never white text on any green in this palette. */
+	/* Contrast rule (§5.1.1): --blue-300 and lighter are FILL ONLY.
+	   Text on blue fill is --ink-900. Text *in* blue is --blue-700 or darker.
+	   Never white text on any blue in this palette. */
 
 	/* --- Colour · neutrals (§5.1.2) --------------------------------------- */
 	--ink-900: #101113; /* primary text, isometric dark faces, wordmark */
@@ -122,8 +126,9 @@
 
 	--shadow-card: 0 1px 2px rgb(16 17 19 / 0.04), 0 8px 24px rgb(16 17 19 / 0.06);
 	--shadow-card-hover: 0 2px 4px rgb(16 17 19 / 0.05), 0 18px 44px rgb(16 17 19 / 0.1);
-	/* Ground shadows under isometric objects — radial, never blue-tinted. */
-	--shadow-ground: rgb(127 225 142 / 0.22); /* --green-400 @ 22% */
+	/* Ground shadows under isometric objects — radial. Only the ground on a
+	   blue card takes the accent hue; card shadows stay neutral ink. */
+	--shadow-ground: rgb(92 200 251 / 0.22); /* --blue-400 @ 22% */
 	--shadow-ground-neutral: rgb(16 17 19 / 0.08); /* --ink-900 @ 8% */
 
 	/* --- Motion (§7.2) ---------------------------------------------------- */
@@ -166,25 +171,25 @@
 	--bg-surface: var(--paper);
 	--fg-primary: var(--ink-900);
 	--fg-secondary: var(--ink-700);
-	--accent: var(--green-300);
-	/* §5.5.2 specifies a --green-500 focus ring. Measured, --green-500 is
-	   2.16:1 on --paper and 1.60:1 on a --green-300 card — the ring would be
-	   invisible on half the cards on the home page, and WCAG 2.2 AA (§12.2,
-	   "non-negotiable") requires 3:1 for a focus indicator. --green-700 is the
-	   same brand green one step darker and measures 5.39 / 4.81 / 3.98 on
-	   --paper, --field and --green-300. Deviation is inside the token set and
+	--accent: var(--blue-300);
+	/* §5.5.2 specifies a --blue-500 focus ring. Measured, --blue-500 is
+	   2.81:1 on --paper and 1.84:1 on a --blue-300 card — the ring would be
+	   faint on paper and invisible on half the cards on the home page, and WCAG 2.2 AA (§12.2,
+	   "non-negotiable") requires 3:1 for a focus indicator. --blue-700 is the
+	   same brand blue one step darker and measures 6.13 / 5.47 / 4.02 on
+	   --paper, --field and --blue-300. Deviation is inside the token set and
 	   is the narrowest one that satisfies both requirements. */
-	--focus-ring: var(--green-700);
+	--focus-ring: var(--blue-700);
 }
 
 /* Layer 2 overrides the semantic layer only. The four brand invariants of §4.3
-   — the green, the motif language, the heading typeface, the ink — are
+   — the blue, the motif language, the heading typeface, the ink — are
    untouched; only quantity changes. */
 .layer-depth {
 	--bg-page: var(--paper);
 	--bg-surface: transparent;
 	--fg-secondary: var(--ink-500);
-	--accent: var(--green-500);
+	--accent: var(--blue-500);
 	--rhythm-section: var(--space-14);
 }
 
@@ -207,6 +212,6 @@
 }
 
 /* Dark mode is out of scope for v1.0 (§5.1.5). The identity is light field +
-   green + paper; a dark inversion weakens it and doubles the motif asset work.
+   blue + paper; a dark inversion weakens it and doubles the motif asset work.
    Recorded here so the decision is not re-litigated: if it is ever added,
    restrict it to Layer 2 and keep Layer 1 permanently light. */

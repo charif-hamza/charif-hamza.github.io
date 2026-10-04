@@ -4,7 +4,7 @@
    "A technical note or a preprint that happens to be well designed."
    Structure comes from rules, numbering and margins — not from boxes and
    shadows. Layer 2 MUST NOT use --shadow-card; elevation is a Layer 1 language
-   only (§5.4). Colour ratio target: 88% paper, 9% ink, 3% green.
+   only (§5.4). Colour ratio target: 88% paper, 9% ink, 3% blue.
    ============================================================================= */
 
 .doc {
@@ -181,7 +181,7 @@
 .prose a:not(.anchor):not(.artifact) {
 	color: var(--ink-900);
 	text-decoration: underline;
-	text-decoration-color: var(--green-500);
+	text-decoration-color: var(--blue-500);
 	text-decoration-thickness: 2px;
 	text-underline-offset: 3px;
 	transition:
@@ -189,7 +189,7 @@
 		text-decoration-thickness var(--dur-fast) var(--ease-standard);
 }
 .prose a:not(.anchor):not(.artifact):hover {
-	color: var(--green-700);
+	color: var(--blue-700);
 	text-decoration-thickness: 3px;
 }
 /* External links get a 10px arrow glyph (§5.5.4). */
@@ -221,12 +221,12 @@
 }
 
 /* --- Code (§8.2.5) --------------------------------------------------------
-   Inline: mono on the faintest green wash. Blocks: paper on a hairline, no
+   Inline: mono on the faintest blue wash. Blocks: paper on a hairline, no
    traffic lights, no line numbers.                                          */
 .prose :not(pre) > code {
 	font-family: var(--font-mono);
 	font-size: var(--t-mono);
-	background: var(--green-050);
+	background: var(--blue-050);
 	border-radius: var(--radius-sm);
 	padding: 2px 5px;
 }
@@ -274,7 +274,7 @@
 	border-bottom: 1px solid var(--ink-300);
 }
 .prose tbody tr:nth-child(even) {
-	background: var(--green-050);
+	background: var(--blue-050);
 }
 
 /* Wide tables scroll inside their own box rather than pushing the page out. */
@@ -346,7 +346,7 @@
 .callout {
 	margin-block: var(--space-6);
 	padding-left: var(--space-5);
-	border-left: 3px solid var(--green-500);
+	border-left: 3px solid var(--blue-500);
 }
 .callout__label {
 	display: block;
@@ -452,7 +452,7 @@
 		counter-increment: sidenote;
 		font-family: var(--font-mono);
 		font-size: 11px;
-		color: var(--green-700);
+		color: var(--blue-700);
 		margin-right: 0.35em;
 		vertical-align: super;
 	}
@@ -494,12 +494,12 @@
 	font-size: var(--t-body);
 	font-weight: 500;
 	text-decoration: underline;
-	text-decoration-color: var(--green-500);
+	text-decoration-color: var(--blue-500);
 	text-decoration-thickness: 2px;
 	text-underline-offset: 3px;
 }
 .artifact:hover .artifact__label {
-	color: var(--green-700);
+	color: var(--blue-700);
 	text-decoration-thickness: 3px;
 }
 

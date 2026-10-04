@@ -56,7 +56,7 @@ const projects = defineCollection({
 		order: z.number().int().positive(),
 		featured: z.boolean().default(true),
 		motif: z.enum(motifIds as [string, ...string[]]),
-		motifColor: z.enum(['green', 'white']),
+		motifColor: z.enum(['blue', 'white']),
 		card: z.object({
 			description: z
 				.string()

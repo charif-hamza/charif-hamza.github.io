@@ -4,7 +4,7 @@
  *
  * Concept: a cycle whose time is stacked in layers, with one cell removed —
  * the notch — and the part everybody optimises sitting on top, alone and
- * green. The removed cell is the finding: the saving was in a step nobody had
+ * blue. The removed cell is the finding: the saving was in a step nobody had
  * modelled, not in the one on the roof.
  *
  * Drawn as a still (see iso.js).
@@ -13,11 +13,11 @@ import Scene from './Scene.astro';
 import { box, painterSort } from './iso.js';
 
 interface Props {
-	surface?: 'green' | 'white';
+	surface?: 'blue' | 'white';
 	class?: string;
 }
 
-const { surface = 'green', class: className = '' } = Astro.props;
+const { surface = 'blue', class: className = '' } = Astro.props;
 
 /* A 2x2 footprint, two courses high, with the front cell of the upper course
    taken out. The accent cube straddles the four cells below it — a half-step

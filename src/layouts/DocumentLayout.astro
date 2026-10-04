@@ -7,7 +7,7 @@
  * document. Structure comes from rules, numbering and margins.
  *
  * The mood switch is carried entirely by tokens and this file. The four brand
- * invariants of §4.3 survive it: the same green (less of it), the same motif
+ * invariants of §4.3 survive it: the same blue (less of it), the same motif
  * geometry (frozen), the same heading typeface, the same ink.
  */
 import BaseLayout from './BaseLayout.astro';
@@ -35,7 +35,7 @@ interface Props {
 	breadcrumb?: { label: string; href: string };
 	breadcrumbCurrent?: string;
 	motif?: MotifId;
-	motifSurface?: 'green' | 'white';
+	motifSurface?: 'blue' | 'white';
 	/** Shared-element key for the page transition (§4.4). */
 	transitionKey?: string;
 	ogImage?: string;
@@ -209,7 +209,7 @@ const {
 	.doc-contact a {
 		color: var(--ink-900);
 		text-decoration: underline;
-		text-decoration-color: var(--green-500);
+		text-decoration-color: var(--blue-500);
 		text-decoration-thickness: 2px;
 		text-underline-offset: 3px;
 	}

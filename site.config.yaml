@@ -130,7 +130,7 @@ strings:
       simulation de la lyophilisation. Je recherche un stage de quatre mois à
       partir d'avril 2027, en génie des procédés, modélisation, optimisation ou
       logiciel scientifique.
-    # Underlined in green inside the intro above. It must appear in `intro`
+    # Underlined in blue inside the intro above. It must appear in `intro`
     # verbatim, or the paragraph renders unmarked rather than breaking.
     introHighlight: Je recherche un stage de quatre mois à partir d'avril 2027,
     cta:

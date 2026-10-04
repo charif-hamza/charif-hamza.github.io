@@ -32,7 +32,7 @@ interface Props {
 	 *  space, and how wide the plate is in unit cells. */
 	shadow?: { x: number; y: number; z?: number; footprint?: number };
 	/** Which card fill this motif sits on — selects the ground shadow colour. */
-	surface?: 'green' | 'white';
+	surface?: 'blue' | 'white';
 	/** Extra padding around the composition, in SVG user units. */
 	pad?: number;
 	/**
@@ -115,14 +115,14 @@ const grainFaces = boxes.filter((b) => b.m === 'light').map((b) => b.left);
 		{/* Lit from the upper left, so the gradient runs light -> saturated down
 		    the face. Objects, not the card, carry it (Appendix C).
 		    The range has to clear the card's own gradient, or the accent object
-		    on a green card is green on green and stops being an accent. */}
+		    on a blue card is blue on blue and stops being an accent. */}
 		<linearGradient id={`${uid}-accent`} x1="0" y1="0" x2="0.55" y2="1">
-			<stop offset="0%" stop-color="var(--green-200)"></stop>
-			<stop offset="100%" stop-color="var(--green-500)"></stop>
+			<stop offset="0%" stop-color="var(--blue-200)"></stop>
+			<stop offset="100%" stop-color="var(--blue-500)"></stop>
 		</linearGradient>
 		<linearGradient id={`${uid}-soft`} x1="0" y1="0" x2="0.55" y2="1">
-			<stop offset="0%" stop-color="var(--green-100)"></stop>
-			<stop offset="100%" stop-color="var(--green-400)"></stop>
+			<stop offset="0%" stop-color="var(--blue-100)"></stop>
+			<stop offset="100%" stop-color="var(--blue-400)"></stop>
 		</linearGradient>
 
 		<filter id={`${uid}-cast`} x="-30%" y="-30%" width="160%" height="160%">

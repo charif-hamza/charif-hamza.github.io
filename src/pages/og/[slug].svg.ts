@@ -26,7 +26,7 @@ interface Card {
 	subtitle: string;
 	tag: string;
 	motif: MotifId;
-	surface: 'green' | 'white';
+	surface: 'blue' | 'white';
 }
 
 export async function getStaticPaths() {
@@ -51,7 +51,7 @@ export async function getStaticPaths() {
 			subtitle: site.tagline.en,
 			tag: t.sections.projects,
 			motif: 'm-01-certified-gap',
-			surface: 'green',
+			surface: 'blue',
 		},
 	});
 
@@ -104,17 +104,17 @@ export const GET: APIRoute = async ({ props }) => {
 		.replace(/<svg\s/, `<svg x="${MOTIF.x}" y="${MOTIF.y}" width="${MOTIF.size}" height="${MOTIF.size}" `)
 		.trim();
 
-	const bg = surface === 'green' ? colour['green-300'] : colour.paper;
+	const bg = surface === 'blue' ? colour['blue-300'] : colour.paper;
 	const titleLines = wrap(title, 18, 2);
 	const subtitleLines = wrap(subtitle, 38, 3);
 
 	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${site.og.width}" height="${site.og.height}" viewBox="0 0 ${site.og.width} ${site.og.height}" font-family="Switzer, 'Helvetica Neue', Arial, sans-serif">
 <style>
   :root{--paper:${colour.paper};--field:${colour.field};--ink-900:${colour['ink-900']};--ink-500:${colour['ink-500']};
-        --green-100:${colour['green-100']};--green-200:${colour['green-200']};--green-300:${colour['green-300']};
-        --green-400:${colour['green-400']};--green-500:${colour['green-500']};--green-700:${colour['green-700']};
+        --blue-100:${colour['blue-100']};--blue-200:${colour['blue-200']};--blue-300:${colour['blue-300']};
+        --blue-400:${colour['blue-400']};--blue-500:${colour['blue-500']};--blue-700:${colour['blue-700']};
         --iso-lit:${colour['iso-lit']};--iso-shadow:${colour['iso-shadow']};
-        --shadow-ground:rgb(127 225 142 / .22);--shadow-ground-neutral:rgb(16 17 19 / .08);
+        --shadow-ground:rgb(92 200 251 / .22);--shadow-ground-neutral:rgb(16 17 19 / .08);
         --iso-stroke-width:1.25;}
   .iso{stroke:var(--iso-shadow);stroke-width:var(--iso-stroke-width);stroke-linejoin:miter;vector-effect:non-scaling-stroke}
   .iso-face--top{fill:var(--iso-top);vector-effect:non-scaling-stroke}
@@ -123,15 +123,15 @@ export const GET: APIRoute = async ({ props }) => {
   .iso-edge{fill:none;vector-effect:non-scaling-stroke}
   .iso--light{--iso-top:var(--paper);--iso-left:var(--iso-lit);--iso-right:var(--iso-shadow)}
   .iso--dark{--iso-top:var(--paper);--iso-left:var(--iso-shadow);--iso-right:var(--iso-shadow)}
-  .iso--accent{--iso-top:var(--green-200);--iso-left:var(--iso-accent-left,var(--green-300));--iso-right:var(--iso-shadow)}
-  .iso--accent-edge{--iso-top:var(--paper);--iso-left:var(--iso-accent-left,var(--green-300));--iso-right:var(--iso-shadow)}
-  .iso--accent-soft{--iso-top:var(--paper);--iso-left:var(--iso-accent-soft,var(--green-100));--iso-right:var(--iso-shadow)}
+  .iso--accent{--iso-top:var(--blue-200);--iso-left:var(--iso-accent-left,var(--blue-300));--iso-right:var(--iso-shadow)}
+  .iso--accent-edge{--iso-top:var(--paper);--iso-left:var(--iso-accent-left,var(--blue-300));--iso-right:var(--iso-shadow)}
+  .iso--accent-soft{--iso-top:var(--paper);--iso-left:var(--iso-accent-soft,var(--blue-100));--iso-right:var(--iso-shadow)}
   .iso--ghost{opacity:.3;stroke-dasharray:3.5 3.5}
-  .iso--frame{fill:none;stroke:var(--green-700);stroke-dasharray:4 3}
+  .iso--frame{fill:none;stroke:var(--blue-700);stroke-dasharray:4 3}
   .iso-grain{opacity:.45;mix-blend-mode:multiply}
   .iso-ground{stroke:none;fill:var(--ground)}
   .motif{--ground:var(--shadow-ground-neutral)}
-  .motif[data-surface="green"]{--ground:var(--shadow-ground)}
+  .motif[data-surface="blue"]{--ground:var(--shadow-ground)}
   .og-title{font-size:64px;font-weight:700;letter-spacing:-0.02em;fill:${colour['ink-900']}}
   .og-sub{font-size:28px;font-weight:400;fill:${colour['ink-700']}}
   .og-meta{font-size:22px;font-weight:500;letter-spacing:0.02em;fill:${colour['ink-500']}}

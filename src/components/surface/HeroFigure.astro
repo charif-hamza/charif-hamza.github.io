@@ -3,7 +3,7 @@
  * HeroFigure — the object that balances the hero.  SPEC §6.1, §6.2, §7.6.
  *
  * The hero used to be a column of text against half a screen of nothing. This
- * is what fills it: seven boxes on the unit grid, one of them green,
+ * is what fills it: seven boxes on the unit grid, one of them blue,
  * cantilevered into a zig-zag that steps up and to the left. It is the same
  * drawing system as the three motifs on the rail — same projection, same three
  * face tones, same hairline, same ground plate — so the first thing above the
@@ -44,7 +44,7 @@ import { box, painterSort } from '~/motifs/iso.js';
 
    `shelf` and `riser` are one 2.5-cell bar broken in two — same x, same z,
    contiguous in y — because the two halves arrive from different directions.
-   Together they cap the green bar, which is what stops the accent's top face
+   Together they cap the blue bar, which is what stops the accent's top face
    showing and what puts the seam in the reference art where it is. */
 const boxes = painterSort([
 	{ ...box(0, 0, -1, 1.75, 1, 1, 'light'), id: 'plinth' },

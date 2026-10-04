@@ -33,7 +33,7 @@ Most engineering portfolios fail in one of two directions. They are either prett
 | Time on page | 40–90 s | 5–25 min |
 | Job to be done | "Is this person serious, capable, and worth forwarding? Give me the CV." | "Is this work real? Does he reason well? Would I supervise / hire / cite him?" |
 | Register | Designed, confident, animated, generous white space | Sober, typographic, dense, document-like |
-| Dominant surface | Green + white cards on light grey field | Paper white, thin rules, restrained green accents |
+| Dominant surface | Blue + white cards on light grey field | Paper white, thin rules, restrained blue accents |
 | Motion | Signature — looping isometric motifs | Near-zero — only navigational feedback |
 | Reading mode | Scanning | Reading |
 
@@ -188,7 +188,7 @@ This section is the heart of the design. Everything in §5–§8 is a consequenc
 
 - Background: `--field` (light grey), never pure white — the white cards need something to sit on.
 - Cards float on the field with soft shadows and large radii.
-- Colour ratio target: **50% field grey, 25% green, 20% white, 5% ink.**
+- Colour ratio target: **50% field grey, 25% blue, 20% white, 5% ink.**
 - Motion is constant but slow. Nothing blinks, nothing bounces hard.
 - Type is large, short-measure, high-contrast in size (huge headline, small body).
 - Density: low. Generous white space is the point.
@@ -199,7 +199,7 @@ This section is the heart of the design. Everything in §5–§8 is a consequenc
 
 - Background: `--paper` (near-white), full-bleed. No cards, no floating panels. The page *is* the document.
 - Structure comes from **rules (hairlines), numbering, and margins** — not from boxes and shadows.
-- Colour ratio target: **88% paper, 9% ink, 3% green.** Green is reduced to: the left border of callouts, link underlines, one accent in figures, the still motif in the header.
+- Colour ratio target: **88% paper, 9% ink, 3% blue.** Blue is reduced to: the left border of callouts, link underlines, one accent in figures, the still motif in the header.
 - Motion: none, except link/hover feedback and the sticky TOC highlight.
 - Type: serif body for long-form reading, grotesque for headings and UI, mono for code and data.
 - Density: high. Measure 68–72 characters. Sidenotes in the margin on wide screens.
@@ -208,7 +208,7 @@ This section is the heart of the design. Everything in §5–§8 is a consequenc
 
 These four things carry the identity through the mood switch. Everything else is allowed to change.
 
-1. **The green.** `--green-300` is the same hex in both layers. Only its *quantity* changes.
+1. **The blue.** `--blue-300` is the same hex in both layers. Only its *quantity* changes.
 2. **The isometric motif language.** Layer 1 animates it; Layer 2 freezes it. Same geometry, same projection, same stroke weight.
 3. **The heading typeface.** Same grotesque, same weight, same tight tracking on large sizes.
 4. **The ink.** `--ink-900` is the same near-black. No layer uses pure `#000`.
@@ -243,15 +243,17 @@ All values are tokens. Implementations MUST NOT hardcode hex.
 
 | Token | Value | Role |
 |---|---|---|
-| `--green-050` | `#F1FDF2` | Faintest wash — table zebra, code block background in Layer 2 |
-| `--green-100` | `#DFFAE2` | Hover tint on white cards, callout fill |
-| `--green-200` | `#C2F5C9` | Card gradient top / light isometric faces |
-| `--green-300` | `#A3EFAE` | **Signature green.** Card fill, motif accent faces. The brand colour. |
-| `--green-400` | `#7FE18E` | Card gradient bottom, motif shading, ground shadow |
-| `--green-500` | `#48C862` | Interactive accent: link underline, focus ring, chart series 1 |
-| `--green-700` | `#1E7A38` | Green text on white when text must be green (rare). Passes AA on paper. |
+| `--blue-050` | `#F0F9FE` | Faintest wash — table zebra, code block background in Layer 2 |
+| `--blue-100` | `#DDF2FE` | Hover tint on white cards, callout fill |
+| `--blue-200` | `#BDE7FD` | Card gradient top / light isometric faces |
+| `--blue-300` | `#97DAFD` | **Signature blue.** Card fill, motif accent faces. The brand colour. |
+| `--blue-400` | `#5CC8FB` | Card gradient bottom, motif shading, ground shadow |
+| `--blue-500` | `#21A5DB` | Interactive accent: link underline, focus ring, chart series 1 |
+| `--blue-700` | `#10698D` | Blue text on white when text must be blue (rare). Passes AA on paper. |
 
-> **Contrast rule:** `--green-300` and lighter are **fill colours only**. Text on green fill MUST be `--ink-900`. Text in green MUST use `--green-700` or darker. Never white text on any green in this palette.
+> **Contrast rule:** `--blue-300` and lighter are **fill colours only**. Text on blue fill MUST be `--ink-900`. Text in blue MUST use `--blue-700` or darker. Never white text on any blue in this palette.
+
+> **Revised 04/10/2026 — mint green → sky blue.** The accent was mint green (signature `#A3EFAE`) until this date; it is now sky blue, the hue of the IMT Mines Albi logo. Same seven roles, same contrast rule. Light blues hold about half the chroma of the mint at equal lightness in sRGB, so the ladder sits slightly darker (signature at OKLCH L 0.855 against the mint's 0.886) to keep the same presence on the field. `npm run budgets` re-measures every pair.
 
 #### 5.1.2 Neutrals
 
@@ -271,22 +273,22 @@ All values are tokens. Implementations MUST NOT hardcode hex.
 | Semantic token | Layer 1 | Layer 2 |
 |---|---|---|
 | `--bg-page` | `--field` | `--paper` |
-| `--bg-surface` | `--paper` / `--green-300` | transparent |
+| `--bg-surface` | `--paper` / `--blue-300` | transparent |
 | `--fg-primary` | `--ink-900` | `--ink-900` |
 | `--fg-secondary` | `--ink-700` | `--ink-500` |
-| `--accent` | `--green-300` | `--green-500` |
+| `--accent` | `--blue-300` | `--blue-500` |
 | `--border` | none (shadow instead) | `--rule` |
 
 #### 5.1.4 Card fill alternation
 
-The rail alternates card fills to create rhythm, exactly as in the reference image: `green → white → green → white …`, starting with green.
+The rail alternates card fills to create rhythm, exactly as in the reference image: `blue → white → blue → white …`, starting with blue.
 
-- **Green card:** linear gradient `165deg, --green-200 0%, --green-300 45%, --green-400 100%`. Text `--ink-900`. No border. Shadow `--shadow-card`.
+- **Blue card:** linear gradient `165deg, --blue-200 0%, --blue-300 45%, --blue-400 100%`. Text `--ink-900`. No border. Shadow `--shadow-card`.
 - **White card:** flat `--paper`. Text `--ink-900`. Shadow `--shadow-card`. A `1px` `--rule` border MAY be added only if the shadow proves too weak on `--field`.
 
 #### 5.1.5 Dark mode
 
-**Out of scope for v1.0.** The identity is built on light-field + green + paper; a dark inversion weakens it and doubles the motif asset work. If demanded later, restrict it to Layer 2 only (`--paper` → `#121316`, `--green-500` accent), and keep Layer 1 permanently light. Document this decision so it is not re-litigated.
+**Out of scope for v1.0.** The identity is built on light-field + blue + paper; a dark inversion weakens it and doubles the motif asset work. If demanded later, restrict it to Layer 2 only (`--paper` → `#121316`, `--blue-500` accent), and keep Layer 1 permanently light. Document this decision so it is not re-litigated.
 
 ### 5.2 Typography
 
@@ -380,13 +382,13 @@ Below `lg`: single column, TOC collapses into a `<details>` block under the titl
 | `--border-hair` | 1px solid `--rule` | Layer 2 rules, tables |
 | `--border-pill` | 1.25px solid `--ink-900` | Pill tag outline (reference image uses a crisp dark hairline) |
 
-Shadows — soft, low-contrast, never blue-tinted:
+Shadows — soft, low-contrast. Card shadows are neutral ink, never tinted; only the ground shadow on a blue card takes the accent hue:
 
 | Token | Value (approx.) | Use |
 |---|---|---|
 | `--shadow-card` | `0 1px 2px rgba(16,17,19,.04), 0 8px 24px rgba(16,17,19,.06)` | Resting card |
 | `--shadow-card-hover` | `0 2px 4px rgba(16,17,19,.05), 0 18px 44px rgba(16,17,19,.10)` | Hovered card |
-| `--shadow-ground` | radial, `--green-400` at 22% alpha, blur 40px | The green ground shadow under isometric objects on green cards |
+| `--shadow-ground` | radial, `--blue-400` at 22% alpha, blur 40px | The blue ground shadow under isometric objects on blue cards |
 | `--shadow-ground-neutral` | radial, `--ink-900` at 8% alpha, blur 36px | Same, on white cards |
 
 Layer 2 MUST NOT use `--shadow-card`. Elevation is a Layer 1 language only.
@@ -394,27 +396,27 @@ Layer 2 MUST NOT use `--shadow-card`. Elevation is a Layer 1 language only.
 ### 5.5 Component primitives
 
 #### 5.5.1 Pill tag
-Height 34 px · padding `0 --space-4` · `--border-pill` · `--radius-pill` · `--t-meta` · uppercase **off** (sentence case, as in the reference) · background transparent. On green cards the border is `--ink-900`; on white cards the border is `--ink-900` at 85% alpha.
+Height 34 px · padding `0 --space-4` · `--border-pill` · `--radius-pill` · `--t-meta` · uppercase **off** (sentence case, as in the reference) · background transparent. On blue cards the border is `--ink-900`; on white cards the border is `--ink-900` at 85% alpha.
 
 #### 5.5.2 Primary button ("Télécharger le CV")
-Height 52 px · `--radius-pill` · background `--ink-900` · text `--paper` · `--t-body` weight 600 · icon (download arrow, 16 px) with `--space-2` gap. Hover: background `--ink-900`, transform `translateY(-2px)`, shadow grows. Active: `translateY(0)`. Focus: 2 px `--green-500` ring at 3 px offset.
+Height 52 px · `--radius-pill` · background `--ink-900` · text `--paper` · `--t-body` weight 600 · icon (download arrow, 16 px) with `--space-2` gap. Hover: background `--ink-900`, transform `translateY(-2px)`, shadow grows. Active: `translateY(0)`. Focus: 2 px `--blue-500` ring at 3 px offset.
 
 #### 5.5.3 Secondary button
 Same metrics, background transparent, `1.25px` `--ink-900` border, text `--ink-900`. Hover: background `--ink-900` at 6%.
 
 #### 5.5.4 Link (Layer 2)
-`--ink-900` text with a `--green-500` underline at 2 px, offset 3 px. Hover: underline thickens to 3 px and the text shifts to `--green-700` over `--dur-fast`. External links get a 10 px arrow glyph. No colour-only differentiation (accessibility).
+`--ink-900` text with a `--blue-500` underline at 2 px, offset 3 px. Hover: underline thickens to 3 px and the text shifts to `--blue-700` over `--dur-fast`. External links get a 10 px arrow glyph. No colour-only differentiation (accessibility).
 
 #### 5.5.5 Callout (Layer 2)
-No box fill. A 3 px `--green-500` left rule, `--space-5` left padding, label in `--t-meta` uppercase `--ink-500`, body in `--t-body`. Variants by label only: `Note`, `Result`, `Assumption`, `Limitation`, `Aside`. Limitation variant uses `--ink-300` rule instead of green — honesty is not an accent colour.
+No box fill. A 3 px `--blue-500` left rule, `--space-5` left padding, label in `--t-meta` uppercase `--ink-500`, body in `--t-body`. Variants by label only: `Note`, `Result`, `Assumption`, `Limitation`, `Aside`. Limitation variant uses `--ink-300` rule instead of blue — honesty is not an accent colour.
 
 ### 5.6 Do / Don't
 
 | Do | Don't |
 |---|---|
-| Let the green be a *field*, in big calm areas | Use green as a highlight on small text |
+| Let the blue be a *field*, in big calm areas | Use blue as a highlight on small text |
 | Keep the isometric camera fixed everywhere | Rotate, tilt, or perspective-project the motifs |
-| Use one green, four tints of it | Introduce a second hue (blue, teal, lime) |
+| Use one blue, four tints of it | Introduce a second hue (green, teal, violet) |
 | Use white space as the luxury signal | Fill space with decorative geometry |
 | Let Layer 2 look almost plain | "Brand" Layer 2 with cards and gradients |
 | Use shadows only in Layer 1 | Put drop shadows on text, ever |
@@ -434,13 +436,13 @@ This is the site's signature and its most defensible asset. It MUST be treated a
 
 | Face | On a "light" object | On a "dark" object | On an "accent" object |
 |---|---|---|---|
-| Top | `--paper` | `--paper` | `--green-200` |
-| Left (lit) | `--paper` with hairline | `--paper` | `--green-300` |
+| Top | `--paper` | `--paper` | `--blue-200` |
+| Left (lit) | `--paper` with hairline | `--paper` | `--blue-300` |
 | Right (shadow) | `--ink-900` | `--ink-900` | `--ink-900` |
-| Inner void | `--ink-900` | `--ink-900` | `--green-300` (glowing void) |
+| Inner void | `--ink-900` | `--ink-900` | `--blue-300` (glowing void) |
 
-  This exactly reproduces the reference: white-and-black cubes with green accents, giving the illustrations their crisp, printed quality.
-- **Ground shadow.** Every composition sits on an invisible ground plane with one soft ellipse-ish shadow, offset down-right by `0.35U`, using `--shadow-ground` on green cards and `--shadow-ground-neutral` on white cards. It MUST track the object's motion — this is 60% of the "satisfying" quality.
+  This exactly reproduces the reference: white-and-black cubes with blue accents, giving the illustrations their crisp, printed quality.
+- **Ground shadow.** Every composition sits on an invisible ground plane with one soft ellipse-ish shadow, offset down-right by `0.35U`, using `--shadow-ground` on blue cards and `--shadow-ground-neutral` on white cards. It MUST track the object's motion — this is 60% of the "satisfying" quality.
 
 ### 6.2 The vocabulary of forms
 
@@ -459,7 +461,7 @@ Six primitives only. Every motif is a composition of these.
 
 Motion is restricted to these. Anything else is off-system.
 
-`translate` along one iso axis · `stack` (fall into place with a settle) · `extrude` (grow along one axis) · `split` (a solid separates into slabs along a plane) · `swap` (two units exchange positions along an arc constrained to the iso plane) · `prune` (a cube dissolves to Ghost, then to nothing, edges last) · `certify` (a Frame closes around a cube, which turns accent green) · `sweep` (a plane passes through the composition, changing what it touches).
+`translate` along one iso axis · `stack` (fall into place with a settle) · `extrude` (grow along one axis) · `split` (a solid separates into slabs along a plane) · `swap` (two units exchange positions along an arc constrained to the iso plane) · `prune` (a cube dissolves to Ghost, then to nothing, edges last) · `certify` (a Frame closes around a cube, which turns accent blue) · `sweep` (a plane passes through the composition, changing what it touches).
 
 ### 6.4 Motifs are identity
 
@@ -482,27 +484,27 @@ Concept: discrete enumeration converging on a certified optimum.
 - Opens on a 3×3×2 lattice of Ghost cubes, faintly outlined.
 - A `sweep` plane passes along one axis; touched cubes resolve to solid white.
 - Three cubes `prune` away in staggered succession (edges linger 120 ms after the fill dissolves — this detail is the whole charm).
-- One remaining cube rises `0.5U`, turns `--green-300`, and a `Frame` closes around it (`certify`), with the frame edges drawing in from the corners.
+- One remaining cube rises `0.5U`, turns `--blue-300`, and a `Frame` closes around it (`certify`), with the frame edges drawing in from the corners.
 - Hold 1.2 s at the poster frame. Then the frame opens, the cube settles back, pruned cubes fade back in as Ghosts, and the lattice returns to its initial state.
-- **Poster frame:** the certified green cube inside its frame, everything else resolved white. This is the strongest single image on the site — it is also the OG image.
+- **Poster frame:** the certified blue cube inside its frame, everything else resolved white. This is the strongest single image on the site — it is also the OG image.
 
 #### M-02 · WFI feasibility — *"two paths, one chosen"*
 Concept: comparing a multiple-effect distillation train against a membrane route.
 - Two `Column` stacks stand side by side: left is three stacked cubes (the effects — literally staged), right is a set of five thin `Slabs` with gaps (the membrane).
 - A single accent cube travels down through the left column, pausing at each stage, then re-enters at the top of the right column and passes through the slabs continuously.
-- On the right pass, the slabs light `--green-300` in sequence, and the right stack compresses to a shorter total height than the left.
+- On the right pass, the slabs light `--blue-300` in sequence, and the right stack compresses to a shorter total height than the left.
 - Hold. Reset by both stacks returning to equal height simultaneously.
 - **Poster frame:** the moment both routes are lit and the height difference is visible.
-- This motif directly echoes the "Validate the network" card in the reference image — parallel slabs with a green edge — so it will feel native to the visual language.
+- This motif directly echoes the "Validate the network" card in the reference image — parallel slabs with a blue edge — so it will feel native to the visual language.
 
 #### M-03 · Batch coating optimisation — *"the collapse"*
 Concept: a >70 % reduction, made physical.
 - A `Column` of ten thin `Slabs` (each = one batch cycle) stands tall.
 - A `sweep` marks slabs as removable; marked slabs `prune` in a rapid, rhythmic cascade (staggered 55 ms — the rhythm is the payoff).
 - The remaining three slabs settle down onto the ground plane with a 6 % overshoot and one bounce. The ground shadow contracts with them.
-- A thin `--green-300` gauge line at the side drops with the stack — the only "chart-like" element permitted anywhere in Layer 1.
+- A thin `--blue-300` gauge line at the side drops with the stack — the only "chart-like" element permitted anywhere in Layer 1.
 - Hold 1.5 s. Reset by the removed slabs re-materialising top-down.
-- **Poster frame:** the short green-topped stack next to the ghost outline of its original height.
+- **Poster frame:** the short blue-topped stack next to the ghost outline of its original height.
 
 #### Reserved motifs for future projects
 Keep a documented list so future projects don't collide: `orbit-swap` (scheduling), `lattice-fill` (packing/allocation), `flow-split` (network/flowsheet), `staircase` (dynamic programming), `sieve` (screening/HAZOP).
@@ -565,7 +567,7 @@ If a motif is not compelling as a still image, it is rejected — no amount of a
 A motif loop is accepted only if all of the following hold:
 
 - [ ] **Seamless:** the rendered state at `t = 0` is pixel-identical to `t = --dur-loop`. No fade-to-black reset, no visible jump.
-- [ ] **One protagonist:** exactly one accent-green element carries the eye through the loop.
+- [ ] **One protagonist:** exactly one accent-blue element carries the eye through the loop.
 - [ ] **Breathing room:** ≥ 15 % of the cycle is a hold at or near the poster frame. Continuous motion reads as anxious.
 - [ ] **Rhythm:** staggered events use a consistent interval (55–80 ms) so the cascade reads as a beat.
 - [ ] **Shadow coupled:** the ground shadow scales/moves with the object every frame.
@@ -656,7 +658,7 @@ Vertical order, top to bottom. Nothing else is permitted on this page.
 └─────────────────────────────────┘
 ```
 - Card size: `380 × 560` at `lg`, `320 × 500` at `md`, `86vw × 480` at `sm`. Gap `--space-6`.
-- Fill alternates green/white (§5.1.4).
+- Fill alternates blue/white (§5.1.4).
 - Hover (pointer devices only): lift `translateY(-6px)`, shadow → `--shadow-card-hover`, motif loop speeds to 1.15×, `--dur-base`. Nothing else moves. No tilt, no glare, no 3D transform.
 - The **entire card is one link**. No nested interactive elements.
 - **Scaling rule:** the rail shows a maximum of **6** cards. At 7+, the last slot becomes a "Voir tous les projets →" card in `--field-deep` and `/projects` enters the picture.
@@ -719,14 +721,14 @@ Optionally a 9th: **What I'd do differently.** Strongly encouraged — superviso
 - Serif body at `--t-body` (or the single-family alternative, §5.2.1).
 - `h2` numbered (`1.`, `2.` …) via CSS counters, with a `--rule` above and `--space-14` of top margin. Numbering is the strongest single "technical document" signal available and costs nothing.
 - Paragraph spacing `--space-5`; no first-line indent.
-- Inline code: `--font-mono`, `--t-mono`, `--green-050` background, `--radius-sm`, `2px 5px` padding.
-- Code blocks: `--paper` on a `--border-hair`, `--radius-md`, optional filename chip in the top-left, no traffic-light decorations, no line numbers unless referenced in prose. Syntax highlighting: a muted theme using `--ink-900`/`--ink-500`/`--green-700` only. Copy button, top-right, appears on hover.
+- Inline code: `--font-mono`, `--t-mono`, `--blue-050` background, `--radius-sm`, `2px 5px` padding.
+- Code blocks: `--paper` on a `--border-hair`, `--radius-md`, optional filename chip in the top-left, no traffic-light decorations, no line numbers unless referenced in prose. Syntax highlighting: a muted theme using `--ink-900`/`--ink-500`/`--blue-700` only. Copy button, top-right, appears on hover.
 - Equations: KaTeX, display equations numbered on the right, referenced as `(3)` in prose.
 
 #### 8.2.6 Figures
 - Full reading-column width by default; at `xl` a figure MAY bleed 180 px into the left sidenote margin.
 - Caption below, `--t-small`, `--ink-500`, prefixed `Figure 1 —` via counter.
-- Charts MUST use the site palette: series 1 `--green-500`, series 2 `--ink-900`, series 3 `--ink-500`, series 4 `--green-700`; grid lines `--rule`. Never a rainbow default palette.
+- Charts MUST use the site palette: series 1 `--blue-500`, series 2 `--ink-900`, series 3 `--ink-500`, series 4 `--blue-700`; grid lines `--rule`. Never a rainbow default palette.
 - Every chart MUST have axis labels with units. This is a hard rejection criterion.
 - Images get `loading="lazy"`, explicit dimensions, and meaningful `alt`.
 
@@ -776,7 +778,7 @@ tag: Optimisation               # enum, required — see controlled vocabulary b
 order: 1                        # int, required — rail position
 featured: true                  # bool — appears in the home rail at all
 motif: m-01-certified-gap       # string, required — asset id in /motifs
-motifColor: green               # enum: green | white — card fill
+motifColor: blue               # enum: blue | white — card fill
 card:
   description: >                # string, required, ≤ 165 chars — 2–3 lines on the card
     An open-source solver that returns a primary-drying recipe together with
@@ -929,8 +931,8 @@ Home: hero (2 lines) · status line (1) · intro (75 words) · 3 CTA labels · s
 
 ### 12.2 Accessibility (WCAG 2.2 AA, non-negotiable)
 
-- Contrast: body text on all backgrounds ≥ 4.5:1; large text ≥ 3:1. Verify `--ink-900` on `--green-300` (passes comfortably) and `--ink-500` on `--field` (verify — darken if it fails).
-- Every interactive element has a visible focus state: 2 px `--green-500` ring, 3 px offset, never `outline: none`.
+- Contrast: body text on all backgrounds ≥ 4.5:1; large text ≥ 3:1. Verify `--ink-900` on `--blue-300` (passes comfortably) and `--ink-500` on `--field` (verify — darken if it fails).
+- Every interactive element has a visible focus state: 2 px `--blue-500` ring, 3 px offset, never `outline: none`.
 - The rail is fully keyboard-operable (§7.4) and announced with `role="region"` + `aria-label="Projets"`.
 - Motifs are decorative → `aria-hidden="true"`, `role="presentation"`. The card's text carries the meaning.
 - `prefers-reduced-motion` honoured everywhere, including the page transition and hover lifts.
@@ -1052,8 +1054,8 @@ Launch is blocked until every box is ticked.
 ## Appendix A — Token summary (implementation reference)
 
 ```
-COLOUR   green-050 #F1FDF2 · green-100 #DFFAE2 · green-200 #C2F5C9
-         green-300 #A3EFAE · green-400 #7FE18E · green-500 #48C862 · green-700 #1E7A38
+COLOUR   blue-050 #F0F9FE · blue-100 #DDF2FE · blue-200 #BDE7FD
+         blue-300 #97DAFD · blue-400 #5CC8FB · blue-500 #21A5DB · blue-700 #10698D
          ink-900 #101113 · ink-700 #3A3D42 · ink-500 #6B7079 · ink-300 #B9BDC4
          rule #E3E5E8 · paper #FFFFFF · field #F2F2F1 · field-deep #E8E8E7
 
@@ -1075,7 +1077,7 @@ BREAKS   480 · 768 · 1024 · 1440 · 1800
 ```
 Pill tag:     Optimisation
 Motif:        M-01 · certified gap
-Fill:         green (position 1)
+Fill:         blue (position 1)
 Title:        RIDGE
 Description:  Un solveur open source qui renvoie une recette de lyophilisation
               accompagnée de la preuve qu'aucune meilleure n'existe.
@@ -1083,19 +1085,19 @@ Description:  Un solveur open source qui renvoie une recette de lyophilisation
               together with a proof that nothing better exists.
 CTA:          Lire l'analyse →
 Links to:     /projects/ridge
-OG image:     poster frame — green cube inside a closing frame
+OG image:     poster frame — blue cube inside a closing frame
 ```
 
 ## Appendix C — Reference image reading
 
 The uploaded reference establishes, and this spec preserves:
 
-- Light grey page field; cards alternating saturated-green and pure white.
+- Light grey page field; cards alternating saturated-blue and pure white.
 - Card radius ≈ 28 px, generous internal padding, content bottom-aligned.
 - Outlined pill tag, sentence case, top-left of the card.
 - Bold grotesque title, tight tracking, followed by a short 3-line description at roughly half the title's weight and size.
-- Isometric compositions built from unit cubes and thin slabs: white tops and lit faces, solid black shadow faces, one or two green accent faces, thin dark outlines.
-- A soft green ground shadow beneath each composition — the element that makes the objects feel placed rather than pasted.
+- Isometric compositions built from unit cubes and thin slabs: white tops and lit faces, solid black shadow faces, one or two blue accent faces, thin dark outlines.
+- A soft blue ground shadow beneath each composition — the element that makes the objects feel placed rather than pasted.
 - No gradients in the illustrations themselves; the gradient lives in the card fill only.
 
 **Deliberate divergences:** the reference is a documentation site for a product; this is a personal site. Consequences — the illustration becomes *semantic* (each motif encodes a project's logic rather than a generic abstraction), the pill tag becomes a real taxonomy rather than an audience label, and the whole system gains a second, sober layer underneath that the reference does not have.

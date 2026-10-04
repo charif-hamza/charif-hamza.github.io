@@ -12,7 +12,7 @@
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#5E636A"/>
     </marker>
     <marker id="ridge-arrow-gr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#48C862"/>
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#21A5DB"/>
     </marker>
     <pattern id="ridge-dried" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
       <line x1="0" y1="0" x2="0" y2="8" stroke="#B9BDC4" stroke-width="1"/>
@@ -31,7 +31,7 @@
     <g id="panel-1">
       <rect x="90" y="110" width="180" height="200" fill="#FFFFFF" stroke="#101113" stroke-width="1.5"/>
       <rect x="91" y="111" width="178" height="39" fill="url(#ridge-dried)"/>
-      <rect x="91" y="150" width="178" height="159" fill="#A3EFAE"/>
+      <rect x="91" y="150" width="178" height="159" fill="#97DAFD"/>
       <line x1="91" y1="150" x2="269" y2="150" stroke="#101113" stroke-width="2.5"/>
       <rect x="90" y="310" width="180" height="14" fill="#101113"/>
       <text x="180" y="376" font-size="13" fill="#5E636A" text-anchor="middle">early</text>
@@ -40,7 +40,7 @@
     <g id="panel-2">
       <rect x="390" y="110" width="180" height="200" fill="#FFFFFF" stroke="#101113" stroke-width="1.5"/>
       <rect x="391" y="111" width="178" height="99" fill="url(#ridge-dried)"/>
-      <rect x="391" y="210" width="178" height="99" fill="#A3EFAE"/>
+      <rect x="391" y="210" width="178" height="99" fill="#97DAFD"/>
       <line x1="391" y1="210" x2="569" y2="210" stroke="#101113" stroke-width="2.5"/>
       <rect x="390" y="310" width="180" height="14" fill="#101113"/>
       <text x="480" y="376" font-size="13" fill="#5E636A" text-anchor="middle">mid-cycle</text>
@@ -49,7 +49,7 @@
     <g id="panel-3">
       <rect x="690" y="110" width="180" height="200" fill="#FFFFFF" stroke="#101113" stroke-width="1.5"/>
       <rect x="691" y="111" width="178" height="157" fill="url(#ridge-dried)"/>
-      <rect x="691" y="268" width="178" height="41" fill="#A3EFAE"/>
+      <rect x="691" y="268" width="178" height="41" fill="#97DAFD"/>
       <line x1="691" y1="268" x2="869" y2="268" stroke="#101113" stroke-width="2.5"/>
       <rect x="690" y="310" width="180" height="14" fill="#101113"/>
       <text x="780" y="376" font-size="13" fill="#5E636A" text-anchor="middle">late</text>
@@ -73,7 +73,7 @@
     </g>
 
     <!-- front travel -->
-    <g stroke="#48C862" stroke-width="2" marker-end="url(#ridge-arrow-gr)" fill="none">
+    <g stroke="#21A5DB" stroke-width="2" marker-end="url(#ridge-arrow-gr)" fill="none">
       <line x1="330" y1="168" x2="330" y2="262"/>
     </g>
     <text x="330" y="158" font-size="13" fill="#5E636A" text-anchor="middle">front recedes</text>
@@ -83,7 +83,7 @@
       <rect x="45" y="406" width="26" height="14" fill="url(#ridge-dried)" stroke="#B9BDC4" stroke-width="1"/>
       <text x="80" y="418" fill="#101113">dried cake, vapour leaves through it</text>
 
-      <rect x="380" y="406" width="26" height="14" fill="#A3EFAE" stroke="#101113" stroke-width="1"/>
+      <rect x="380" y="406" width="26" height="14" fill="#97DAFD" stroke="#101113" stroke-width="1"/>
       <text x="415" y="418" fill="#101113">frozen product</text>
 
       <rect x="620" y="406" width="26" height="14" fill="#101113"/>

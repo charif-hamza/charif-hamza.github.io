@@ -12,10 +12,10 @@
  * edge (Appendix C). The bleed is why the card clips: the illustration is
  * meant to look larger than the frame that holds it.
  *
- * Fill (revision v0.6): green marks the card in focus, not a fixed alternation
+ * Fill (revision v0.6): blue marks the card in focus, not a fixed alternation
  * down the rail. With one card at a time in the reader's attention (§7.4) the
  * fill has a better job to do than alternating, and the reference image shows
- * exactly this — one green card between two paper ones.
+ * exactly this — one blue card between two paper ones.
  */
 import MotifFrame from '~/components/common/MotifFrame.astro';
 import PillTag from '~/components/common/PillTag.astro';
@@ -66,7 +66,7 @@ const enterAt = 420 + index * 60;
 	style={`--enter-at:${enterAt}ms`}
 >
 	<div class="card__top">
-		<PillTag surface="green">{tag}</PillTag>
+		<PillTag surface="blue">{tag}</PillTag>
 		{
 			language !== site.lang && (
 				<span class="card__lang t-meta" title={t.card.langMarkerTitle}>
@@ -77,7 +77,7 @@ const enterAt = 420 + index * 60;
 	</div>
 
 	<div class="card__motif">
-		<MotifFrame id={motif as MotifId} surface="green" transitionKey={slug} />
+		<MotifFrame id={motif as MotifId} surface="blue" transitionKey={slug} />
 	</div>
 
 	<div class="card__body">
@@ -122,8 +122,8 @@ const enterAt = 420 + index * 60;
 	/* In the rail, fill follows focus; in the grid it follows the project's own
 	   alternation. The gradient lives in the card, never in the illustration
 	   (Appendix C), and it is pale where the illustration sits and saturated
-	   under the text — the illustration is green too, and a card that is
-	   already --green-300 behind it leaves the accent nowhere to be an accent.
+	   under the text — the illustration is blue too, and a card that is
+	   already --blue-300 behind it leaves the accent nowhere to be an accent.
 
 	   The fill is a layer that fades rather than a background that swaps: a
 	   gradient cannot be transitioned, so switching `background` would snap the
@@ -134,18 +134,18 @@ const enterAt = 420 + index * 60;
 		inset: 0;
 		z-index: 0;
 		border-radius: inherit;
-		background: linear-gradient(160deg, var(--green-100) 0%, var(--green-200) 46%, var(--green-400) 100%);
+		background: linear-gradient(160deg, var(--blue-100) 0%, var(--blue-200) 46%, var(--blue-400) 100%);
 		opacity: 0;
 		transition: opacity var(--dur-page) var(--ease-entrance);
 		pointer-events: none;
 	}
 	.card[data-active]::before,
-	.card[data-fill='green']::before {
+	.card[data-fill='blue']::before {
 		opacity: 1;
 	}
 	/* The ground shadow under the motif follows the card it lands on (§5.4). */
 	.card[data-active] .card__motif :global(.motif),
-	.card[data-fill='green'] .card__motif :global(.motif) {
+	.card[data-fill='blue'] .card__motif :global(.motif) {
 		--ground: var(--shadow-ground);
 	}
 

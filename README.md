@@ -117,7 +117,7 @@ import.
 - **No education, skills, timeline or languages section.** A fact that fits on
   the CV does not get a section on the website (§3.3). `npm run acceptance`
   audits for this.
-- **No dark mode in v1.0.** The identity is light field + green + paper; a dark
+- **No dark mode in v1.0.** The identity is light field + blue + paper; a dark
   inversion weakens it and doubles the motif asset work (§5.1.5).
 - **No contact form, no Google Analytics, no cookie banner.** Email is what both
   audiences will use, and the absence of a banner is itself a design decision
