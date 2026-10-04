@@ -132,3 +132,22 @@ import.
 Static output. Netlify, Vercel or Cloudflare Pages, free tier: build command
 `npm run build`, publish directory `dist`. Set the domain in `site.config.yaml`
 first — it feeds canonical URLs, the sitemap, RSS and absolute OG image URLs.
+
+**How charifhamza.com actually deploys (since 08/2026).** GitHub Pages serves
+the `gh-pages` branch (legacy build, source `gh-pages` `/`). The `Deploy to
+GitHub Pages` workflow on `main` cannot run while the account's Actions are
+billing-locked, but GitHub's own `pages build and deployment` job still does,
+so the site is built locally and the output pushed to `gh-pages`:
+
+```bash
+npm run verify && npm run og:png && npm run build   # og:png only if a card changed
+git worktree add /tmp/gh-pages gh-pages
+rsync -a --checksum --delete --exclude .git dist/ /tmp/gh-pages/
+git -C /tmp/gh-pages add -A && git -C /tmp/gh-pages commit -m "Deploy $(git rev-parse --short HEAD) to GitHub Pages"
+git push origin main gh-pages && git worktree remove /tmp/gh-pages
+```
+
+`--checksum` is not optional. Without it rsync compares size and mtime only,
+and an edit that keeps a file's byte size — a hex colour swapped for another —
+is silently skipped. That shipped mint figures and an unstyled `/cv` on
+04/10/2026.
