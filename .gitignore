@@ -7,3 +7,5 @@ dist/
 .env.production
 .netlify/
 .vercel/
+social/out/
+social/fonts/*.woff2

@@ -1,0 +1,57 @@
+/* Social posts — the site's card language at poster scale.
+   Values come from tokens.css; the only numbers here are post geometry. A
+   LinkedIn image is shown at roughly half its 1080 px width, so radii and
+   strokes are set about twice the site's to read the same in the feed. */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+	position: relative;
+	overflow: hidden;
+	background: var(--field);
+	color: var(--ink-900);
+	font-family: var(--font-sans);
+	-webkit-font-smoothing: antialiased;
+	font-feature-settings: 'ss01' 0;
+}
+
+.card {
+	position: absolute;
+	overflow: hidden;
+	border-radius: 48px;
+	box-shadow: 0 2px 4px rgb(16 17 19 / 0.04), 0 16px 48px rgb(16 17 19 / 0.07);
+}
+.card--blue {
+	background: linear-gradient(165deg, var(--blue-200) 0%, var(--blue-300) 45%, var(--blue-400) 100%);
+}
+.card--white { background: var(--paper); }
+
+.pill {
+	display: inline-block;
+	border: 2.5px solid var(--ink-900);
+	border-radius: var(--radius-pill);
+	padding: 9px 24px 10px;
+	font-size: 24px;
+	font-weight: 500;
+	letter-spacing: var(--track-meta);
+	line-height: 1;
+}
+
+.title {
+	font-weight: 700;
+	letter-spacing: var(--track-display);
+	line-height: 1.0;
+}
+
+.lead { font-weight: 400; color: var(--ink-700); line-height: 1.4; }
+.meta { font-weight: 500; color: var(--ink-500); letter-spacing: var(--track-meta); }
+
+/* motif strokes are non-scaling and the image is rendered at 2x, so the
+   hairline is set in screen pixels here rather than through --iso-stroke-width */
+.motif .iso { stroke-width: 2; }
+
+/* The site's blue ground (--blue-400 at 22%) is the colour of the card
+   gradient's lower half, where post motifs stand, so it vanishes. Same hue
+   family, one step deeper. */
+.motif[data-surface='blue'] { --ground: rgb(16 105 141 / 0.2); }
+
