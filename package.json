@@ -9,6 +9,7 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "og:png": "node scripts/og-png.mjs",
     "check": "astro check",
     "budgets": "node scripts/check-budgets.mjs",
     "motifs": "node scripts/check-motifs.mjs",

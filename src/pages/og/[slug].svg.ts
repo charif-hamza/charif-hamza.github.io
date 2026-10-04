@@ -10,9 +10,9 @@
  * self-contained 1200x630 SVG card with the motif frozen at its poster frame.
  * In a browser it is already correct and can be used directly as og:image.
  *
- * TODO(D-og) — LinkedIn and Slack want raster. `npm run og:png` is documented
- * in docs/TODO.md and is a headless screenshot of these URLs; once the PNGs
- * exist, flip `og.format` to "png" in site.config.yaml.
+ * LinkedIn and Slack want raster: `npm run og:png` (scripts/og-png.mjs)
+ * screenshots these cards into public/og/*.png, and `og.format: png` in
+ * site.config.yaml points the pages at them.
  */
 import type { APIRoute } from 'astro';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';

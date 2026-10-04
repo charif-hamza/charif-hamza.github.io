@@ -76,10 +76,10 @@ features:
 
 # --- Open Graph (§6.7, §12.3) ------------------------------------------------
 og:
-  # Poster-frame OG cards are generated at build as SVG (src/pages/og/[slug].svg.ts).
-  # TODO(D-og): LinkedIn and Slack need raster. Run the documented rasterisation
-  # step (docs/TODO.md → OG images) and flip this to "png".
-  format: svg
+  # Poster-frame OG cards are generated at build as SVG (src/pages/og/[slug].svg.ts)
+  # and rasterised to public/og/*.png by `npm run og:png` (LinkedIn and Slack
+  # ignore SVG). Re-run it after changing a card's title, subtitle or motif.
+  format: png
   width: 1200
   height: 630
 
