@@ -19,5 +19,5 @@
     <text x="120" y="470" font-size="15">x axis: label (unit)</text>
     <text x="52" y="250" font-size="15" transform="rotate(-90 52 250)">y axis: label (unit)</text>
   </g>
-  <circle cx="880" cy="60" r="6" fill="#A3EFAE" stroke="#101113" stroke-width="1.5"/>
+  <circle cx="880" cy="60" r="6" fill="#97DAFD" stroke="#101113" stroke-width="1.5"/>
 </svg>
